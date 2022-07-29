@@ -47,5 +47,5 @@ mount -o "$BTRFS_OPTS,subvol=@boot" "${TARGET}2" "${MNT}"/boot
 findmnt -R --target "${MNT}"
 
 # .#golgi is our hostname defined by our flake
-nix-shell -p nixUnstable -p git --run "nixos-install --root ${MNT} --flake .#golgi"
+nix-shell -p nixUnstable -p git --run "nixos-install --root ${MNT} --flake .#pre-golgi"
 umount -R /mnt
