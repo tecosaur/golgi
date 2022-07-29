@@ -1,0 +1,38 @@
+#+begin_quote
+The Golgi apparatus is responsible for transporting, modifying, and packaging
+proteins and lipids into vesicles for delivery to targeted destinations. It is
+located in the cytoplasm next to the endoplasmic reticulum and near the cell
+nucleus. --- Encyclopedia Britanica
+#+end_quote
+
+This server will be an apparatus for better managing my personal projects. It
+sits near the idea-generation and idea-translation components of my workflow. It
+will be responsible for storing my work as a remote repository, transporting the
+work between local development machines, and as a web server to improve the ease
+of access of my work, both for myself and anybody curious.
+
+Let's hope it works well.
+
+* Setup
+
+I'm using Hetnezer as a host. Their value for money with VPS offerings is pretty
+alluring.
+
+Additionally I've found a handy [[https://ayats.org/blog/deploy-rs-example/][blog post]] about =deploy-rs= on Hetzner, which is
+remarkably convenient. They were even kind enough to link to a [[https://github.com/viperML/deploy-rs-example][repo]] which I've
+shamelessly used as a starting point.
+
+
+Unfortunately, Hetnezer doesn't offer a NixOS image, but they do allow you to
+mount a NixOS install volume (22.05 as of writing) to your server after creating
+it. After doing so, starting the VM we can get it set up simply with:
+
+#+begin_src shell
+sudo -s
+nix-shell -p git
+git clone https://github.com/tecosaur/golgi
+cd golgi
+./install.sh
+# wait a bit, then create root password
+shutdown -h now
+#+end_src
