@@ -2,7 +2,7 @@
   description = "My server flake";
 
   inputs = {
-    nixpkgs.url = github:NixOS/nixpkgs/nixos-22.05;
+    nixpkgs.url = github:NixOS/nixpkgs/nixpkgs-unstable;
     flake-utils-plus.url = github:gytis-ivaskevicius/flake-utils-plus;
     agenix.url = "github:ryantm/agenix";
     deploy-rs = {
