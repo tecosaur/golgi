@@ -13,5 +13,8 @@ respond "Hello, world!"
     virtualHosts."git.tecosaur.net".extraConfig = ''
 reverse_proxy localhost:3000
   '';
+    virtualHosts."ci.tecosaur.net".extraConfig = ''
+reverse_proxy localhost:3030
+  '';
   };
 }
