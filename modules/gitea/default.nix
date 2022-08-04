@@ -1,10 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  age.secrets.postgress = {
+  age.secrets.postgres-gitea = {
     owner = "gitea";
     group = "users";
-    file = ../../secrets/postgress.age;
+    file = ../../secrets/postgres-gitea.age;
   };
 
   age.secrets.fastmail = {
@@ -23,7 +23,7 @@
     appName = "Gitea";
     database = {
       type = "postgres";
-      passwordFile = config.age.secrets.postgress.path;
+      passwordFile = config.age.secrets.postgres-gitea.path;
     };
     disableRegistration = true;
     lfs.enable = true;
