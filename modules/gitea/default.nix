@@ -41,6 +41,10 @@
       service = {
         REGISTER_EMAIL_CONFIRM = true;
       };
+      indexer = {
+        REPO_INDEXER_ENABLED = true;
+        REPO_INDEXER_EXCLUDE = "**.pdf, **.png, **.jpeg, **.jpm, **.svg, **.webm";
+      };
     };
   };
 
