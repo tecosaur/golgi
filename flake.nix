@@ -26,8 +26,8 @@
           admin
           hardware-hetzner
           agenix.nixosModule
-          caddy
           gitea
+          caddy
         ];
       };
 
