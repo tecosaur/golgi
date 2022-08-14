@@ -45,6 +45,23 @@
         REPO_INDEXER_ENABLED = true;
         REPO_INDEXER_EXCLUDE = "**.pdf, **.png, **.jpeg, **.jpm, **.svg, **.webm";
       };
+      repository = {
+        DEFAULT_PRIVATE = "public";
+        DEFAULT_PUSH_CREATE_PRIVATE = false;
+        ENABLE_PUSH_CREATE_USER = true;
+        PREFERRED_LICENSES = "GPL-3.0-or-later,MIT";
+        DEFAULT_REPO_UNITS = "repo.code,repo.isses,repo.pulls";
+      };
+      # "repository.mimetype_mapping" = {
+      #   ".org" = "text/org";
+      # };
+      ui = {
+        GRAPH_MAX_COMMIT_NUM = 200;
+        THEME_COLOR_META_TAG = "#609926";
+      };
+      federation = {
+        ENABLED = true;
+      };
     };
   };
 
