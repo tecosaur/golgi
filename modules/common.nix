@@ -2,7 +2,12 @@
 
 {
   time.timeZone = "UTC";
-  services.openssh = { enable = true; };
+  services.openssh = {
+    enable = true;
+    # require public key authentication for better security
+    passwordAuthentication = false;
+    kbdInteractiveAuthentication = false;
+  };
   system.stateVersion = "22.05";
 
   nix = {
