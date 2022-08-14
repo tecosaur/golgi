@@ -21,6 +21,7 @@
   age.secrets.woodpecker-agent-secret = {
     owner = "woodpecker-server";
     group = "users";
+    mode = "0440";
     file = ../../secrets/woodpecker-agent-secret.age;
   };
 
@@ -28,6 +29,7 @@
     enable = true;
     rootUrl = "https://ci.tecosaur.net";
     httpPort = 3030;
+    admins = "tec";
     database = {
       type = "postgres";
     };
@@ -37,6 +39,6 @@
   };
 
   services.woodpecker-agent = {
-    enable = true;
+    enable = false;
   };
 }

@@ -40,7 +40,7 @@ in
 
       server = mkOption {
         type = types.str;
-        default = "localhost:${if servercfg.enabled then toString servercfg.gRPCPort else "9000"}";
+        default = "localhost:${if servercfg.enable then toString servercfg.gRPCPort else "9000"}";
         description = lib.mdDoc "The gPRC address of the server.";
       };
     };
@@ -61,8 +61,8 @@ in
       };
       environment = mkMerge [
         {
-          WOODPECKER_SERVER=true;
-          WOODPECKER_MAX_PROCS=cfg.maxProcesses;
+          WOODPECKER_SERVER=cfg.server;
+          WOODPECKER_MAX_PROCS=toString cfg.maxProcesses;
           WOODPECKER_BACKEND=cfg.backend;
         }
         (mkIf (cfg.agentSecretFile != null) {
@@ -73,8 +73,8 @@ in
 
     users.users = mkIf (cfg.user == "woodpecker-agent") {
       woodpecker-agent = {
-        createHome = true;
-        home = cfg.stateDir;
+        # createHome = true;
+        # home = cfg.stateDir;
         useDefaultShell = true;
         group = "woodpecker-agent";
         extraGroups = [ "woodpecker" ];

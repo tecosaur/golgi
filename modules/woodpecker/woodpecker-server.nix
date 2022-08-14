@@ -36,13 +36,13 @@ in
       };
 
       httpPort = mkOption {
-        type = types.int;
+        type = types.port;
         default = 3030;
         description = lib.mdDoc "HTTP listen port.";
       };
 
       gRPCPort = mkOption {
-        type = types.int;
+        type = types.port;
         default = 9000;
         description = lib.mdDoc "The gPRC listener port.";
       };
@@ -75,7 +75,7 @@ in
 
         port = mkOption {
           type = types.port;
-          default = (if !usePostgresql then 3306 else pg.port);
+          default = (if !usePostgresql then 3306 else config.services.postgresql.port);
           defaultText = literalExpression ''
             if config.${opt.database.type} != "postgresql"
             then 3306
@@ -86,7 +86,7 @@ in
 
         name = mkOption {
           type = types.str;
-          default = "woodpecker-server";
+          default = "woodpecker_server";
           description = lib.mdDoc "Database name.";
         };
 
@@ -121,14 +121,32 @@ in
         };
       };
 
+      limitMem = mkOption {
+        type = types.int;
+        default = 0;
+        description = lib.mdDoc "The maximum amount of memory a single pipeline container can use, configured in bytes. There is no limit if 0.";
+      };
+
+      limitSwap = mkOption {
+        type = types.int;
+        default = 0;
+        description = lib.mdDoc "The maximum amount of memory a single pipeline container is allowed to swap to disk, configured in bytes. There is no limit if 0.";
+      };
+
+      limitCPU = mkOption {
+        type = types.int;
+        default = 0;
+        description = lib.mdDoc "The number of microseconds per CPU period that the container is limited to before throttled. There is no limit if 0.";
+      };
+
       useGitea = mkOption {
-        default = options.services.gitea.enabled;
+        default = config.services.gitea.enable;
         type = types.bool;
         description = lib.mkDoc "Whether to integrate with gitea.";
       };
 
       giteaUrl = mkOption {
-        default = options.services.gitea.rootUrl;
+        default = config.services.gitea.rootUrl;
         type = types.str;
         description = lib.mkDoc "Full public URL of gitea server.";
       };
@@ -146,37 +164,57 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      { assertion = cfg.database.createDatabase -> cfg.database.user == cfg.user;
+        message = "services.woodpecker-server.database.user must match services.woodpecker-server.user if the database is to be automatically provisioned";
+      }
+    ];
+
     systemd.services.woodpecker-server = {
       description = "woodpecker-server";
       after = [ "network.target" ] ++ lib.optional usePostgresql "postgresql.service" ++ lib.optional useMysql "mysql.service";
       wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "simple";
-        User = cfg.user;
-        Group = "woodpecker-server";
-        WorkingDirectory = cfg.stateDir;
-        ExecStart = "${pkgs.woodpecker-server}/bin/woodpecker-server";
-        Restart = "always";
-        # TODO add security/sandbox params.
-      };
+      serviceConfig = mkMerge [
+        {
+          Type = "simple";
+          User = cfg.user;
+          Group = "woodpecker-server";
+          WorkingDirectory = cfg.stateDir;
+          Restart = "always";
+          # TODO add security/sandbox params.
+        }
+        (if cfg.useGitea then {
+          # HACK For some godforsaken reason this seems to be needed.
+          ExecStart="/bin/sh -c '" +
+                    "WOODPECKER_GITEA_CLIENT=$(cat \"${cfg.giteaClientIdFile}\") " +
+                    "WOODPECKER_GITEA_SECRET=$(cat \"${cfg.giteaClientSecretFile}\") " +
+                    "\"${pkgs.woodpecker-server}/bin/woodpecker-server\"'";
+        } else {
+          ExecStart = "${pkgs.woodpecker-server}/bin/woodpecker-server";
+        })
+      ];
       environment = mkMerge [
         {
-          WOODPECKER_OPEN=true;
+          WOODPECKER_OPEN="false";
           WOODPECKER_ADMIN=cfg.admins;
           WOODPECKER_HOST=cfg.rootUrl;
           WOODPECKER_SERVER_ADDR=":${toString cfg.httpPort}";
-          WOODPECKER_GRPC_ADDR=cfg.gRPCPort;
+          WOODPECKER_GRPC_ADDR=":${toString cfg.gRPCPort}";
+          WOODPECKER_LIMIT_MEM_SWAP=toString cfg.limitSwap;
+          WOODPECKER_LIMIT_MEM=toString cfg.limitMem;
+          WOODPECKER_LIMIT_CPU_QUOTA=toString cfg.limitCPU;
         }
         (mkIf cfg.useGitea {
-          WOODPECKER_GITEA=true;
+          WOODPECKER_GITEA="true";
           WOODPECKER_GITEA_URL=cfg.giteaUrl;
-          WOODPECKER_GITEA_CLIENT_FILE=cfg.giteaClientIdFile;
-          WOODPECKER_GITEA_SECRET_FILE=cfg.giteaClientSecretFile;
+          # WOODPECKER_GITEA_CLIENT_FILE=cfg.giteaClientIdFile;
+          # WOODPECKER_GITEA_SECRET_FILE=cfg.giteaClientSecretFile;
         })
         (mkIf usePostgresql {
           WOODPECKER_DATABASE_DRIVER="postgres";
           WOODPECKER_DATABASE_DATASOURCE=
-            "postgres://${cfg.database.user}:${cfg.database.password}/${cfg.database.name}" +
+            "postgres://${cfg.database.user}:${cfg.database.password}" +
+            "@/${cfg.database.name}" +
             "?host=${if cfg.database.socket != null then cfg.database.socket else cfg.database.host + ":" + toString cfg.database.port}";
         })
         (mkIf (cfg.agentSecretFile != null) {
