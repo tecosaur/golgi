@@ -17,6 +17,13 @@ in
         description = lib.mdDoc "Enable Woodpecker Server.";
       };
 
+      package = mkOption {
+        default = pkgs.woodpecker-server;
+        type = types.package;
+        defaultText = literalExpression "pkgs.woodpecker-server";
+        description = lib.mdDoc "woodpecker-server derivation to use";
+      };
+
       stateDir = mkOption {
         default = "/var/lib/woodpecker-server";
         type = types.str;
@@ -188,9 +195,9 @@ in
           ExecStart="/bin/sh -c '" +
                     "WOODPECKER_GITEA_CLIENT=$(cat \"${cfg.giteaClientIdFile}\") " +
                     "WOODPECKER_GITEA_SECRET=$(cat \"${cfg.giteaClientSecretFile}\") " +
-                    "\"${pkgs.woodpecker-server}/bin/woodpecker-server\"'";
+                    "\"${cfg.package}/bin/woodpecker-server\"'";
         } else {
-          ExecStart = "${pkgs.woodpecker-server}/bin/woodpecker-server";
+          ExecStart = "${cfg.package}/bin/woodpecker-server";
         })
       ];
       environment = mkMerge [

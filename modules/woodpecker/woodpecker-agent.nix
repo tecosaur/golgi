@@ -14,6 +14,13 @@ in
         description = lib.mdDoc "Enable Woodpecker agent.";
       };
 
+      package = mkOption {
+        default = pkgs.woodpecker-agent;
+        type = types.package;
+        defaultText = literalExpression "pkgs.woodpecker-agent";
+        description = lib.mdDoc "woodpecker-agent derivation to use";
+      };
+
       user = mkOption {
         type = types.str;
         default = "woodpecker-agent";
@@ -55,7 +62,7 @@ in
         Type = "simple";
         User = cfg.user;
         Group = "woodpecker-agent";
-        ExecStart = "${pkgs.woodpecker-agent}/bin/woodpecker-agent";
+        ExecStart = "${cfg.package}/bin/woodpecker-agent";
         Restart = "always";
         # TODO add security/sandbox params.
       };
