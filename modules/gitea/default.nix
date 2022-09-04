@@ -25,7 +25,6 @@
       type = "postgres";
       passwordFile = config.age.secrets.postgres-gitea.path;
     };
-    disableRegistration = true;
     lfs.enable = true;
     mailerPasswordFile = config.age.secrets.fastmail.path;
     settings = {
@@ -40,6 +39,7 @@
       };
       service = {
         REGISTER_EMAIL_CONFIRM = true;
+        DISABLE_REGISTRATION = true;
       };
       indexer = {
         REPO_INDEXER_ENABLED = true;
