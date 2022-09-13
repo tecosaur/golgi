@@ -2,14 +2,48 @@
 <div class="page-content home">
   <div class="ui stackable middle very relaxed page grid">
     <div class="sixteen wide center aligned centered column">
-      <div>
-        <img class="logo" width="220" height="220" src="{{AssetUrlPrefix}}/img/tree-gitea-themed.svg"/>
-      </div>
       <div class="hero">
         <h1 class="ui icon header title">
           The personal forge of <a href="/tec" style="color: var(--color-primary);">TEC</a>
         </h1>
-        <h2>Thanks to Gitea, a painless, self-hosted Git service.</h2>
+        <div>
+          <img class="logo" width="120" height="120" src="{{AssetUrlPrefix}}/img/tree-gitea-themed.svg"/>
+        </div>
+        <h3>Thanks to Gitea, a painless, self-hosted Git service.</h3>
+        <br /> <hr style="color: var(--color-primary-dark-3);" /> <br />
+        <div style="text-align: left; font-size: 1.25em; line-height: 1.5;">
+          <p>Git is the foremost
+            <abbr title="Distributed Version Control System">DVCS</abbr>, and so
+            I consider a distributed
+            <abbr title="Forge (software): A web-based collaborative software platform">forge</abbr>
+            system very much in keeping with the idea. Furthermore, considering
+            the ideals and rationale of the free software movement, it seems
+            doubly strange to tie oneself to a centeralised proprietary
+            <abbr title="Software as a Service">SaaS</abbr> offering like GitHub.</p>
+          <p>Here you may find my personal forge. It currently hosts a few
+            projects that are mirrored to GitHub, and a few projects I've just got
+            here. The long term plan is to essentially move off GitHub, probably
+            mirroring major projects for visibility.</p>
+          <p>Moving my projects to this single-user forge seems like a strange
+            decision if I'm interested in collaboration (I am), but there are three
+            approaches that can be taken to make this work:</p>
+          <dl>
+            <dt><b>Emailing patches</b></dt>
+            <dd>The original way of sharing code! 😎 It didn't stop working at any
+              point, and it's easy enough for me to review, apply, and push.</dd>
+            <dt><b>Redirecting PRs from mirrors</b></dt>
+            <dd>I could hypothetically check out a PR to a mirror
+              (using <a href="https://magit.vc/manual/forge.html">Magit's
+              Forge</a>) and then simply merge it with the main branch and push
+              it to the canonical repository. This is (as of yet) untested
+              though ⚠.</dd>
+            <dt><b>ForgeFed</b></dt>
+            <dd>I'm wildly excited for
+              <a href="https://forgefed.org/">ForgeFed</a>, and soon™ it should
+              be possible to make PRs <em>across</em> Gitea instances 🤯 (and
+              anyone else implementing the ForgeFed protocol).</dd>
+          </dl>
+        </div>
       </div>
     </div>
   </div>

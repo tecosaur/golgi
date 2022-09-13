@@ -20,7 +20,7 @@
     rootUrl = "https://git.tecosaur.net";
     httpAddress = "0.0.0.0";
     httpPort = 3000;
-    appName = "Gitea";
+    appName = "Code by TEC";
     database = {
       type = "postgres";
       passwordFile = config.age.secrets.postgres-gitea.path;
@@ -58,6 +58,9 @@
       ui = {
         GRAPH_MAX_COMMIT_NUM = 200;
         THEME_COLOR_META_TAG = "#609926";
+      };
+      "ui.meta" = {
+        DESCRIPTION = "The personal forge of TEC";
       };
       federation = {
         ENABLED = true;
