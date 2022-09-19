@@ -18,6 +18,14 @@
       experimental-features = nix-command flakes
     '';
 
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
+
+    settings.auto-optimise-store = true;
+
     # from flake-utils-plus
     # Sets NIX_PATH to follow this flake's nix inputs
     # So legacy nix-channel is not needed
