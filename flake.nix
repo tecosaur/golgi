@@ -32,7 +32,7 @@
       };
 
       deploy.nodes = {
-        my-node = {
+        golgi = {
           hostname = "tecosaur.net";
           fastConnection = false;
           profiles = {
