@@ -27,16 +27,16 @@ respond "__        __   _
 
 This is an in-progress replacement for tecosaur.com, done better.
 
-For now, you can find an increacing number of my projects on git.tecosaur.net,
+For now, you can find an increasing number of my projects on git.tecosaur.net,
 this includes the setup for this server, which is being constructed using:
 + NixOS (with flakes and deploy-rs)
 + Caddy (web server)
 + Gitea (personal software forge)
 
-In future, the folloing may be set up too:
+In future, the following may be set up too:
 + Dendrite/Conduit (Matrix servers)
 + My TMiO blog
-+ Woodpecker (contiuous integration that works with Gitea)
++ Woodpecker (continuous integration that works with Gitea)
 + Kopia (backups)
 + Koel (music streaming)
 "
