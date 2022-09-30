@@ -50,7 +50,7 @@
         DEFAULT_PUSH_CREATE_PRIVATE = false;
         ENABLE_PUSH_CREATE_USER = true;
         PREFERRED_LICENSES = "GPL-3.0-or-later,MIT";
-        DEFAULT_REPO_UNITS = "repo.code,repo.isses,repo.pulls";
+        DEFAULT_REPO_UNITS = "repo.code,repo.issues,repo.pulls";
       };
       # "repository.mimetype_mapping" = {
       #   ".org" = "text/org";
