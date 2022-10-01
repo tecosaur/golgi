@@ -11,13 +11,6 @@ with lib;
   services.caddy = mkMerge [
     {
       enable = true;
-      globalConfig = ''
-servers {
-  protocol {
-    experimental_http3
-  }
-}
-'';
       virtualHosts."tecosaur.net".extraConfig = ''
 respond "__        __   _
 \ \      / /__| | ___ ___  _ __ ___   ___
