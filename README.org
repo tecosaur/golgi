@@ -35,3 +35,8 @@ cd golgi
 # wait a bit, then create root password
 shutdown -h now
 #+end_src
+
+* Deploying
+
+Deploying is simply a matter of entering the deploy nix shell =nix develop= and
+=deploy .#golgi.system=.
