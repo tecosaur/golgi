@@ -29,7 +29,6 @@ this includes the setup for this server, which is being constructed using:
 In future, the following may be set up too:
 + Dendrite/Conduit (Matrix servers)
 + My TMiO blog
-+ Woodpecker (continuous integration that works with Gitea)
 + Kopia (backups)
 + Koel (music streaming)
 "
@@ -38,11 +37,6 @@ In future, the following may be set up too:
     (mkIf config.services.gitea.enable {
       virtualHosts."git.tecosaur.net".extraConfig =
         "reverse_proxy localhost:${toString config.services.gitea.httpPort}";
-    })
-    (mkIf (builtins.hasAttr "woodpecker-server" config.services &&
-           config.services.woodpecker-server.enable) {
-      virtualHosts."ci.tecosaur.net".extraConfig =
-        "reverse_proxy localhost:${toString config.services.woodpecker-server.httpPort}";
     })
   ];
 }

@@ -6,7 +6,4 @@ in
 {
   "postgres-gitea.age".publicKeys = systems;
   "fastmail.age".publicKeys = systems;
-  "woodpecker-client-id.age".publicKeys = systems;
-  "woodpecker-client-secret.age".publicKeys = systems;
-  "woodpecker-agent-secret.age".publicKeys = systems;
 }
