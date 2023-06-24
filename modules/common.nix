@@ -5,8 +5,10 @@
   services.openssh = {
     enable = true;
     # require public key authentication for better security
-    passwordAuthentication = false;
-    kbdInteractiveAuthentication = false;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+    };
   };
   services.journald.extraConfig = ''
 SystemMaxUse=1G
