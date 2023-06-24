@@ -24,7 +24,7 @@ For now, you can find an increasing number of my projects on git.tecosaur.net,
 this includes the setup for this server, which is being constructed using:
 + NixOS (with flakes and deploy-rs)
 + Caddy (web server)
-+ Gitea (personal software forge)
++ Forgejo (personal software forge)
 
 In future, the following may be set up too:
 + Dendrite/Conduit (Matrix servers)

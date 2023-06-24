@@ -14,6 +14,7 @@
   };
 
   services.gitea = {
+    package  = pkgs.forgejo;
     enable = true;
     user = "gitea";
     appName = "Code by TEC";
@@ -33,7 +34,7 @@
       mailer = {
         ENABLED = true;
         PROTOCOL = "smtp+startls";
-        FROM = "gitea@tecosaur.net";
+        FROM = "forgejo@git.tecosaur.net";
         USER = "tec@tecosaur.net";
         HOST = "smtp.fastmail.com:587";
       };
@@ -57,6 +58,7 @@
       # };
       ui = {
         GRAPH_MAX_COMMIT_NUM = 200;
+        DEFAULT_THEME = "auto";
         THEME_COLOR_META_TAG = "#609926";
       };
       "ui.meta" = {
@@ -80,6 +82,6 @@
 
   systemd.tmpfiles.rules = [
     "L+ ${config.services.gitea.stateDir}/custom/templates/home.tmpl - - - - ${./template-home.tmpl}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/img/tree-gitea-themed.svg - - - - ${./tree-gitea-themed.svg}"
+    "L+ ${config.services.gitea.stateDir}/custom/public/img/tree-greentea-themed.svg - - - - ${./tree-greentea-themed.svg}"
   ];
 }
