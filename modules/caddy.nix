@@ -36,7 +36,7 @@ In future, the following may be set up too:
     }
     (mkIf config.services.gitea.enable {
       virtualHosts."git.tecosaur.net".extraConfig =
-        "reverse_proxy localhost:${toString config.services.gitea.httpPort}";
+        "reverse_proxy localhost:${toString config.services.gitea.settings.server.HTTP_PORT}";
     })
   ];
 }

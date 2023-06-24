@@ -16,10 +16,6 @@
   services.gitea = {
     enable = true;
     user = "gitea";
-    domain = "git.tecosaur.net";
-    rootUrl = "https://git.tecosaur.net";
-    httpAddress = "0.0.0.0";
-    httpPort = 3000;
     appName = "Code by TEC";
     database = {
       type = "postgres";
@@ -28,14 +24,18 @@
     lfs.enable = true;
     mailerPasswordFile = config.age.secrets.fastmail.path;
     settings = {
+      server = {
+        DOMAIN = "git.tecosaur.net";
+        ROOT_URL = "https://git.tecosaur.net";
+        HTTP_ADDRESS = "0.0.0.0";
+        HTTP_PORT = 3000;
+      };
       mailer = {
-        # Update when https://github.com/go-gitea/gitea/pull/18982 is merged.
         ENABLED = true;
-        MAILER_TYPE = "smtp";
+        PROTOCOL = "smtp+startls";
         FROM = "gitea@tecosaur.net";
         USER = "tec@tecosaur.net";
         HOST = "smtp.fastmail.com:587";
-        IS_TLS_ENABLED = false;
       };
       service = {
         REGISTER_EMAIL_CONFIRM = true;
