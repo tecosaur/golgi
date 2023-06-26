@@ -25,6 +25,7 @@
           common
           admin
           hardware-hetzner
+          hardened
           agenix.nixosModule
           forgejo
           caddy

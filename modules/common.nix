@@ -2,14 +2,7 @@
 
 {
   time.timeZone = "UTC";
-  services.openssh = {
-    enable = true;
-    # require public key authentication for better security
-    settings = {
-      PasswordAuthentication = false;
-      KbdInteractiveAuthentication = false;
-    };
-  };
+  services.openssh.enable = true;
   services.journald.extraConfig = ''
 SystemMaxUse=1G
 SystemMaxFileSize=100M
