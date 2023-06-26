@@ -17,6 +17,7 @@ MaxRetentionSec=2months
 
     extraOptions = ''
       experimental-features = nix-command flakes
+      min-free = ${toString (500 * 1024 * 1024)}
     '';
 
     gc = {
