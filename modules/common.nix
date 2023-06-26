@@ -9,7 +9,7 @@ SystemMaxFileSize=100M
 MaxFileSec=1day
 MaxRetentionSec=2months
 ''; # Limit journal accumulation
-  system.stateVersion = "22.05";
+  system.stateVersion = "23.05";
 
   nix = {
     # Currently needed for flake support, might not be needed in the future
