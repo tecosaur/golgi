@@ -11,6 +11,8 @@
     };
   };
 
+  nixConfig.sandbox = "relaxed";
+
   outputs = inputs@{ self, nixpkgs, flake-utils-plus, agenix, ... }:
     let
       modules = flake-utils-plus.lib.exportModules (
@@ -24,6 +26,7 @@
         golgi.modules = with modules; [
           common
           admin
+          zsh
           hardware-hetzner
           hardened
           agenix.nixosModule
