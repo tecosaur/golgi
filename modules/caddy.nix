@@ -36,7 +36,39 @@ In future, the following may be set up too:
     }
     (mkIf config.services.gitea.enable {
       virtualHosts."git.tecosaur.net".extraConfig =
-        "reverse_proxy localhost:${toString config.services.gitea.settings.server.HTTP_PORT}";
+      ''
+@not_tec {
+    not path /tec/*
+    not header Cookie *caddy_tec_redirect=true*
+}
+handle @not_tec {
+    reverse_proxy localhost:${toString config.services.gitea.settings.server.HTTP_PORT} {
+        @404 status 404
+        handle_response @404 {
+            header +Set-Cookie "caddy_tec_redirect=true; Max-Age=5"
+            redir * /tec{uri}
+        }
+    }
+}
+@tec_redirect {
+    path /tec/*
+    header Cookie *caddy_tec_redirect=true*
+}
+handle @tec_redirect {
+    reverse_proxy localhost:${toString config.services.gitea.settings.server.HTTP_PORT} {
+        @404 status 404
+        handle_response @404 {
+            header +Set-Cookie "caddy_tec_redirect=true; Max-Age=0"
+            handle_path /tec/* {
+                redir * {uri}
+            }
+        }
+    }
+}
+handle {
+    reverse_proxy localhost:${toString config.services.gitea.settings.server.HTTP_PORT}
+}
+'';
     })
   ];
 }
