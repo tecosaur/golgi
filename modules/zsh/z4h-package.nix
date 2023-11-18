@@ -40,18 +40,14 @@ fi
 . "''$Z4H"/z4h.zsh || return
 setopt rcs
 ' > "$ZDOTDIR"/.zshenv
-    echo "--zshenv--"
-    cat "$ZDOTDIR"/.zshenv
-  echo '
+    echo '
 zstyle ':z4h:' auto-update      'no'
 ${(lib.strings.concatMapStringsSep "\n" (plg: "z4h install " + plg) plugins)}
 z4h init
 ${(lib.strings.concatMapStringsSep "\n" (plg: "z4h load " + plg) plugins)}
 ' > "''$ZDOTDIR"/.zshrc
-    echo "--zshrc--"
-    cat "$ZDOTDIR"/.zshrc
-    echo "--running--"
     zsh -i -l -c 'exit'
+    sh -c 'printf "-z4h-compinit-impl\n"; sleep 1; printf "echo 2\n"' | zsh -l
   '';
 
   installPhase = ''
