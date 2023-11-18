@@ -88,6 +88,6 @@
     "L+ ${config.services.gitea.stateDir}/custom/public/img/favicon.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
     "L+ ${config.services.gitea.stateDir}/custom/public/img/favicon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
     "L+ ${config.services.gitea.stateDir}/custom/public/img/apple-touch-icon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/img/avatar_default.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.gitea.stateDir}/custom/public/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
   ];
 }
