@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
-    flake-utils-plus.url = github:ravensiris/flake-utils-plus?ref=ravensiris/fix-devshell-legacy-packages;
+    flake-utils-plus.url = github:gytis-ivaskevicius/flake-utils-plus;
     agenix.url = "github:ryantm/agenix";
     deploy-rs = {
       url = github:serokell/deploy-rs;
@@ -29,7 +29,7 @@
           zsh
           hardware-hetzner
           hardened
-          agenix.nixosModule
+          agenix.nixosModules.default
           forgejo
           caddy
         ];

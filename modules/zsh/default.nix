@@ -6,12 +6,12 @@
   users.defaultUserShell = pkgs.zsh;
   environment.shells = [ pkgs.zsh ];
   environment.systemPackages =
-    [ pkgs.exa pkgs.bat pkgs.fd pkgs.ripgrep pkgs.htop ];
+    [ pkgs.eza pkgs.bat pkgs.fd pkgs.ripgrep pkgs.htop ];
   programs.zsh = {
     enable = true;
     shellAliases = {
-      l = "exa --long --all --binary --modified --classify --group-directories-first";
-      tree = "exa --tree --binary --modified --classify --group-directories-first";
+      l = "eza --long --all --binary --modified --classify --group-directories-first";
+      tree = "eza --tree --binary --modified --classify --group-directories-first";
     };
     z4h = {
       enable = true;
