@@ -25,6 +25,7 @@ this includes the setup for this server, which is being constructed using:
 + NixOS (with flakes and deploy-rs)
 + Caddy (web server)
 + Forgejo (personal software forge)
++ Syncthing (cross-device folder sync tool)
 
 In future, the following may be set up too:
 + Dendrite/Conduit (Matrix servers)
