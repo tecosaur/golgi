@@ -36,7 +36,7 @@
         PROTOCOL = "smtp+startls";
         FROM = "forgejo@git.tecosaur.net";
         USER = "tec@tecosaur.net";
-        HOST = "smtp.fastmail.com:587";
+        SMTP_ADDR = "smtp.fastmail.com:587";
       };
       service = {
         REGISTER_EMAIL_CONFIRM = true;
