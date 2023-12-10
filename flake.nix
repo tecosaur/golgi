@@ -24,14 +24,15 @@
 
       hosts = {
         golgi.modules = with modules; [
-          common
           admin
-          zsh
-          hardware-hetzner
-          hardened
           agenix.nixosModules.default
-          forgejo
           caddy
+          common
+          forgejo
+          hardened
+          hardware-hetzner
+          syncthing
+          zsh
         ];
       };
 
