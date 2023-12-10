@@ -3,8 +3,8 @@
 with lib;
 
 {
-  networking.firewall.allowedTCPPorts = [ 22 80 443 ];
-  networking.firewall.allowedUDPPortRanges = [ { from=443; to=443; } ];
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedUDPPorts = [ 443 ];
 
   # If I end up wanting to add plugins, see:
   # https://mdleom.com/blog/2021/12/27/caddy-plugins-nixos/
