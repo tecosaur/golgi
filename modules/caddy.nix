@@ -36,7 +36,18 @@ In future, the following may be set up too:
     }
     (mkIf config.services.syncthing.enable {
       virtualHosts."syncthing.tecosaur.net".extraConfig =
-        ''reverse_proxy ${config.services.syncthing.guiAddress}'';
+        ''
+reverse_proxy ${config.services.syncthing.guiAddress} {
+    header_up Host {upstream_hostport}
+}
+'';
+    })
+    (mkIf config.services.syncthing.enable {
+      virtualHosts."public.tecosaur.net".extraConfig =
+        ''
+        root * ${config.services.syncthing.dataDir}/public/.build
+        file_server
+        '';
     })
     (mkIf config.services.gitea.enable {
       virtualHosts."git.tecosaur.net".extraConfig =

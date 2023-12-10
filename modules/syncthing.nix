@@ -17,6 +17,22 @@ with lib;
       devices = {
         "tranquillity" = { id = "VXWXMXK-MWENVPV-PV75JQH-45OP44F-QMPH645-JVWGJB2-C2GKHSV-QARV5A2"; };
       };
+      folders = {
+        "tec-public" = {
+          path = "~/public";
+          devices = [ "tranquillity" ];
+          type = "receiveonly";
+        };
+      };
     };
   };
+
+  users.users = (mkIf config.services.caddy.enable {
+    caddy = {
+      extraGroups = [ "syncthing" ];
+    };
+    syncthing = {
+        homeMode = "750";
+    };
+  });
 }
