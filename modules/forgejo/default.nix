@@ -82,12 +82,12 @@
 
   systemd.tmpfiles.rules = [
     "L+ ${config.services.gitea.stateDir}/custom/templates/home.tmpl - - - - ${./template-home.tmpl}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/img/tree-greentea-themed.svg - - - - ${./images/tree-greentea-themed.svg}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/img/logo.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/img/logo.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/img/favicon.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/img/favicon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/img/apple-touch-icon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
+    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/tree-greentea-themed.svg - - - - ${./images/tree-greentea-themed.svg}"
+    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/logo.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
+    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/logo.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/favicon.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
+    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/favicon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/apple-touch-icon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
   ];
 }
