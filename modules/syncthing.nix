@@ -16,11 +16,12 @@ with lib;
       };
       devices = {
         "tranquillity" = { id = "VXWXMXK-MWENVPV-PV75JQH-45OP44F-QMPH645-JVWGJB2-C2GKHSV-QARV5A2"; };
+        "phone"        = { id = "IMNPYY2-BZMILMV-PYUCUOS-UCO4WNJ-UBRW7EY-VESRBGA-XHTNZ6G-E34J5QC"; };
       };
       folders = {
         "tec-public" = {
           path = "~/public";
-          devices = [ "tranquillity" ];
+          devices = [ "tranquillity" "phone" ];
           type = "receiveonly";
         };
       };
