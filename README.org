@@ -1,3 +1,5 @@
+#+title: Golgi
+
 #+begin_quote
 The Golgi apparatus is responsible for transporting, modifying, and packaging
 proteins and lipids into vesicles for delivery to targeted destinations. It is
@@ -11,7 +13,9 @@ will be responsible for storing my work as a remote repository, transporting the
 work between local development machines, and as a web server to improve the ease
 of access of my work, both for myself and anybody curious.
 
-Let's hope it works well.
+Alternatively put, this is an experiment in [[https://bytes.zone/posts/clown-computing/][Clown Computing]] 🤡
+
+Let's hope it works well!
 
 * Setup
 
