@@ -10,8 +10,9 @@ with lib;
     {
       enable = true;
       package = pkgs.callPackage ../packages/caddy.nix {
-        plugins = [
-          "github.com/tecosaur/caddy-fs-git@3e897ed"
+        externalPlugins = [
+          {name = "caddy-fs-git"; repo = "github.com/tecosaur/caddy-fs-git";
+           version = "ef9d0ab232f4fe5d7e86312cbba45ff8afea98a1";}
         ];
       };
       virtualHosts."tecosaur.net".extraConfig = ''

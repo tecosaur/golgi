@@ -46,6 +46,6 @@ Deploying is simply a matter of entering the deploy nix shell =nix develop= and
 =deploy .#golgi.system=.
 
 In order for this image to be built, the sandbox will need to be set to =false= or
-=relaxed= (for the custom zsh and Caddy builds). This can  be done by adding the
-line ~sandbox = relaxed~ to =/etc/nix/nix.conf=. Just note that the nix-daemon will
-need to be restarted for this new setting to take full effect.
+=relaxed= (for the custom zsh build). This can be done by adding the line ~sandbox = relaxed~
+to =/etc/nix/nix.conf=. Just note that the nix-daemon will need to be restarted
+for this new setting to take full effect.
