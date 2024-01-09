@@ -6,14 +6,12 @@ with lib;
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   networking.firewall.allowedUDPPorts = [ 443 ];
 
-  # If I end up wanting to add plugins, see:
-  # https://mdleom.com/blog/2021/12/27/caddy-plugins-nixos/
   services.caddy = mkMerge [
     {
       enable = true;
       package = pkgs.callPackage ../packages/caddy.nix {
         plugins = [
-          "github.com/tecosaur/caddy-fs-git"
+          "github.com/tecosaur/caddy-fs-git@3e897ed"
         ];
       };
       virtualHosts."tecosaur.net".extraConfig = ''
