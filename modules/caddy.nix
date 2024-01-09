@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 with lib;
 
@@ -11,6 +11,11 @@ with lib;
   services.caddy = mkMerge [
     {
       enable = true;
+      package = pkgs.callPackage ../packages/caddy.nix {
+        plugins = [
+          "github.com/tecosaur/caddy-fs-git"
+        ];
+      };
       virtualHosts."tecosaur.net".extraConfig = ''
 respond "__        __   _
 \ \      / /__| | ___ ___  _ __ ___   ___
