@@ -38,6 +38,17 @@ In future, the following may be set up too:
 + Koel (music streaming)
 "
   '';
+    virtualHosts."blog.tecosaur.net".extraConfig = ''
+redir /tmio /tmio/
+handle_path /tmio/* {
+    file_server {
+        fs git /var/lib/gitea/repositories/tec/this-month-in-org.git html
+    }
+}
+handle {
+    respond 404
+}
+  '';
     }
     (mkIf config.services.syncthing.enable {
       virtualHosts."syncthing.tecosaur.net".extraConfig =
@@ -91,4 +102,10 @@ handle {
 '';
     })
   ];
+
+  users.users.caddy = {
+    extraGroups =
+      lib.optional config.services.syncthing.enable "syncthing" ++
+      lib.optional config.services.gitea.enable "gitea";
+  };
 }

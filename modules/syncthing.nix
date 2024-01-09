@@ -30,9 +30,6 @@ with lib;
   };
 
   users.users = (mkIf config.services.caddy.enable {
-    caddy = {
-      extraGroups = [ "syncthing" ];
-    };
     syncthing = {
         homeMode = "750";
     };
