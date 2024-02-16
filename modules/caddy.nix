@@ -2,7 +2,9 @@
 
 with lib;
 
-{
+let
+  domain = "tecosaur.net";
+in {
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   networking.firewall.allowedUDPPorts = [ 443 ];
 
@@ -15,7 +17,7 @@ with lib;
            version = "ef9d0ab232f4fe5d7e86312cbba45ff8afea98a1";}
         ];
       };
-      virtualHosts."tecosaur.net".extraConfig = ''
+      virtualHosts."${domain}".extraConfig = ''
 respond "__        __   _
 \ \      / /__| | ___ ___  _ __ ___   ___
  \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \
@@ -24,7 +26,7 @@ respond "__        __   _
 
 This is an in-progress replacement for tecosaur.com, done better.
 
-For now, you can find an increasing number of my projects on code.tecosaur.net,
+For now, you can find an increasing number of my projects on code.${domain},
 this includes the setup for this server, which is being constructed using:
 + NixOS (with flakes and deploy-rs)
 + Caddy (web server)
@@ -38,7 +40,7 @@ In future, the following may be set up too:
 + Koel (music streaming)
 "
   '';
-    virtualHosts."blog.tecosaur.net".extraConfig = ''
+    virtualHosts."blog.${domain}".extraConfig = ''
 redir /tmio /tmio/
 handle_path /tmio/* {
     file_server {
@@ -51,7 +53,7 @@ handle {
   '';
     }
     (mkIf config.services.syncthing.enable {
-      virtualHosts."syncthing.tecosaur.net".extraConfig =
+      virtualHosts."syncthing.${domain}".extraConfig =
         ''
 reverse_proxy ${config.services.syncthing.guiAddress} {
     header_up Host {upstream_hostport}
@@ -59,17 +61,17 @@ reverse_proxy ${config.services.syncthing.guiAddress} {
 '';
     })
     (mkIf config.services.syncthing.enable {
-      virtualHosts."public.tecosaur.net".extraConfig =
+      virtualHosts."public.${domain}".extraConfig =
         ''
         root * ${config.services.syncthing.dataDir}/public/.build
         file_server
         '';
     })
     (mkIf config.services.forgejo.enable {
-      virtualHosts."git.tecosaur.net".extraConfig = "redir https://code.tecosaur.net{uri} 301";
+      virtualHosts."git.tecosaur.net".extraConfig = "redir https://code.${domain}{uri} 301";
     })
     (mkIf config.services.forgejo.enable {
-      virtualHosts."code.tecosaur.net".extraConfig =
+      virtualHosts."code.${domain}".extraConfig =
       ''
 @not_tec {
     not path /tec/*
