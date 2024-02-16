@@ -31,15 +31,15 @@ in {
     settings = {
       DEFAULT.APP_NAME = "Code by TEC";
       server = {
-        DOMAIN = "git.tecosaur.net";
-        ROOT_URL = "https://git.tecosaur.net";
+        DOMAIN = "code.tecosaur.net";
+        ROOT_URL = "https://code.tecosaur.net";
         HTTP_ADDRESS = "0.0.0.0";
         HTTP_PORT = 3000;
       };
       mailer = {
         ENABLED = true;
         PROTOCOL = "smtp+startls";
-        FROM = "forgejo@git.tecosaur.net";
+        FROM = "forgejo@code.tecosaur.net";
         USER = "tec@tecosaur.net";
         SMTP_ADDR = "smtp.fastmail.com:587";
       };

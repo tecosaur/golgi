@@ -24,7 +24,7 @@ respond "__        __   _
 
 This is an in-progress replacement for tecosaur.com, done better.
 
-For now, you can find an increasing number of my projects on git.tecosaur.net,
+For now, you can find an increasing number of my projects on code.tecosaur.net,
 this includes the setup for this server, which is being constructed using:
 + NixOS (with flakes and deploy-rs)
 + Caddy (web server)
@@ -65,8 +65,11 @@ reverse_proxy ${config.services.syncthing.guiAddress} {
         file_server
         '';
     })
-      virtualHosts."git.tecosaur.net".extraConfig =
     (mkIf config.services.forgejo.enable {
+      virtualHosts."git.tecosaur.net".extraConfig = "redir https://code.tecosaur.net{uri} 301";
+    })
+    (mkIf config.services.forgejo.enable {
+      virtualHosts."code.tecosaur.net".extraConfig =
       ''
 @not_tec {
     not path /tec/*
