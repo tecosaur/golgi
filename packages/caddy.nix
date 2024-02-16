@@ -7,7 +7,7 @@
 , testers
 , installShellFiles
 , externalPlugins ? []
-, vendorHash ? "sha256-O0j6LwUQGa+NnotR2QpSIbNH+RI9y8mRrNoxbJqTw8k="
+, vendorHash ? "sha256-uLmOv8//ZlgF9fB91whmwJMmI/n+/MMnLW4E6j2qeSk="
 }:
 
 let
