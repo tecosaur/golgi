@@ -42,7 +42,7 @@ In future, the following may be set up too:
 redir /tmio /tmio/
 handle_path /tmio/* {
     file_server {
-        fs git /var/lib/gitea/repositories/tec/this-month-in-org.git html
+        fs git ${config.services.forgejo.stateDir}/repositories/tec/this-month-in-org.git html
     }
 }
 handle {
@@ -65,15 +65,15 @@ reverse_proxy ${config.services.syncthing.guiAddress} {
         file_server
         '';
     })
-    (mkIf config.services.gitea.enable {
       virtualHosts."git.tecosaur.net".extraConfig =
+    (mkIf config.services.forgejo.enable {
       ''
 @not_tec {
     not path /tec/*
     not header Cookie *caddy_tec_redirect=true*
 }
 handle @not_tec {
-    reverse_proxy localhost:${toString config.services.gitea.settings.server.HTTP_PORT} {
+    reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
         @404 status 404
         handle_response @404 {
             header +Set-Cookie "caddy_tec_redirect=true; Max-Age=5"
@@ -86,7 +86,7 @@ handle @not_tec {
     header Cookie *caddy_tec_redirect=true*
 }
 handle @tec_redirect {
-    reverse_proxy localhost:${toString config.services.gitea.settings.server.HTTP_PORT} {
+    reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
         @404 status 404
         handle_response @404 {
             header +Set-Cookie "caddy_tec_redirect=true; Max-Age=0"
@@ -97,7 +97,7 @@ handle @tec_redirect {
     }
 }
 handle {
-    reverse_proxy localhost:${toString config.services.gitea.settings.server.HTTP_PORT}
+    reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT}
 }
 '';
     })
@@ -105,7 +105,7 @@ handle {
 
   users.users.caddy = {
     extraGroups =
-      lib.optional config.services.syncthing.enable "syncthing" ++
-      lib.optional config.services.gitea.enable "gitea";
+      lib.optional config.services.syncthing.enable config.services.syncthing.user ++
+      lib.optional config.services.forgejo.enable   config.services.forgejo.user;
   };
 }

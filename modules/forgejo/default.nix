@@ -1,30 +1,35 @@
 { config, pkgs, ... }:
 
-{
-  age.secrets.postgres-gitea = {
-    owner = "gitea";
+let
+  forgejo-user = "git";
+in {
+  age.secrets.postgres = {
+    owner = forgejo-user;
     group = "users";
-    file = ../../secrets/postgres-gitea.age;
+    file = ../../secrets/postgres.age;
   };
 
   age.secrets.fastmail = {
-    owner = "gitea";
+    owner = forgejo-user;
     group = "users";
     file = ../../secrets/fastmail.age;
   };
 
-  services.gitea = {
-    package  = pkgs.forgejo;
+  services.forgejo = {
     enable = true;
-    user = "gitea";
-    appName = "Code by TEC";
+    user = forgejo-user;
+    group = forgejo-user;
+    stateDir = "/var/lib/forgejo";
     database = {
       type = "postgres";
-      passwordFile = config.age.secrets.postgres-gitea.path;
+      name = forgejo-user;
+      user = forgejo-user;
+      passwordFile = config.age.secrets.postgres.path;
     };
     lfs.enable = true;
     mailerPasswordFile = config.age.secrets.fastmail.path;
     settings = {
+      DEFAULT.APP_NAME = "Code by TEC";
       server = {
         DOMAIN = "git.tecosaur.net";
         ROOT_URL = "https://git.tecosaur.net";
@@ -56,6 +61,9 @@
       # "repository.mimetype_mapping" = {
       #   ".org" = "text/org";
       # };
+      # actions = {
+      #   ENABLED = true;
+      # };
       ui = {
         GRAPH_MAX_COMMIT_NUM = 200;
         DEFAULT_THEME = "auto";
@@ -70,24 +78,23 @@
     };
   };
 
-  # users.users.gitea.uid = 997;
-  # users.enforceIdUniqueness = false;
-  # users.users.git = {
-  #   uid = config.users.users.gitea.uid;
-  #   home = config.services.gitea.stateDir;
-  #   useDefaultShell = true;
-  #   group = "gitea";
-  #   isSystemUser = true;
-  # };
+  users.users.${forgejo-user} = {
+    home = config.services.forgejo.stateDir;
+    useDefaultShell = true;
+    group = forgejo-user;
+    isSystemUser = true;
+  };
+
+  users.groups.${forgejo-user} = {};
 
   systemd.tmpfiles.rules = [
-    "L+ ${config.services.gitea.stateDir}/custom/templates/home.tmpl - - - - ${./template-home.tmpl}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/tree-greentea-themed.svg - - - - ${./images/tree-greentea-themed.svg}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/logo.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/logo.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/favicon.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/favicon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/apple-touch-icon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.gitea.stateDir}/custom/public/assets/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
+    "L+ ${config.services.forgejo.stateDir}/custom/templates/home.tmpl - - - - ${./template-home.tmpl}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/tree-greentea-themed.svg - - - - ${./images/tree-greentea-themed.svg}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/logo.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/logo.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/favicon.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/favicon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/apple-touch-icon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
   ];
 }
