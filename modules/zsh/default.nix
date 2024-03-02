@@ -6,7 +6,7 @@
   users.defaultUserShell = pkgs.zsh;
   environment.shells = [ pkgs.zsh ];
   environment.systemPackages =
-    [ pkgs.eza pkgs.bat pkgs.fd pkgs.ripgrep pkgs.htop ];
+    [ pkgs.eza pkgs.bat pkgs.fd pkgs.ripgrep pkgs.btop ];
   programs.zsh = {
     enable = true;
     shellAliases = {
