@@ -56,7 +56,7 @@
         devShells.default = channels.nixpkgs.mkShell {
           name = "deploy";
           buildInputs = with channels.nixpkgs; [
-            nixUnstable
+            nixVersions.latest
             inputs.deploy-rs.defaultPackage.${system}
           ];
         };

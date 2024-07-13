@@ -13,7 +13,7 @@ MaxRetentionSec=2months
 
   nix = {
     # Currently needed for flake support, might not be needed in the future
-    package = pkgs.nixUnstable;
+    package = pkgs.nixVersions.latest;
 
     extraOptions = ''
       experimental-features = nix-command flakes
