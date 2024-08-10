@@ -27,7 +27,9 @@ in {
       passwordFile = config.age.secrets.postgres.path;
     };
     lfs.enable = true;
-    mailerPasswordFile = config.age.secrets.fastmail.path;
+    secrets = {
+      mailer.PASSWD = config.age.secrets.fastmail.path;
+    };
     settings = {
       DEFAULT.APP_NAME = "Code by TEC";
       server = {

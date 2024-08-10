@@ -7,7 +7,7 @@
 , testers
 , installShellFiles
 , externalPlugins ? []
-, vendorHash ? "sha256-uLmOv8//ZlgF9fB91whmwJMmI/n+/MMnLW4E6j2qeSk="
+, vendorHash ? "sha256-G7danupoc7BRyJJWzzyRP6CSOShA+oCLcUWMCnrLF2c="
 }:
 
 let
@@ -17,7 +17,7 @@ let
     builtins.map ({name, repo, version}: "${repo}@${version}") attrs;
 in buildGoModule rec {
   pname = "caddy";
-  version = "2.7.6";
+  version = "2.8.4";
 
   dist = fetchFromGitHub {
     owner = "caddyserver";
