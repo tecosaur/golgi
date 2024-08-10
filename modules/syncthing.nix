@@ -26,6 +26,12 @@ with lib;
           devices = [ "tranquillity" "demure" "phone" ];
           type = "receiveonly";
         };
+        "Zotero Storage" = {
+          id = "tec-zotero-storage";
+          path = "~/tec-zotero-storage";
+          devices = [ "tranquillity" "demure" "ict1634" ];
+          type = "receiveonly";
+        };
       };
     };
   };
