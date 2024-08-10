@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   forgejo-user = "git";
@@ -7,6 +7,20 @@ let
     sha256 = "sha256-14XqO1ZhhPS7VDBSzqW55kh6n5cFZGZmvRCtMEh8JPI=";
     stripRoot = false;
   };
+  catppuccinAutoThemes = pkgs.runCommand "catppuccin-auto-themes" { buildInputs = [ pkgs.coreutils ]; } ''
+    mkdir -p $out
+    for f in ${catppuccinThemes}/theme-catppuccin-latte-*.css; do
+      f_frappe="$(echo "$f" | sed 's/latte/frappe/')"
+      printf "@media (prefers-color-scheme: dark) {\n%s\n}\n\n@media (prefers-color-scheme: light){\n%s\n}" \
+        "$(cat "$f_frappe")" "$(cat "$f")" > "$out/$(basename "$f_frappe")"
+      f_macchiato="$(echo "$f" | sed 's/latte/macchiato/')"
+      printf "@media (prefers-color-scheme: dark) {\n%s\n}\n\n@media (prefers-color-scheme: light){\n%s\n}" \
+        "$(cat "$f_macchiato")" "$(cat "$f")" > "$out/$(basename "$f_macchiato")"
+      f_mocha="$(echo "$f" | sed 's/latte/mocha/')"
+      printf "@media (prefers-color-scheme: dark) {\n%s\n}\n\n@media (prefers-color-scheme: light){\n%s\n}" \
+        "$(cat "$f_mocha")" "$(cat "$f")" > "$out/$(basename "$f_mocha")"
+    done
+  '';
 in {
   age.secrets.postgres = {
     owner = forgejo-user;
@@ -93,7 +107,7 @@ in {
         in (builtins.concatStringsSep "," (
           builtinThemes
           ++ (map (name: lib.removePrefix "theme-" (lib.removeSuffix ".css" name)) (
-            builtins.attrNames (builtins.readDir catppuccinThemes)
+            builtins.attrNames (builtins.readDir catppuccinAutoThemes)
           ))
         ));
       };
@@ -124,6 +138,6 @@ in {
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/favicon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/apple-touch-icon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
-    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/css - - - - ${catppuccinThemes}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/css - - - - ${catppuccinAutoThemes}"
   ];
 }
