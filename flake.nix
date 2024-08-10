@@ -31,6 +31,7 @@
           forgejo
           hardened
           hardware-hetzner
+          headscale
           syncthing
           zsh
         ];
