@@ -2,6 +2,11 @@
 
 let
   forgejo-user = "git";
+  catppuccinThemes = pkgs.fetchzip {
+    url = "https://github.com/catppuccin/gitea/releases/download/v0.4.1/catppuccin-gitea.tar.gz";
+    sha256 = "sha256-14XqO1ZhhPS7VDBSzqW55kh6n5cFZGZmvRCtMEh8JPI=";
+    stripRoot = false;
+  };
 in {
   age.secrets.postgres = {
     owner = forgejo-user;
@@ -68,8 +73,29 @@ in {
       # };
       ui = {
         GRAPH_MAX_COMMIT_NUM = 200;
-        DEFAULT_THEME = "auto";
         THEME_COLOR_META_TAG = "#609926";
+        DEFAULT_THEME = "gitea-auto";
+        THEMES = let
+          builtinThemes = [
+              "forgejo-auto"
+              "forgejo-light"
+              "forgejo-dark"
+              "gitea-auto"
+              "gitea-light"
+              "gitea-dark"
+              "forgejo-auto-deuteranopia-protanopia"
+              "forgejo-light-deuteranopia-protanopia"
+              "forgejo-dark-deuteranopia-protanopia"
+              "forgejo-auto-tritanopia"
+              "forgejo-light-tritanopia"
+              "forgejo-dark-tritanopia"
+            ];
+        in (builtins.concatStringsSep "," (
+          builtinThemes
+          ++ (map (name: lib.removePrefix "theme-" (lib.removeSuffix ".css" name)) (
+            builtins.attrNames (builtins.readDir catppuccinThemes)
+          ))
+        ));
       };
       "ui.meta" = {
         DESCRIPTION = "The personal forge of TEC";
@@ -98,5 +124,6 @@ in {
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/favicon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/apple-touch-icon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/css - - - - ${catppuccinThemes}"
   ];
 }
