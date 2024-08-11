@@ -2,7 +2,11 @@
 
 with lib;
 
-{
+let
+  domain = config.globals.domain;
+  syncthing-domain = "syncthing.${domain}";
+  public-domain = "public.${domain}";
+in {
   services.syncthing = {
     enable = true;
     dataDir = "/var/lib/syncthing";
@@ -41,4 +45,16 @@ with lib;
         homeMode = "750";
     };
   });
+
+  services.caddy.virtualHosts."${syncthing-domain}".extraConfig =
+    ''
+    reverse_proxy ${config.services.syncthing.guiAddress} {
+        header_up Host {upstream_hostport}
+    }
+    '';
+  services.caddy.virtualHosts."${public-domain}".extraConfig =
+    ''
+    root * ${config.services.syncthing.dataDir}/public/.build
+    file_server
+    '';
 }

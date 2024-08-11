@@ -18,6 +18,18 @@
       modules = flake-utils-plus.lib.exportModules (
         nixpkgs.lib.mapAttrsToList (name: value: ./modules/${name}) (builtins.readDir ./modules)
       );
+      globalConfig = { config, lib, ... }: {
+        options.globals = {
+          domain = lib.mkOption {
+            type = lib.types.str;
+            default = "example.com";
+            description = "Global domain for the server";
+          };
+        };
+        config.globals = {
+          domain = "tecosaur.net";
+        };
+      };
     in
     flake-utils-plus.lib.mkFlake {
       inherit self inputs modules;
@@ -29,6 +41,7 @@
           caddy
           common
           forgejo
+          globalConfig
           hardened
           hardware-hetzner
           headscale
@@ -39,7 +52,7 @@
 
       deploy.nodes = {
         golgi = {
-          hostname = "tecosaur.net";
+          hostname = self.nixosConfigurations.golgi.config.globals.domain;
           fastConnection = false;
           profiles = {
             system = {

@@ -2,6 +2,9 @@
 
 let
   forgejo-user = "git";
+  forgejo-domain = "code.${config.globals.domain}";
+  blog-domain = "blog.${config.globals.domain}";
+  # theming
   catppuccinThemes = pkgs.fetchzip {
     url = "https://github.com/catppuccin/gitea/releases/download/v0.4.1/catppuccin-gitea.tar.gz";
     sha256 = "sha256-14XqO1ZhhPS7VDBSzqW55kh6n5cFZGZmvRCtMEh8JPI=";
@@ -52,15 +55,15 @@ in {
     settings = {
       DEFAULT.APP_NAME = "Code by TEC";
       server = {
-        DOMAIN = "code.tecosaur.net";
-        ROOT_URL = "https://code.tecosaur.net";
+        DOMAIN = "${forgejo-domain}";
+        ROOT_URL = "https://${forgejo-domain}";
         HTTP_ADDRESS = "0.0.0.0";
         HTTP_PORT = 3000;
       };
       mailer = {
         ENABLED = true;
         PROTOCOL = "smtp+startls";
-        FROM = "forgejo@code.tecosaur.net";
+        FROM = "forgejo@${forgejo-domain}";
         USER = "tec@tecosaur.net";
         SMTP_ADDR = "smtp.fastmail.com:587";
       };
@@ -91,19 +94,19 @@ in {
         DEFAULT_THEME = "gitea-auto";
         THEMES = let
           builtinThemes = [
-              "forgejo-auto"
-              "forgejo-light"
-              "forgejo-dark"
-              "gitea-auto"
-              "gitea-light"
-              "gitea-dark"
-              "forgejo-auto-deuteranopia-protanopia"
-              "forgejo-light-deuteranopia-protanopia"
-              "forgejo-dark-deuteranopia-protanopia"
-              "forgejo-auto-tritanopia"
-              "forgejo-light-tritanopia"
-              "forgejo-dark-tritanopia"
-            ];
+            "forgejo-auto"
+            "forgejo-light"
+            "forgejo-dark"
+            "gitea-auto"
+            "gitea-light"
+            "gitea-dark"
+            "forgejo-auto-deuteranopia-protanopia"
+            "forgejo-light-deuteranopia-protanopia"
+            "forgejo-dark-deuteranopia-protanopia"
+            "forgejo-auto-tritanopia"
+            "forgejo-light-tritanopia"
+            "forgejo-dark-tritanopia"
+          ];
         in (builtins.concatStringsSep "," (
           builtinThemes
           ++ (map (name: lib.removePrefix "theme-" (lib.removeSuffix ".css" name)) (
@@ -140,4 +143,55 @@ in {
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/css - - - - ${catppuccinAutoThemes}"
   ];
+
+  services.caddy.virtualHosts."git.${config.globals.domain}".extraConfig =
+    "redir https://${forgejo-domain}{uri} 301";
+
+  services.caddy.virtualHosts."${forgejo-domain}".extraConfig =
+    ''
+    @not_tec {
+        not path /tec/*
+        not header Cookie *caddy_tec_redirect=true*
+    }
+    handle @not_tec {
+        reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
+            @404 status 404
+            handle_response @404 {
+                header +Set-Cookie "caddy_tec_redirect=true; Max-Age=5"
+                redir * /tec{uri}
+            }
+        }
+    }
+    @tec_redirect {
+        path /tec/*
+        header Cookie *caddy_tec_redirect=true*
+    }
+    handle @tec_redirect {
+        reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
+            @404 status 404
+            handle_response @404 {
+                header +Set-Cookie "caddy_tec_redirect=true; Max-Age=0"
+                handle_path /tec/* {
+                    redir * {uri}
+                }
+            }
+        }
+    }
+    handle {
+        reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT}
+    }
+    '';
+
+  services.caddy.virtualHosts."${blog-domain}".extraConfig =
+    ''
+    redir /tmio /tmio/
+    handle_path /tmio/* {
+        file_server {
+            fs git ${config.services.forgejo.stateDir}/repositories/tec/this-month-in-org.git html
+        }
+    }
+    handle {
+        respond 404
+    }
+    '';
 }
