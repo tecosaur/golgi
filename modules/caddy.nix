@@ -37,6 +37,8 @@ In future, the following may be set up too:
 + Koel (music streaming)
 "
   '';
+      virtualHosts."status.${config.globals.domain}".extraConfig =
+        "redir https://stats.uptimerobot.com/ah8wBH3PYy 302";
   };
 
   users.users.caddy = {
