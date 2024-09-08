@@ -4,6 +4,6 @@ let
   systems = [ base golgi ];
 in
 {
-  "postgres-gitea.age".publicKeys = systems;
+  "postgres.age".publicKeys = systems;
   "fastmail.age".publicKeys = systems;
 }
