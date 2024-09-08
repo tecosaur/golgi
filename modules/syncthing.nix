@@ -37,6 +37,12 @@ in {
           devices = [ "tranquillity" "demure" "ict1634" ];
           type = "receiveonly";
         };
+        "Fonts" = {
+          id = "tec-fonts";
+          path = "~/tec-fonts";
+          devices = [ "tranquillity" "demure" "ict1634" ];
+          type = "receiveonly";
+        };
       };
     };
   };
