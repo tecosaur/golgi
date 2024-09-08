@@ -6,6 +6,7 @@ let
   domain = config.globals.domain;
   syncthing-domain = "syncthing.${domain}";
   public-domain = "public.${domain}";
+  my-computers = [ "tranquillity" "demure" "ict1634" ];
 in {
   services.syncthing = {
     enable = true;
@@ -34,13 +35,13 @@ in {
         "Zotero Storage" = {
           id = "tec-zotero-storage";
           path = "~/tec-zotero-storage";
-          devices = [ "tranquillity" "demure" "ict1634" ];
+          devices = my-computers;
           type = "receiveonly";
         };
         "Fonts" = {
           id = "tec-fonts";
           path = "~/tec-fonts";
-          devices = [ "tranquillity" "demure" "ict1634" ];
+          devices = my-computers;
           type = "receiveonly";
         };
       };
