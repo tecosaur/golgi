@@ -25,7 +25,8 @@ in {
         "ict1634"      = { id = "EG33JRV-Y6DUTXW-CNLYOLZ-H5A6SLS-I6INZIS-VISOZK3-2JV62MV-24K45A7"; };
       };
       folders = {
-        "tec-public" = {
+        "Public" = {
+          id = "tec-public";
           path = "~/public";
           devices = [ "tranquillity" "demure" "phone" ];
           type = "receiveonly";
