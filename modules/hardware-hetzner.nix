@@ -44,7 +44,7 @@
   fileSystems."/swap" = {
     device = "/dev/disk/by-label/NIXOS";
     fsType = "btrfs";
-    options = [ "subvol=@swap" "noatime" "compress=zstd" ];
+    options = [ "subvol=@swap" "noatime" ];
   };
 
   systemd.services = {
