@@ -8,6 +8,7 @@
       availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sd_mod" "sr_mod" ];
       kernelModules = [ ];
     };
+    kernel.sysctl."vm.swappiness" = 60;
     kernelParams = [
       "console=tty1"
       "console=ttyS0,115200"
