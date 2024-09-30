@@ -142,6 +142,7 @@ in {
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/apple-touch-icon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/css - - - - ${catppuccinAutoThemes}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/robots.txt - - - - ${./robots.txt}"
   ];
 
   services.caddy.virtualHosts."git.${config.globals.domain}".extraConfig =
