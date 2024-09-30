@@ -9,7 +9,7 @@ in {
       port = port;
       settings = {
         server_url = "https://${headscale-domain}:${toString port}";
-        dns_config.base_domain = headscale-domain;
+        dns.base_domain = "clients.${headscale-domain}";
         ip_prefixes = [ "fd7a:115c:a1e0::/48" "100.64.0.0/10" ];
       };
   };
