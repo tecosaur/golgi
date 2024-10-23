@@ -26,6 +26,11 @@ in {
       group = "users";
       file = ../secrets/postgres-authelia.age;
     };
+    authelia-lldap-admin-password = {
+      owner = authelia-user;
+      group = "users";
+      file = ../secrets/lldap-admin-password.age;
+    };
   };
 
   services.authelia.instances.main = {
@@ -38,7 +43,13 @@ in {
     };
     settings = {
       theme = "auto";
-      authentication_backend.file.path = "/etc/authelia/users_database.yml";
+      authentication_backend.ldap = {
+        address = "ldap://localhost:${toString config.services.lldap.settings.ldap_port}";
+        base_dn = config.services.lldap.settings.ldap_base_dn;
+        users_filter = "(&({username_attribute}={input})(objectClass=person))";
+        groups_filter = "(member={dn})";
+        user = "uid=${config.services.lldap.settings.ldap_user_dn},ou=people,${config.services.lldap.settings.ldap_base_dn}";
+      };
       server.address = "tcp://:${toString authelia-port}";
       session = {
         cookies = [
@@ -73,25 +84,9 @@ in {
     };
     environmentVariables = {
       AUTHELIA_STORAGE_POSTGRES_PASSWORD_FILE = config.age.secrets.postgres-authelia.path;
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE = config.age.secrets.authelia-lldap-admin-password.path;
       AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE = config.age.secrets.authelia-smtp.path;
     };
-  };
-
-  environment.etc."authelia/users_database.yml" = {
-    mode = "0400";
-    user = authelia-user;
-    text = ''
-      users:
-        tec:
-          disabled: false
-          displayname: tec
-          # password of password
-          password: $argon2id$v=19$m=65536,t=3,p=4$2ohUAfh9yetl+utr4tLcCQ$AsXx0VlwjvNnCsa70u4HKZvFkC8Gwajr2pHGKcND/xs
-          email: tec@tecosaur.net
-          groups:
-            - admin
-            - dev
-    '';
   };
 
   services.postgresql = {
@@ -107,6 +102,7 @@ in {
   systemd.services."authelia-main" = let
     dependencies = [
       "postgresql.service"
+      "lldap.service"
     ];
   in {
     after = dependencies;
