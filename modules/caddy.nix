@@ -26,9 +26,11 @@ This is an in-progress replacement for tecosaur.com, done better.
 For now, you can find an increasing number of my projects on code.${config.globals.domain},
 this includes the setup for this server, which is being constructed using:
 + NixOS (with flakes and deploy-rs)
++ Authelia and LLDAP (for authentication)
 + Caddy (web server)
 + Forgejo (personal software forge)
 + Syncthing (cross-device folder sync tool)
++ Headscale (virtual network)
 
 In future, the following may be set up too:
 + Dendrite/Conduit (Matrix servers)
