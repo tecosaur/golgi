@@ -16,8 +16,14 @@ in {
     overrideFolders = true;
     settings = {
       gui = {
-        user = "tec";
-        password = "$2a$10$yXPBFhobbJGT3FRNEWmdRO891ZLTF247XQ2fYmJK8dsqzIWLKOPKC";
+        authMode = "ldap";
+      };
+      ldap = {
+        address = "localhost:${toString config.services.lldap.settings.ldap_port}";
+        bindDN = "uid=%s,ou=people,${config.services.lldap.settings.ldap_base_dn}";
+        transport = "nontls";
+        searchBaseDN = "ou=people,${config.services.lldap.settings.ldap_base_dn}";
+        searchFilter = "(memberof=cn=syncthing,ou=groups,${config.services.lldap.settings.ldap_base_dn})";
       };
       devices = {
         "tranquillity" = { id = "VXWXMXK-MWENVPV-PV75JQH-45OP44F-QMPH645-JVWGJB2-C2GKHSV-QARV5A2"; };
