@@ -1,0 +1,20 @@
+#+title:  Authentication
+
+This is a lightweight authentication suite from two well-regarded tools:
+
++ [[https://www.authelia.com/][Authelia]] sits in front of services with OpenID connect
++ [[https://github.com/lldap/lldap][LLDAP]] is a lightweight LDAP user server with a basic user/groups UI
+
+Credit is owed to PopeRigby, who has done some [[https://codeberg.org/PopeRigby/nixos/src/branch/main/systems/x86_64-linux/haddock/services/auth][wonderful work]] setting up these
+two components in NixOS. His configuration was instrumental in getting this
+working.
+
+* Adding clients
+
+It would be nice to have a random client ID, but that's a bit difficult to work
+out. We will be taking the password seriously though, it's not quite as nice but
+it should be sufficient.
+
+#+begin_src shell
+nix run 'nixpkgs#authelia' -- crypto hash generate argon2 --random --random.length 72 --random.charset rfc3986
+#+end_src

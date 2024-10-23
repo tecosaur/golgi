@@ -8,17 +8,17 @@ in {
     lldap-jwt = {
       owner = lldap-user;
       group = "users";
-      file = ../secrets/lldap-jwt.age;
+      file = ../../secrets/lldap-jwt.age;
     };
     lldap-key-seed = {
       owner = lldap-user;
       group = "users";
-      file = ../secrets/lldap-key-seed.age;
+      file = ../../secrets/lldap-key-seed.age;
     };
     lldap-admin-password = {
       owner = lldap-user;
       group = "users";
-      file = ../secrets/lldap-admin-password.age;
+      file = ../../secrets/lldap-admin-password.age;
     };
   };
 

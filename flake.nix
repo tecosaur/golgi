@@ -38,7 +38,7 @@
         golgi.modules = with modules; [
           admin
           agenix.nixosModules.default
-          authelia
+          auth
           caddy
           common
           forgejo
@@ -46,7 +46,6 @@
           hardened
           hardware-hetzner
           headscale
-          lldap
           syncthing
           zsh
         ];

@@ -9,27 +9,27 @@ in {
     authelia-storage = {
       owner = authelia-user;
       group = "users";
-      file = ../secrets/authelia-storage.age;
+      file = ../../secrets/authelia-storage.age;
     };
     authelia-jwt = {
       owner = authelia-user;
       group = "users";
-      file = ../secrets/authelia-jwt.age;
+      file = ../../secrets/authelia-jwt.age;
     };
     authelia-smtp = {
       owner = authelia-user;
       group = "users";
-      file = ../secrets/fastmail.age;
+      file = ../../secrets/fastmail.age;
     };
     postgres-authelia = {
       owner = authelia-user;
       group = "users";
-      file = ../secrets/postgres-authelia.age;
+      file = ../../secrets/postgres-authelia.age;
     };
     authelia-lldap-admin-password = {
       owner = authelia-user;
       group = "users";
-      file = ../secrets/lldap-admin-password.age;
+      file = ../../secrets/lldap-admin-password.age;
     };
   };
 
@@ -78,6 +78,21 @@ in {
         username = "tec@tecosaur.net";
         sender = "Authelia <auth@tecosaur.net>";
       };
+      # identity_providers.oidc = {
+      #   cors = {
+      #     endpoints = [ "token" ];
+      #     allowed_origins_from_client_redirect_uris = true;
+      #   };
+      #   authorization_policies.default = {
+      #     default_policy = "one_factor";
+      #     rules = [
+      #       {
+      #         policy = "deny";
+      #         subject = "group:lldap_strict_readonly";
+      #       }
+      #     ];
+      #   };
+      # };
       # Necessary for Caddy integration
       # See https://www.authelia.com/integration/proxies/caddy/#implementation
       server.endpoints.authz.forward-auth.implementation = "ForwardAuth";
