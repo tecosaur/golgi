@@ -46,6 +46,7 @@
           hardened
           hardware-hetzner
           headscale
+          lldap
           syncthing
           zsh
         ];
