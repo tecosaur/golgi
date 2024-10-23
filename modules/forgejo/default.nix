@@ -25,10 +25,10 @@ let
     done
   '';
 in {
-  age.secrets.postgres = {
+  age.secrets.postgres-forgejo = {
     owner = forgejo-user;
     group = "users";
-    file = ../../secrets/postgres.age;
+    file = ../../secrets/postgres-forgejo.age;
   };
 
   age.secrets.fastmail = {
@@ -46,7 +46,7 @@ in {
       type = "postgres";
       name = forgejo-user;
       user = forgejo-user;
-      passwordFile = config.age.secrets.postgres.path;
+      passwordFile = config.age.secrets.postgres-forgejo.path;
     };
     lfs.enable = true;
     secrets = {
