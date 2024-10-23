@@ -68,8 +68,21 @@ in {
         SMTP_ADDR = "smtp.fastmail.com:587";
       };
       service = {
-        REGISTER_EMAIL_CONFIRM = true;
-        DISABLE_REGISTRATION = true;
+        REGISTER_EMAIL_CONFIRM = false;
+        DISABLE_REGISTRATION = false;
+        ALLOW_ONLY_EXTERNAL_REGISTRATION = true;
+        SHOW_REGISTRATION_BUTTON = false;
+      };
+      openid = {
+        ENABLE_OPENID_SIGNIN = false;
+        ENABLE_OPENID_SIGNUP = false;
+        WHITELISTED_URIS = "auth.tecosaur.net";
+      };
+      oauth2_client = {
+        ENABLE_AUTO_REGISTRATION = true;
+        ACCOUNT_LINKING = "auto";
+        OPENID_CONNECT_SCOPES = "openid email profile groups";
+        USERNAME = "userid";
       };
       indexer = {
         REPO_INDEXER_ENABLED = true;
@@ -145,6 +158,34 @@ in {
     "L+ ${config.services.forgejo.stateDir}/custom/public/robots.txt - - - - ${./robots.txt}"
   ];
 
+  services.authelia.instances.main.settings = {
+    identity_providers.oidc = {
+      authorization_policies.forgejo = {
+        default_policy = "one_factor";
+        rules = [
+          {
+            policy = "two_factor";
+            subject = [ [ "group:admin" "group:forge" ] ];
+          }
+        ];
+      };
+      clients = [
+        {
+          client_id = "forgejo";
+          client_name = "Forgejo";
+          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$fRdkE7fHqAPkVQYXn1Zksw$O6WQ4fsNoN/0vzOK4hT1oreVPyFoVcK2hOIFx3axe/A";
+          authorization_policy = "forgejo";
+          public = false;
+          consent_mode = "implicit";
+          redirect_uris = [ "https://${forgejo-domain}/user/oauth2/authelia/callback" ];
+          scopes = [ "openid" "email" "profile" "groups" ];
+          userinfo_signed_response_alg = "none";
+          token_endpoint_auth_method = "client_secret_basic";
+        }
+      ];
+    };
+  };
+
   services.caddy.virtualHosts."git.${config.globals.domain}".extraConfig =
     "redir https://${forgejo-domain}{uri} 301";
 
@@ -155,6 +196,7 @@ in {
         not header Cookie *caddy_tec_redirect=true*
     }
     handle @not_tec {
+        rewrite /user/login /user/oauth2/authelia
         reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
             @404 status 404
             handle_response @404 {
@@ -179,6 +221,7 @@ in {
         }
     }
     handle {
+        rewrite /user/login /user/oauth2/authelia
         reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT}
     }
     '';
