@@ -38,6 +38,7 @@
         golgi.modules = with modules; [
           admin
           agenix.nixosModules.default
+          authelia
           caddy
           common
           forgejo

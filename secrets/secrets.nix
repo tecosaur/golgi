@@ -4,6 +4,9 @@ let
   systems = [ base golgi ];
 in
 {
+  "postgres-authelia.age".publicKeys = systems;
   "postgres-forgejo.age".publicKeys = systems;
   "fastmail.age".publicKeys = systems;
+  "authelia-storage.age".publicKeys = systems;
+  "authelia-jwt.age".publicKeys = systems;
 }
