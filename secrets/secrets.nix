@@ -5,6 +5,9 @@ let
 in
 {
   "authelia-jwt.age".publicKeys = systems;
+  "authelia-oidc-hmac.age".publicKeys = systems;
+  "authelia-oidc-issuer.pem.age".publicKeys = systems;
+  "authelia-session.age".publicKeys = systems;
   "authelia-storage.age".publicKeys = systems;
   "fastmail.age".publicKeys = systems;
   "lldap-admin-password.age".publicKeys = systems;
