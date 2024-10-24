@@ -39,6 +39,7 @@ in {
 
   services.forgejo = {
     enable = true;
+    package = pkgs.forgejo;
     user = forgejo-user;
     group = forgejo-user;
     stateDir = "/var/lib/forgejo";
