@@ -9,8 +9,7 @@
     PasswordAuthentication = false;
     KbdInteractiveAuthentication = false;
   };
-  # Use when PasswordAuthentication/KbdInteractiveAuthentication is enabled
-  # services.fail2ban.enable = true;
+  services.fail2ban.enable = true;
 
   # Disable `useradd` and `passwd`
   users.mutableUsers = false;
