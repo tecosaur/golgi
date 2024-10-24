@@ -25,9 +25,15 @@
             default = "example.com";
             description = "Global domain for the server";
           };
+          cloudflare-bypass = lib.mkOption {
+            type = lib.types.str;
+            default = config.globals.domain;
+            description = "Domain to use for bypassing Cloudflare (e.g. for SSH).";
+          };
         };
         config.globals = {
           domain = "tecosaur.net";
+          cloudflare-bypass = "ssh.${config.globals.domain}";
         };
       };
     in
@@ -53,7 +59,7 @@
 
       deploy.nodes = {
         golgi = {
-          hostname = self.nixosConfigurations.golgi.config.globals.domain;
+          hostname = "${self.nixosConfigurations.golgi.config.globals.cloudflare-bypass}";
           fastConnection = false;
           profiles = {
             system = {

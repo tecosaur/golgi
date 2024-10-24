@@ -131,6 +131,9 @@ in {
       "ui.meta" = {
         DESCRIPTION = "The personal forge of TEC";
       };
+      server = {
+        SSH_DOMAIN = "${config.globals.cloudflare-bypass}";
+      };
       federation = {
         ENABLED = true;
       };
