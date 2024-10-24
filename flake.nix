@@ -52,6 +52,7 @@
           hardened
           hardware-hetzner
           headscale
+          pastebin
           syncthing
           zsh
         ];

@@ -31,6 +31,7 @@ this includes the setup for this server, which is being constructed using:
 + Forgejo (personal software forge)
 + Syncthing (cross-device folder sync tool)
 + Headscale (virtual network)
++ MicroBin (personal pastebin + url shortener)
 
 In future, the following may be set up too:
 + Dendrite/Conduit (Matrix servers)
