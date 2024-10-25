@@ -18,7 +18,7 @@ in {
         dns.base_domain = "clients.${headscale-domain}";
         ip_prefixes = [ "fd7a:115c:a1e0::/48" "100.64.0.0/10" ];
         oidc = {
-          issuer = "https://auth.${config.globals.domain}";
+          issuer = "https://${config.globals.auth-domain}";
           client_id = "headscale";
           client_secret_path = config.age.secrets.headscale-oidc.path;
           extra_params = {

@@ -77,7 +77,7 @@ in {
       openid = {
         ENABLE_OPENID_SIGNIN = false;
         ENABLE_OPENID_SIGNUP = false;
-        WHITELISTED_URIS = "auth.tecosaur.net";
+        WHITELISTED_URIS = config.globals.auth-domain;
       };
       oauth2_client = {
         ENABLE_AUTO_REGISTRATION = true;

@@ -1,7 +1,7 @@
 { config, lib, ... }:
 
 let
-  auth-domain = "auth.${config.globals.domain}";
+  auth-domain = config.globals.auth-domain;
   authelia-user = "authelia";
   authelia-port = 9091;
 in {
