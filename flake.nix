@@ -60,6 +60,7 @@
           headscale
           pastebin
           syncthing
+          uptime
           zsh
         ];
       };
