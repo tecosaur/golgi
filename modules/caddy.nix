@@ -12,7 +12,10 @@ with lib;
         externalPlugins = [
           {name = "caddy-fs-git"; repo = "github.com/tecosaur/caddy-fs-git";
            version = "ef9d0ab232f4fe5d7e86312cbba45ff8afea98a1";}
+          {name = "replace-response"; repo = "github.com/caddyserver/replace-response";
+           version = "f92bc7d0c29d0588f91f29ecb38a0c4ddf3f85f8";}
         ];
+        vendorHash = "sha256-SFepy3A/Dxqnke78lwzxGmtctkUpgnDU3uVhCxLQAQ0=";
       };
       virtualHosts."${config.globals.domain}".extraConfig = ''
 respond "__        __   _

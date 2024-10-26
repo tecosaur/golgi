@@ -29,6 +29,38 @@ let
         `<a href="https://${paste-domain}/"> Go Home</a>` ""
     }
     '';
+  caddy-settings-filter =
+    ''
+    replace / {
+        "﹖" "?"
+        re `<br>\s*<div id="settings">` <<HTML
+          <details>
+            <summary style="padding: 4px 10px;">Settings</summary>
+            <div id="settings">
+            $1
+        HTML
+        re `</div>\s*<label>Content</label>` <<HTML
+            </div>
+          </details>
+          <label>Content</label>
+        HTML
+    }
+    '';
+  caddy-nav-filter =
+    ''
+    @nav_page path / /list /guide /admin /auth_admin /upload/* /p/* /qr/*
+    replace @nav_page {
+        re `<div id="nav" style="margin-bottom: 1rem;">\s*(<b[\S\s]+?<\/b>)\s*([\S\s]+?)<\/div>` <<HTML
+          <div id="nav" style="margin-bottom: 1rem; float: left;">
+            $1
+          </div>
+          <div style="float: right;">
+            $2
+          </div>
+          <br>
+        HTML
+    }
+    '';
 in {
   services.microbin = {
     enable = true;
@@ -65,6 +97,8 @@ in {
     }
     route * {
         import auth
+        ${caddy-settings-filter}
+        ${caddy-nav-filter}
         reverse_proxy :${toString config.services.microbin.settings.MICROBIN_PORT} {
             header_up Accept-Encoding identity
         }
