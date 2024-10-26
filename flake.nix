@@ -48,18 +48,15 @@
 
       hosts = {
         golgi.modules = with modules; [
-          admin
           agenix.nixosModules.default
           auth
           caddy
-          common
           forgejo
           globalConfig
-          hardened
-          hardware-hetzner
           headscale
           pastebin
           syncthing
+          system
           uptime
           zsh
         ];

@@ -1,0 +1,3 @@
+#+title: System basics
+
+These modules configure the operating system, sorting out the basics.
