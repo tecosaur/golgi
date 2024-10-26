@@ -2,6 +2,7 @@
 
 let
   paste-domain = "pastes.${config.globals.domain}";
+  short-domain = "p.${config.globals.domain}";
   page-name = "μPaste";
 in
 let
@@ -81,6 +82,7 @@ in {
       MICROBIN_PRIVATE = false; # They're all essentially private
       MICROBIN_PUBLIC_PATH = "https://${paste-domain}";
       MICROBIN_QR = true;
+      MICROBIN_SHORT_PATH = "https://${short-domain}";
       MICROBIN_SHOW_READ_STATS = true;
       MICROBIN_TITLE = "${page-name}";
     };
@@ -107,6 +109,22 @@ in {
         reverse_proxy :${toString config.services.microbin.settings.MICROBIN_PORT} {
             header_up Accept-Encoding identity
         }
+    }
+    '';
+  services.caddy.virtualHosts."${short-domain}".extraConfig =
+    ''
+    route /p/* {
+        ${caddy-unauth-filter}
+        ${caddy-nav-filter}
+        reverse_proxy :${toString config.services.microbin.settings.MICROBIN_PORT} {
+            header_up Accept-Encoding identity
+        }
+    }
+    route /u/* {
+        reverse_proxy :${toString config.services.microbin.settings.MICROBIN_PORT}
+    }
+    route * {
+        redir https://${paste-domain}{uri}
     }
     '';
 
