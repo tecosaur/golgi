@@ -17,7 +17,7 @@ with lib;
         ];
         vendorHash = "sha256-SFepy3A/Dxqnke78lwzxGmtctkUpgnDU3uVhCxLQAQ0=";
       };
-      virtualHosts."${config.globals.domain}".extraConfig = ''
+      virtualHosts."${config.site.domain}".extraConfig = ''
 respond "__        __   _
 \ \      / /__| | ___ ___  _ __ ___   ___
  \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \
@@ -26,15 +26,11 @@ respond "__        __   _
 
 This is an in-progress replacement for tecosaur.com, done better.
 
-For now, you can find an increasing number of my projects on code.${config.globals.domain},
+For now, you can find an increasing number of my projects on ${config.site.apps.forgejo.subdomain}.${config.site.domain},
 this includes the setup for this server, which is being constructed using:
 + NixOS (with flakes and deploy-rs)
-+ Authelia and LLDAP (for authentication)
-+ Caddy (web server)
-+ Forgejo (personal software forge)
-+ Syncthing (cross-device folder sync tool)
-+ Headscale (virtual network)
-+ MicroBin (personal pastebin + url shortener)
+${concatStringsSep "\n" (map (app: "+ ${app.name} (${app.description})")
+  (builtins.filter (app: app.enabled) (builtins.attrValues config.site.apps)))}
 
 In future, the following may be set up too:
 + Dendrite/Conduit (Matrix servers)

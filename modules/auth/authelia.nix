@@ -1,10 +1,12 @@
 { config, lib, ... }:
 
 let
-  auth-domain = config.globals.auth-domain;
+  auth-domain = "${config.site.apps.authelia.subdomain}.${config.site.domain}";
+  authelia-port = config.site.apps.authelia.port;
   authelia-user = "authelia";
-  authelia-port = 9091;
 in {
+  site.apps.authelia.enabled = true;
+
   age.secrets = {
     authelia-session = {
       owner = authelia-user;
@@ -72,7 +74,7 @@ in {
       session = {
         cookies = [
           {
-            domain = config.globals.domain;
+            domain = config.site.domain;
             authelia_url = "https://${auth-domain}";
           }
         ];
@@ -81,7 +83,7 @@ in {
         default_policy = "deny";
         rules = lib.mkAfter [
           {
-            domain = "*.${config.globals.domain}";
+            domain = "*.${config.site.domain}";
             policy = "one_factor";
           }
         ];

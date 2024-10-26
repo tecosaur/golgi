@@ -1,10 +1,12 @@
 { config, lib, pkgs, ... }:
 
 let
-  headscale-domain = "headscale.${config.globals.domain}";
-  tailnet-domain = "tail.${config.globals.domain}";
-  port = 8174;
+  headscale-domain = "${config.site.apps.headscale.subdomain}.${config.site.domain}";
+  headscale-port = config.site.apps.headscale.port;
+  tailnet-domain = "${config.site.apps.headscale.dns-subdomain}.${config.site.domain}";
 in {
+  site.apps.headscale.enabled = true;
+
   age.secrets.headscale-oidc = {
     owner = "headscale";
     group = "users";
@@ -13,17 +15,17 @@ in {
 
   services.headscale = {
       enable = true;
-      port = port;
+      port = headscale-port;
       settings = {
         server_url = "https://${headscale-domain}";
         dns.base_domain = tailnet-domain;
         ip_prefixes = [ "fd7a:115c:a1e0::/48" "100.64.0.0/10" ];
         oidc = {
-          issuer = "https://${config.globals.auth-domain}";
+          issuer = "https://${config.site.apps.authelia.subdomain}.${config.site.domain}";
           client_id = "headscale";
           client_secret_path = config.age.secrets.headscale-oidc.path;
           extra_params = {
-            domain_hint = "${config.globals.domain}";
+            domain_hint = config.site.domain;
           };
         };
       };
@@ -60,6 +62,6 @@ in {
   environment.systemPackages = [ config.services.headscale.package ];
   services.caddy.virtualHosts."${headscale-domain}".extraConfig =
     ''
-    reverse_proxy localhost:${toString config.services.headscale.port}
+    reverse_proxy localhost:${toString headscale-port}
     '';
 }

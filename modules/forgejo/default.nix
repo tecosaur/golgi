@@ -2,8 +2,8 @@
 
 let
   forgejo-user = "git";
-  forgejo-domain = "code.${config.globals.domain}";
-  blog-domain = "blog.${config.globals.domain}";
+  forgejo-domain = "${config.site.apps.forgejo.subdomain}.${config.site.domain}";
+  blog-domain = "blog.${config.site.domain}";
   # theming
   catppuccinThemes = pkgs.fetchzip {
     url = "https://github.com/catppuccin/gitea/releases/download/v0.4.1/catppuccin-gitea.tar.gz";
@@ -25,6 +25,8 @@ let
     done
   '';
 in {
+  site.apps.forgejo.enabled = true;
+
   age.secrets.postgres-forgejo = {
     owner = forgejo-user;
     group = "users";
@@ -59,13 +61,13 @@ in {
         DOMAIN = "${forgejo-domain}";
         ROOT_URL = "https://${forgejo-domain}";
         HTTP_ADDRESS = "0.0.0.0";
-        HTTP_PORT = 3000;
+        HTTP_PORT = config.site.apps.forgejo.port;
       };
       mailer = {
         ENABLED = true;
         PROTOCOL = "smtp+startls";
         FROM = "forgejo@${forgejo-domain}";
-        USER = "tec@tecosaur.net";
+        USER = "tec@${config.site.domain}";
         SMTP_ADDR = "smtp.fastmail.com:587";
       };
       service = {
@@ -77,7 +79,7 @@ in {
       openid = {
         ENABLE_OPENID_SIGNIN = false;
         ENABLE_OPENID_SIGNUP = false;
-        WHITELISTED_URIS = config.globals.auth-domain;
+        WHITELISTED_URIS = "${config.site.apps.authelia.subdomain}.${config.site.domain}";
       };
       oauth2_client = {
         ENABLE_AUTO_REGISTRATION = true;
@@ -132,7 +134,7 @@ in {
         DESCRIPTION = "The personal forge of TEC";
       };
       server = {
-        SSH_DOMAIN = "${config.globals.cloudflare-bypass}";
+        SSH_DOMAIN = "${config.site.cloudflare-bypass}";
       };
       federation = {
         ENABLED = true;
@@ -190,7 +192,7 @@ in {
     };
   };
 
-  services.caddy.virtualHosts."git.${config.globals.domain}".extraConfig =
+  services.caddy.virtualHosts."git.${config.site.domain}".extraConfig =
     "redir https://${forgejo-domain}{uri} 301";
 
   services.caddy.virtualHosts."${forgejo-domain}".extraConfig =

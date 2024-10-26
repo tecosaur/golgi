@@ -1,5 +1,5 @@
 {
-  description = "My server flake";
+  description = "Golgi flake";
 
   inputs = {
     nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
@@ -18,30 +18,43 @@
       modules = flake-utils-plus.lib.exportModules (
         nixpkgs.lib.mapAttrsToList (name: value: ./modules/${name}) (builtins.readDir ./modules)
       );
-      globalConfig = import ./setup.nix;
+      site-config = import ./site.nix;
     in
     flake-utils-plus.lib.mkFlake {
       inherit self inputs modules;
 
-      hosts = {
-        golgi.modules = with modules; [
+      hosts.golgi.modules = with modules; [
           agenix.nixosModules.default
           auth
           caddy
           forgejo
-          globalConfig
           headscale
           pastebin
+          site-config
           syncthing
           system
           uptime
           zsh
+          {
+            site = {
+              domain = "tecosaur.net";
+              cloudflare-bypass = "ssh.tecosaur.net";
+              apps = {
+                microbin = {
+                  title = "μPaste";
+                  subdomain = "pastes";
+                  short-subdomain = "p";
+                };
+                forgejo.subdomain = "code";
+                lldap.subdomain = "users";
+              };
+            };
+          }
         ];
-      };
 
       deploy.nodes = {
         golgi = {
-          hostname = "${self.nixosConfigurations.golgi.config.globals.cloudflare-bypass}";
+          hostname = "${self.nixosConfigurations.golgi.config.site.cloudflare-bypass}";
           fastConnection = false;
           profiles = {
             system = {

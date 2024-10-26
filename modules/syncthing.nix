@@ -3,11 +3,13 @@
 with lib;
 
 let
-  domain = config.globals.domain;
-  syncthing-domain = "syncthing.${domain}";
+  domain = config.site.domain;
+  syncthing-domain = "${config.site.apps.syncthing.subdomain}.${config.site.domain}";
   public-domain = "public.${domain}";
   my-computers = [ "tranquillity" "demure" "ict1634" ];
 in {
+  site.apps.syncthing.enabled = true;
+
   services.syncthing = {
     enable = true;
     dataDir = "/var/lib/syncthing";

@@ -1,9 +1,10 @@
 { config, lib, pkgs, ... }:
 
 let
-  paste-domain = "pastes.${config.globals.domain}";
-  short-domain = "p.${config.globals.domain}";
-  page-name = "μPaste";
+  ubin-domain = "${config.site.apps.microbin.subdomain}.${config.site.domain}";
+  short-domain = "${config.site.apps.microbin.short-subdomain}.${config.site.domain}";
+  ubin-port = config.site.apps.microbin.port;
+  page-name = config.site.apps.microbin.title;
 in
 let
   caddy-unauth-filter =
@@ -17,17 +18,17 @@ let
         re `<div style="float: left">\s*(?:(<button[^>]*>[\s\S]+?<\/button>(?:\s*<button[^>]*>[^>]+?<\/button>)?)\s*(<a[^>]+>Raw)[^<]+(<\/a>))?[\s\S]*?<\/div>` <<HTML
           <div style="float: left">
           <b style="margin-right: 1.5rem">
-            <a href="https://${paste-domain}">
-              <img width=100 style="margin-bottom: -6px; margin-right: 0.5rem;" src="https://${paste-domain}/static/logo.png"
-                  onload="this.parentElement.href = 'https://${config.globals.auth-domain}/?rd=' + encodeURIComponent(window.location.href) + '&rm=GET';">
+            <a href="https://${ubin-domain}">
+              <img width=100 style="margin-bottom: -6px; margin-right: 0.5rem;" src="https://${ubin-domain}/static/logo.png"
+                  onload="this.parentElement.href = 'https://${config.site.apps.authelia.subdomain}.${config.site.domain}/?rd=' + encodeURIComponent(window.location.href) + '&rm=GET';">
             </a>
-            ${config.services.microbin.settings.MICROBIN_TITLE}
+            ${page-name}
           </b>
           $1$2$3
           </div>
           HTML
         re "\n*<div>\s*<p[^>]*>Read[^<]+<\/p>\s*<\/div>" ""
-        `<a href="https://${paste-domain}/"> Go Home</a>` ""
+        `<a href="https://${ubin-domain}/"> Go Home</a>` ""
     }
     '';
   caddy-settings-filter =
@@ -63,6 +64,8 @@ let
     }
     '';
 in {
+  site.apps.microbin.enabled = true;
+
   services.microbin = {
     enable = true;
     settings = {
@@ -78,9 +81,9 @@ in {
       MICROBIN_GC_DAYS = 0;
       MICROBIN_HIDE_FOOTER = true;
       MICROBIN_HIGHLIGHTSYNTAX = true;
-      MICROBIN_PORT = 4144;
+      MICROBIN_PORT = ubin-port;
       MICROBIN_PRIVATE = false; # They're all essentially private
-      MICROBIN_PUBLIC_PATH = "https://${paste-domain}";
+      MICROBIN_PUBLIC_PATH = "https://${ubin-domain}";
       MICROBIN_QR = true;
       MICROBIN_SHORT_PATH = "https://${short-domain}";
       MICROBIN_SHOW_READ_STATS = true;
@@ -88,7 +91,7 @@ in {
     };
   };
 
-  services.caddy.virtualHosts."${paste-domain}".extraConfig =
+  services.caddy.virtualHosts."${ubin-domain}".extraConfig =
     ''
     route /raw/* {
         reverse_proxy :${toString config.services.microbin.settings.MICROBIN_PORT} {
@@ -124,18 +127,18 @@ in {
         reverse_proxy :${toString config.services.microbin.settings.MICROBIN_PORT}
     }
     route * {
-        redir https://${paste-domain}{uri}
+        redir https://${ubin-domain}{uri}
     }
     '';
 
   services.authelia.instances.main.settings.access_control.rules = [
     {
-      domain = paste-domain;
+      domain = ubin-domain;
       policy = "one_factor";
       subject = "group:paste";
     }
     {
-      domain = paste-domain;
+      domain = ubin-domain;
       policy = "deny";
     }
   ];

@@ -1,9 +1,11 @@
 { config, lib, pkgs, ... }:
 
 let
-  kuma-domain = "status.${config.globals.domain}";
+  kuma-domain = "${config.site.apps.uptime.subdomain}.${config.site.domain}";
 in
 {
+  site.apps.uptime.enabled = true;
+
   services.uptime-kuma = {
     enable = true;
     settings.PORT = "3001";

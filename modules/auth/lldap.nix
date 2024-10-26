@@ -2,8 +2,10 @@
 
 let
   lldap-user = "lldap";
-  lldap-web-domain = "users.${config.globals.domain}";
+  lldap-web-domain = "${config.site.apps.lldap.subdomain}.${config.site.domain}";
 in {
+  site.apps.lldap.enabled = true;
+
   age.secrets = {
     lldap-jwt = {
       owner = lldap-user;
@@ -27,7 +29,7 @@ in {
     settings = {
       ldap_base_dn = "dc=tecosaur,dc=net";
       ldap_user_dn = "admin";
-      ldap_user_email = "lldap-admin@tecosaur.net";
+      ldap_user_email = "lldap-admin@${config.site.domain}";
       database_url = "postgresql://${lldap-user}@localhost/${lldap-user}?host=/run/postgresql";
     };
     environment = {
