@@ -88,6 +88,11 @@ in {
 
   services.caddy.virtualHosts."${paste-domain}".extraConfig =
     ''
+    route /raw/* {
+        reverse_proxy :${toString config.services.microbin.settings.MICROBIN_PORT} {
+            header_down Content-Type "text/plain; charset=UTF-8"
+        }
+    }
     @public path /static/* /upload/* /file/* /p/* /raw/* /u/* /qr/* /auth/* /auth_file/*
     route @public {
         ${caddy-unauth-filter}
