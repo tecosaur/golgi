@@ -2,6 +2,7 @@
 
 let
   headscale-domain = "headscale.${config.globals.domain}";
+  tailnet-domain = "tail.${config.globals.domain}";
   port = 8174;
 in {
   age.secrets.headscale-oidc = {
@@ -15,7 +16,7 @@ in {
       port = port;
       settings = {
         server_url = "https://${headscale-domain}";
-        dns.base_domain = "clients.${headscale-domain}";
+        dns.base_domain = tailnet-domain;
         ip_prefixes = [ "fd7a:115c:a1e0::/48" "100.64.0.0/10" ];
         oidc = {
           issuer = "https://${config.globals.auth-domain}";
