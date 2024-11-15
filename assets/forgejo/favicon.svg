@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="svg18"
+   version="1.1"
+   viewBox="0 0 212 212"
+   width="32"
+   height="32"
+   sodipodi:docname="favicon.svg"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:export-filename="favicon.png"
+   inkscape:export-xdpi="540"
+   inkscape:export-ydpi="540"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="8.0157183"
+     inkscape:cx="-1.6841909"
+     inkscape:cy="-3.5555142"
+     inkscape:window-width="2078"
+     inkscape:window-height="1080"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g16" />
+  <style
+     id="style4"
+     type="text/css">circle,path{fill:none;stroke:#000;stroke-width:15}path{stroke-width:25}.orange{stroke:#f60}.red{stroke:#d40000}</style>
+  <g
+     id="g16"
+     transform="translate(6 6)">
+    <path
+       id="path6"
+       d="M58 168V70a50 50 0 0 1 50-50h20"
+       class="orange"
+       style="stroke:#67bc85;stroke-opacity:1" />
+    <path
+       id="path8"
+       d="M58 168v-30a50 50 0 0 1 50-50h20"
+       class="red"
+       style="stroke:#239a58;stroke-opacity:1;stroke-width:25.00275;stroke-dasharray:none" />
+    <circle
+       id="circle10"
+       cx="142"
+       cy="20"
+       r="18"
+       class="orange"
+       style="stroke:#68bc85;stroke-opacity:1" />
+    <circle
+       id="circle12"
+       cx="142"
+       cy="88"
+       r="18"
+       class="red"
+       style="stroke:#239a58;stroke-opacity:1" />
+    <circle
+       id="circle14"
+       cx="58"
+       cy="180"
+       r="18"
+       class="red"
+       style="stroke:#239a58;stroke-opacity:1" />
+  </g>
+  <xhtml:iframe
+     id="cmdline_iframe"
+     class="cleanslate hidden"
+     loading="lazy"
+     src="Forgejo_logo_files/commandline.html"
+     style="height:0!important" />
+</svg>

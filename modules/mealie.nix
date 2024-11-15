@@ -33,6 +33,10 @@ in {
       OIDC_SIGNUP_ENABLED = "true";
       OIDC_USER_GROUP = config.site.apps.mealie.user-group;
       OIDC_ADMIN_GROUP = config.site.apps.mealie.admin-group;
+      THEME_LIGHT_PRIMARY = "#239A58";
+      THEME_LIGHT_SECONDARY = "#346043";
+      THEME_DARK_PRIMARY = "#239A58";
+      THEME_DARK_SECONDARY = "#346043";
       LOG_LEVEL = "DEBUG";
     };
     credentialsFile = config.age.secrets.mealie-credentials.path;
@@ -99,11 +103,18 @@ in {
 
   services.caddy.virtualHosts."${mealie-domain}".extraConfig =
     ''
+    handle_path /icons/* {
+        root * ${../assets/mealie}
+        file_server
+    }
     @unauth {
       not header Cookie *mealie.access_token*
       not path /api/* /login /login/* /favicon.ico
     }
     route {
+        file_server /favicon.ico {
+            root ${../assets/mealie}
+        }
         reverse_proxy :${toString config.site.apps.mealie.port}
     }
     '';

@@ -95,7 +95,7 @@ in {
       }
     ];
     settings = {
-      title = "Golgi";
+      title = "Home";
       favicon = "https://${config.site.domain}/favicon.ico";
       hideVersion = true;
       statusStyle = "dot";

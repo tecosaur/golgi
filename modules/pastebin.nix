@@ -5,8 +5,16 @@ let
   short-domain = "${config.site.apps.microbin.short-subdomain}.${config.site.domain}";
   ubin-port = config.site.apps.microbin.port;
   page-name = config.site.apps.microbin.title;
+  static-assets-dir = ../assets/microbin;
 in
 let
+  caddy-static-assets-filter =
+    ''
+    handle_path /static/* {
+        root * ${static-assets-dir}
+        file_server
+    }
+    '';
   caddy-unauth-filter =
     ''
     @unauth-html {
@@ -50,8 +58,8 @@ let
     '';
   caddy-nav-filter =
     ''
-    @nav_page path / /list /guide /admin /auth_admin /upload/* /p/* /qr/*
-    replace @nav_page {
+    @html-page path / /list /guide /admin /auth_admin /upload/* /p/* /qr/*
+    replace @html-page {
         re `<div id="nav" style="margin-bottom: 1rem;">\s*(<b[\S\s]+?<\/b>)\s*([\S\s]+?)<\/div>` <<HTML
           <div id="nav" style="margin-bottom: 1rem; float: left;">
             $1
@@ -61,6 +69,7 @@ let
           </div>
           <br>
         HTML
+        "#2975D2" "var(--selection)"
     }
     '';
 in {
@@ -93,6 +102,7 @@ in {
 
   services.caddy.virtualHosts."${ubin-domain}".extraConfig =
     ''
+    ${caddy-static-assets-filter}
     route /raw/* {
         reverse_proxy :${toString config.services.microbin.settings.MICROBIN_PORT} {
             header_down Content-Type "text/plain; charset=UTF-8"
