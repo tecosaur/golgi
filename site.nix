@@ -82,6 +82,12 @@ in {
           };
         };
       };
+      mealie = mkAppOption {
+        name = "Mealie";
+        description = "recipe manager";
+        subdomain = "mealie";
+        port = 9000;
+      };
       microbin = mkAppOption {
         name = "Microbin";
         description = "personal pastebin and url shortener";

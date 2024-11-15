@@ -14,6 +14,7 @@ in
   "lldap-admin-password.age".publicKeys = systems;
   "lldap-jwt.age".publicKeys = systems;
   "lldap-key-seed.age".publicKeys = systems;
+  "mealie-credentials.env".publicKeys = systems;
   "postgres-authelia.age".publicKeys = systems;
   "postgres-forgejo.age".publicKeys = systems;
 }

@@ -29,6 +29,7 @@
           caddy
           forgejo
           headscale
+          mealie
           pastebin
           site-config
           syncthing
@@ -40,6 +41,7 @@
               domain = "tecosaur.net";
               cloudflare-bypass = "ssh.tecosaur.net";
               apps = {
+                mealie.subdomain = "food";
                 microbin = {
                   title = "μPaste";
                   subdomain = "pastes";
