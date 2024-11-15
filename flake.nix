@@ -29,6 +29,7 @@
           caddy
           forgejo
           headscale
+          homepage
           mealie
           pastebin
           site-config

@@ -82,6 +82,12 @@ in {
           };
         };
       };
+      homepage = mkAppOption {
+        name = "Homepage";
+        description = "personal homepage";
+        subdomain = "home";
+        port = 8082;
+      };
       mealie = mkAppOption {
         name = "Mealie";
         description = "recipe manager";

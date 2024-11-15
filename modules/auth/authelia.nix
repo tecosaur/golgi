@@ -73,10 +73,12 @@ in {
       server.address = "tcp://:${toString authelia-port}";
       session = {
         cookies = [
-          {
+          ({
             domain = config.site.domain;
             authelia_url = "https://${auth-domain}";
-          }
+          } // lib.optionalAttrs config.site.apps.homepage.enabled {
+            default_redirection_url = "https://${config.site.apps.homepage.subdomain}.${config.site.domain}";
+          })
         ];
       };
       access_control = {
