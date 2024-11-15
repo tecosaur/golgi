@@ -18,7 +18,11 @@ with lib;
         vendorHash = "sha256-SFepy3A/Dxqnke78lwzxGmtctkUpgnDU3uVhCxLQAQ0=";
       };
       virtualHosts."${config.site.domain}".extraConfig = ''
-respond "__        __   _
+@assets path /favicon.ico
+file_server @assets {
+  root /etc/site-assets
+}
+respond / "__        __   _
 \ \      / /__| | ___ ___  _ __ ___   ___
  \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \
   \ V  V /  __/ | (_| (_) | | | | | |  __/
@@ -39,6 +43,11 @@ In future, the following may be set up too:
 + Koel (music streaming)
 "
   '';
+  };
+
+  environment.etc."site-assets/favicon.ico" = {
+    source = ../assets/site/favicon.ico;
+    mode = "0444";
   };
 
   users.users.caddy = {
