@@ -23,10 +23,25 @@ let
         default = subdomain;
         description = "Name for the ${name} app";
       };
+      dir = lib.mkOption {
+        type = lib.types.str;
+        default = "/var/lib/${lib.toLower name}";
+        description = "Directory where the ${name} app stores its data";
+      };
       port = lib.mkOption {
         type = lib.types.int;
         default = port;
         description = "Port that the ${name} app listens on";
+      };
+      user-group = lib.mkOption {
+        type = lib.types.str;
+        default = lib.toLower name;
+        description = "LDAP user group that has access to the ${name} app";
+      };
+      admin-group = lib.mkOption {
+        type = lib.types.str;
+        default = "admin";
+        description = "User group that has admin access to the ${name} app";
       };
     } // extraOptions;
 in {

@@ -135,7 +135,8 @@ in {
     {
       domain = ubin-domain;
       policy = "one_factor";
-      subject = "group:paste";
+      subject = ["group:${config.site.apps.microbin.user-group}"
+                 "group:${config.site.apps.microbin.admin-group}"];
     }
     {
       domain = ubin-domain;

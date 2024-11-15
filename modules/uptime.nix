@@ -34,7 +34,8 @@ in
     {
       domain = kuma-domain;
       policy = "one_factor";
-      subject = "group:admin";
+      subject = ["group:${config.site.apps.uptime.user-group}"
+                 "group:${config.site.apps.uptime.admin-group}"];
     }
     {
       domain = kuma-domain;

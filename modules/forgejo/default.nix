@@ -44,7 +44,7 @@ in {
     package = pkgs.forgejo;
     user = forgejo-user;
     group = forgejo-user;
-    stateDir = "/var/lib/forgejo";
+    stateDir = config.site.apps.forgejo.dir;
     database = {
       type = "postgres";
       name = forgejo-user;
@@ -171,7 +171,8 @@ in {
         rules = [
           {
             policy = "two_factor";
-            subject = [ [ "group:admin" "group:forge" ] ];
+            subject = [ [ "group:${config.site.apps.forgejo.user-group}"
+                          "group:${config.site.apps.forgejo.admin-group}" ] ];
           }
         ];
       };

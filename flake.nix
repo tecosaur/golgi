@@ -44,8 +44,12 @@
                   title = "μPaste";
                   subdomain = "pastes";
                   short-subdomain = "p";
+                  user-group = "paste";
                 };
-                forgejo.subdomain = "code";
+                forgejo = {
+                  subdomain = "code";
+                  user-group = "forge";
+                };
                 lldap.subdomain = "users";
               };
             };
