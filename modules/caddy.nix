@@ -22,25 +22,72 @@ with lib;
 file_server @assets {
   root /etc/site-assets
 }
-respond / "__        __   _
+respond / "  ⠀      ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿⣷⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠈⢙⣿⣿⣿⣿⣿⣿⡿⠻⣿⣴⡿⠿⣿⣿⣿⣿⣷⣶⡄⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠘⠛⠛⠛⠋⠉⠙⢿⠁⠀⢻⣿⣿⣿⣿⣿⣿⣿⣾⣿⣥⡄⠀⠀⠀⠀⠀
+        ⠀⠀⠀⢾⣿⣿⣿⣷⣤⣄⣈⡇⢀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀
+        ⠀⠀⠀⢀⣿⣿⣿⣿⣷⣾⣿⣿⡿⢿⡿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀⠀⠀
+        ⠀⣴⣶⣿⡿⠿⢿⡿⠿⠛⠉⠹⣇⢸⡇⠠⣾⠿⢷⣶⣶⣶⣶⣾⣏⣁⣀⣀⠀⠀
+        ⠀⠀⠀⠀⢀⣴⣶⣶⣶⣶⣶⠶⠿⣾⡇⣸⠃⣠⡾⠛⣿⣿⣿⡟⠻⠿⠛⠉⠀⠀
+        ⠀⢀⣠⣴⠿⠿⠿⣿⣿⣿⡿⢷⡀⣹⣷⡟⢠⡿⣠⢬⣽⣷⣾⣶⣦⣤⣀⠀⠀⠀
+        ⠀⠸⡿⠃⠀⣀⣀⣠⣤⣤⣤⣌⠳⣿⡟⠀⣾⣇⡏⠀⠻⢿⣿⣿⣿⣿⣿⠗⠀⠀
+        ⠀⠀⠀⠀⠸⠟⠋⣿⣿⣯⣉⠉⠙⣿⣷⣾⠿⢛⣶⣶⣶⣶⣿⣿⣿⣿⡀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠈⠉⠛⠋⠉⠁⠀⣿⣿⡏⠀⠸⠿⠿⠿⠿⣿⣿⣿⣿⣿⡿⠟⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠰⢾⣷⣶⣶⣿⣿⣷⣶⡶⠦⠀⠀⠀⠀⠀⠉⠙⠋⠀⠀⠀
+                      ⠉⠉⠉
+
+This is my personal general-purpose server, where I
+host various services, projects, and utilities.
+
+__        __   _
 \ \      / /__| | ___ ___  _ __ ___   ___
  \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \
   \ V  V /  __/ | (_| (_) | | | | | |  __/
    \_/\_/ \___|_|\___\___/|_| |_| |_|\___|
 
-This is an in-progress replacement for tecosaur.com, done better.
+If you're interested in the projects I'm working on,
+and increacing number of them are hosted on
+<https://${config.site.apps.forgejo.subdomain}.${config.site.domain}>.
 
-For now, you can find an increasing number of my projects on ${config.site.apps.forgejo.subdomain}.${config.site.domain},
-this includes the setup for this server, which is being constructed using:
-+ NixOS (with flakes and deploy-rs)
-${concatStringsSep "\n" (map (app: "+ ${app.name} (${app.description})")
+Occasionally I write about developments in Org Mode,
+and put them on <https://blog.${config.site.domain}/tmio>.
+I also have a collection of public documents under
+<https://public.${config.site.domain}>.
+
+Enjoy!
+
+┌╴───────────────╶┐
+| Online presence |
+└╴───────────────╶┘
+
+• @tecosaur on Github: <https://github.com/tecosaur>
+• @tecosaur around Julia spaces:
+  – Discourse <https://discourse.julialang.org/u/tecosaur>
+  – Zulip <https://julialang.zulipchat.com>
+  – Slack <https://julialang.slack.com>
+• @tecosaur:matrix.org
+• @tecosaur on Discord
+• @tecosaur (with a tree avatar) around the net…
+
+I'm generally happy to be contacted, and can also be reached
+by email at contact@<this domain>.
+
+┌╴─────────────────╶┐
+| Technical details |
+└╴─────────────────╶┘
+
+This server is managed by NixOS (with flakes and deploy-rs),
+and is composed of:
+${concatStringsSep "\n" (map (app: "• ${app.name} (${app.description})")
   (builtins.filter (app: app.enabled) (builtins.attrValues config.site.apps)))}
 
-In future, the following may be set up too:
-+ Dendrite/Conduit (Matrix servers)
-+ My TMiO blog
-+ Kopia (backups)
-+ Koel (music streaming)
+In future, I'm also considering setting up:
+• Dendrite/Conduit (Matrix servers)
+• My TMiO blog
+• Kopia (backups)
+• Koel (music streaming)
 "
   '';
   };
