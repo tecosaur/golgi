@@ -1,0 +1,15 @@
+#+title: Code forge
+
+* Configuration
+** Authentication sources
++ Authentication type :: OAuth2
++ Authentication name :: authelia
++ OAuth2 provider :: OpenID Connect
++ Client ID :: forgejo
++ Client Secret :: (secret)
++ OpenID Connect Auto Discovery URL :: =https://auth.tecosaur.net/.well-known/openid-configuration=
++ Skip local 2FA :: yes
++ Additional scopes :: groups
++ Required claim name :: groups
++ Claim name providing group names :: groups
++ Group claim value for admins :: admin
