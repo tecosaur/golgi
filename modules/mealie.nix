@@ -27,7 +27,7 @@ in {
       CRF_MODEL_PATH = "${config.site.apps.mealie.dir}/model.crfmodel";
       POSTGRES_URL_OVERRIDE = "postgresql://${mealie-user}:@localhost/${mealie-user}?host=/run/postgresql";
       OIDC_AUTH_ENABLED = "true";
-      OIDC_AUTO_REDIRECT = "false"; # Currently `true` is bugged :(
+      OIDC_AUTO_REDIRECT = "true";
       OIDC_CLIENT_ID = "mealie";
       OIDC_CONFIGURATION_URL = "https://${config.site.apps.authelia.subdomain}.${config.site.domain}/.well-known/openid-configuration";
       OIDC_SIGNUP_ENABLED = "true";
