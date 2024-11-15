@@ -1,9 +1,13 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   auth-domain = "${config.site.apps.authelia.subdomain}.${config.site.domain}";
   authelia-port = config.site.apps.authelia.port;
   authelia-user = "authelia";
+  assets-no-symlinks = pkgs.runCommand "autheleia-assets" {} ''
+    mkdir -p $out
+    cp -rL ${../../assets}/authelia/* $out
+  '';
 in {
   site.apps.authelia.enabled = true;
 
@@ -115,6 +119,9 @@ in {
             }
           ];
         };
+      };
+      server = {
+        asset_path = assets-no-symlinks;
       };
       # Necessary for Caddy integration
       # See https://www.authelia.com/integration/proxies/caddy/#implementation

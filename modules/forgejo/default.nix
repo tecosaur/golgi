@@ -153,13 +153,13 @@ in {
 
   systemd.tmpfiles.rules = [
     "L+ ${config.services.forgejo.stateDir}/custom/templates/home.tmpl - - - - ${./template-home.tmpl}"
-    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/tree-greentea-themed.svg - - - - ${./images/tree-greentea-themed.svg}"
-    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/logo.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
-    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/logo.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/favicon.svg - - - - ${./images/forgejo-icon-greentea-themed.svg}"
-    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/favicon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/apple-touch-icon.png - - - - ${./images/forgejo-icon-greentea-themed.png}"
-    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/avatar_default.png - - - - ${./images/forgejo-square-greentea-themed.png}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/tree-greentea-themed.svg - - - - ${../../assets/forgejo/tree-greentea-themed.svg}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/logo.svg - - - - ${../../assets/forgejo/forgejo-icon-greentea-themed.svg}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/logo.png - - - - ${../../assets/forgejo/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/favicon.svg - - - - ${../../assets/forgejo/forgejo-icon-greentea-themed.svg}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/favicon.png - - - - ${../../assets/forgejo/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/apple-touch-icon.png - - - - ${../../assets/forgejo/forgejo-icon-greentea-themed.png}"
+    "L+ ${config.services.forgejo.stateDir}/custom/public/assets/img/avatar_default.png - - - - ${../../assets/forgejo/forgejo-square-greentea-themed.png}"
     "L+ ${config.services.forgejo.stateDir}/custom/public/assets/css - - - - ${catppuccinAutoThemes}"
     "L+ ${config.services.forgejo.stateDir}/custom/public/robots.txt - - - - ${./robots.txt}"
   ];

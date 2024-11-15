@@ -1,7 +1,1 @@
-.vscode
-result
-.direnv
-*.qcow2
-source
-.envrc
-*.img
+assets/site/favicon-*.png
