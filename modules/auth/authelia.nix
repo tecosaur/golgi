@@ -102,7 +102,8 @@ in {
       notifier.smtp = {
         address = "smtp.fastmail.com:587";
         username = "tec@tecosaur.net";
-        sender = "Authelia <auth@tecosaur.net>";
+        sender = "${config.site.domain} — Authentication <auth@${config.site.domain}>";
+        subject = "{title}";
       };
       log.level = "info";
       identity_providers.oidc = {
