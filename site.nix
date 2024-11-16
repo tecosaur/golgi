@@ -1,7 +1,7 @@
 { config, lib, ... }:
 
 let
-  mkAppOption = { name, description, subdomain, port, extraOptions ? {} }:
+  mkAppOption = { name, description, homepage, simpleicon ? null, subdomain, port, extraOptions ? {} }:
     {
       name = lib.mkOption {
         type = lib.types.str;
@@ -12,6 +12,16 @@ let
         type = lib.types.str;
         default = description;
         description = "Description of the ${name} app";
+      };
+      homepage = lib.mkOption {
+        type = lib.types.str;
+        default = homepage;
+        description = "Link to the homepage/documentation for ${name}";
+      };
+      simpleicon = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = simpleicon;
+        description = "Simple icon for the ${name} app";
       };
       enabled = lib.mkOption {
         type = lib.types.bool;
@@ -59,19 +69,25 @@ in {
     apps = {
       authelia = mkAppOption {
         name = "Authelia";
+        homepage = "https://www.authelia.com";
         description = "authentication and SSO portal";
+        simpleicon = "authelia";
         subdomain = "auth";
         port = 9091;
       };
       forgejo = mkAppOption {
         name = "Forgejo";
+        homepage = "https://forgejo.org";
         description = "personal software forge";
+        simpleicon = "forgejo";
         subdomain = "forgejo";
         port = 3000;
       };
       headscale = mkAppOption {
         name = "Headscale";
+        homepage = "https://headscale.net";
         description = "mesh virtual private network";
+        simpleicon = "tailscale";
         subdomain = "headscale";
         port = 8174;
         extraOptions = {
@@ -84,18 +100,21 @@ in {
       };
       homepage = mkAppOption {
         name = "Homepage";
+        homepage = "https://gethomepage.dev";
         description = "personal homepage";
         subdomain = "home";
         port = 8082;
       };
       mealie = mkAppOption {
         name = "Mealie";
+        homepage = "https://docs.mealie.io";
         description = "recipe manager";
         subdomain = "mealie";
         port = 9000;
       };
       microbin = mkAppOption {
         name = "Microbin";
+        homepage = "https://github.com/szabodanika/microbin";
         description = "personal pastebin and url shortener";
         subdomain = "microbin";
         port = 4144;
@@ -114,19 +133,24 @@ in {
       };
       syncthing = mkAppOption {
         name = "Syncthing";
+        homepage = "https://syncthing.net";
         description = "folder synchronisation service";
+        simpleicon = "syncthing";
         subdomain = "syncthing";
         port = 8384;
       };
       lldap = mkAppOption {
         name = "LLDAP";
+        homepage = "https://github.com/lldap/lldap";
         description = "user management service";
         subdomain = "lldap";
         port = 17170;
       };
       uptime = mkAppOption {
         name = "Uptime Kuma";
+        homepage = "https://uptime.kuma.pet";
         description = "endpoint monitoring service";
+        simpleicon = "uptimekuma";
         subdomain = "uptime";
         port = 3001;
       };
