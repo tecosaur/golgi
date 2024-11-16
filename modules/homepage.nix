@@ -6,14 +6,32 @@ let
     search = "https://kagi.com/search?q=";
     suggest = "https://kagi.com/api/autosuggest?q=";
   };
-  mkAppStatus = { title, app, icon, extraOptions ? {} }:
+  mkAppStatus = { title, app, icon ? null, extraOptions ? {} }:
     {
-      "${title}" = {
+      "${title}" = ({
         href = "https://${app.subdomain}.${config.site.domain}";
-        icon = icon;
         description = app.name;
         # siteMonitor = "http://localhost:${toString app.port}";
-      } // extraOptions;
+      } // (if icon != null then
+        { icon = icon; }
+      else if app.simpleicon != null then
+        { icon = "si-${app.simpleicon}"; }
+      else
+        { icon = "mdi-menu-right"; }) //
+      extraOptions);
+    };
+  mkAppLink = { app, icon ? null, extraOptions ? {} }:
+    {
+      "${app.name}" = [({
+        href = app.homepage;
+      } // (if icon != null then
+        { icon = icon; }
+      else if app.simpleicon != null then
+        { icon = "si-${app.simpleicon}"; }
+      else
+        { icon = "mdi-link-variant"; }) //
+      extraOptions)
+      ];
     };
 in {
   site.apps.homepage.enabled = true;
@@ -23,27 +41,30 @@ in {
       {
         "Storage" = [
           (mkAppStatus {
+            title = "Files";
+            app = config.site.apps.sftpgo;
+            icon = "mdi-folder-network";
+          })
+          (mkAppStatus {
             title = "Syncthing";
-            icon = "si-syncthing";
             app = config.site.apps.syncthing;
           })
           (mkAppStatus {
             title = config.site.apps.microbin.title;
-            icon = "mdi-content-paste";
             app = config.site.apps.microbin;
+            icon = "mdi-content-paste";
           })
         ];
       }
       {
         "Applications" = [
           (mkAppStatus {
-            title = "Recipies";
-            icon = "mdi-silverware-fork-knife";
+            title = "Recipes";
             app = config.site.apps.mealie;
+            icon = "mdi-silverware-fork-knife";
           })
           (mkAppStatus {
             title = "Code";
-            icon = "si-forgejo";
             app = config.site.apps.forgejo;
           })
         ];
@@ -52,17 +73,15 @@ in {
         "Server" = [
           (mkAppStatus {
             title = "Authentication";
-            icon = "si-authelia";
             app = config.site.apps.authelia;
           })
           (mkAppStatus {
             title = "User Management";
-            icon = "mdi-account-edit";
             app = config.site.apps.lldap;
+            icon = "mdi-account-edit";
           })
           (mkAppStatus {
             title = "Status";
-            icon = "si-uptimekuma";
             app = config.site.apps.uptime;
             extraOptions = {
               href = "https://${config.site.apps.uptime.subdomain}.${config.site.domain}/status/site";
@@ -76,6 +95,49 @@ in {
         ];
       }
     ];
+    bookmarks = [{
+      "Service documentation" = builtins.map mkAppLink [
+        { app = config.site.apps.authelia; }
+        { app = config.site.apps.forgejo; }
+        { app = config.site.apps.headscale; }
+        { app = config.site.apps.mealie;
+          icon = "mdi-silverware-fork-knife";}
+        { app = config.site.apps.microbin;
+          icon = "mdi-content-paste"; }
+        { app = config.site.apps.syncthing; }
+        { app = config.site.apps.lldap;
+          icon = "mdi-account-edit";}
+        { app = config.site.apps.uptime; }
+      ];
+    }
+    {
+      "Server management" = [
+        {
+          "Hetzner" = [{
+            icon = "si-hetzner";
+            href = "https://console.hetzner.cloud";
+          }];
+        }
+        {
+          "Cloudflare" = [{
+            icon = "si-cloudflare";
+            href = "https://dash.cloudflare.com";
+          }];
+        }
+        {
+          "Porkbun" = [{
+            icon = "si-porkbun";
+            href = "https://porkbun.com/account";
+          }];
+        }
+        {
+          "Uptime" = [{
+            icon = "mdi-circle-slice-8";
+            href = "https://stats.uptimerobot.com/ah8wBH3PYy";
+          }];
+        }
+      ];
+    }];
     widgets = [
       {
         search = {
