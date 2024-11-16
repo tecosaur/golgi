@@ -33,6 +33,7 @@ in {
       OIDC_SIGNUP_ENABLED = "true";
       OIDC_USER_GROUP = config.site.apps.mealie.user-group;
       OIDC_ADMIN_GROUP = config.site.apps.mealie.admin-group;
+      DEFAULT_GROUP = "Unsorted";
       THEME_LIGHT_PRIMARY = "#239A58";
       THEME_LIGHT_SECONDARY = "#346043";
       THEME_DARK_PRIMARY = "#239A58";
