@@ -24,12 +24,12 @@ in {
         "Storage" = [
           (mkAppStatus {
             title = "Syncthing";
-            icon = "si-syncthing-#0891D1";
+            icon = "si-syncthing";
             app = config.site.apps.syncthing;
           })
           (mkAppStatus {
             title = config.site.apps.microbin.title;
-            icon = "mdi-content-paste-#238ce8";
+            icon = "mdi-content-paste";
             app = config.site.apps.microbin;
           })
         ];
@@ -38,12 +38,12 @@ in {
         "Applications" = [
           (mkAppStatus {
             title = "Recipies";
-            icon = "sh-mealie";
+            icon = "mdi-silverware-fork-knife";
             app = config.site.apps.mealie;
           })
           (mkAppStatus {
             title = "Code";
-            icon = "si-forgejo-#6c9543";
+            icon = "si-forgejo";
             app = config.site.apps.forgejo;
           })
         ];
@@ -52,17 +52,17 @@ in {
         "Server" = [
           (mkAppStatus {
             title = "Authentication";
-            icon = "si-authelia-#3d8be2";
+            icon = "si-authelia";
             app = config.site.apps.authelia;
           })
           (mkAppStatus {
             title = "User Management";
-            icon = "mdi-account-edit-#898989";
+            icon = "mdi-account-edit";
             app = config.site.apps.lldap;
           })
           (mkAppStatus {
             title = "Status";
-            icon = "si-uptimekuma-#3e9a5f";
+            icon = "si-uptimekuma";
             app = config.site.apps.uptime;
             extraOptions = {
               href = "https://${config.site.apps.uptime.subdomain}.${config.site.domain}/status/site";
