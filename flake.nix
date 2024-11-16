@@ -31,7 +31,7 @@
           headscale
           homepage
           mealie
-          pastebin
+          microbin
           site-config
           syncthing
           system
