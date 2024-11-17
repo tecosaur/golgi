@@ -66,6 +66,11 @@ in {
       default = config.site.domain;
       description = "Domain to use for bypassing Cloudflare (e.g. for SSH).";
     };
+    ipv6 = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "IPv6 address for the server";
+    };
     apps = {
       authelia = mkAppOption {
         name = "Authelia";

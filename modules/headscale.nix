@@ -31,6 +31,10 @@ in {
       };
   };
 
+  systemd.services.headscale.serviceConfig = {
+    RestartSec = 2;
+  };
+
   services.authelia.instances.main.settings = {
     identity_providers.oidc = {
       authorization_policies.headscale = {

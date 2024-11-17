@@ -41,6 +41,7 @@
             site = {
               domain = "tecosaur.net";
               cloudflare-bypass = "ssh.tecosaur.net";
+              ipv6 = "2a01:4ff:f0:cc83::";
               apps = {
                 mealie.subdomain = "food";
                 microbin = {
