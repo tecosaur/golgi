@@ -115,7 +115,7 @@ in {
       microbin = mkAppOption {
         name = "Microbin";
         homepage = "https://github.com/szabodanika/microbin";
-        description = "personal pastebin and url shortener";
+        description = "pastebin and url shortener";
         subdomain = "microbin";
         port = 4144;
         extraOptions = {
@@ -134,7 +134,7 @@ in {
       syncthing = mkAppOption {
         name = "Syncthing";
         homepage = "https://syncthing.net";
-        description = "folder synchronisation service";
+        description = "folder synchronisation";
         simpleicon = "syncthing";
         subdomain = "syncthing";
         port = 8384;
@@ -142,14 +142,14 @@ in {
       lldap = mkAppOption {
         name = "LLDAP";
         homepage = "https://github.com/lldap/lldap";
-        description = "user management service";
+        description = "user account management";
         subdomain = "lldap";
         port = 17170;
       };
       uptime = mkAppOption {
         name = "Uptime Kuma";
         homepage = "https://uptime.kuma.pet";
-        description = "endpoint monitoring service";
+        description = "endpoint monitoring";
         simpleicon = "uptimekuma";
         subdomain = "uptime";
         port = 3001;
