@@ -6,17 +6,29 @@ with lib;
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   networking.firewall.allowedUDPPorts = [ 443 ];
 
+  age.secrets.cloudflare-api-env = {
+    owner = "caddy";
+    group = "users";
+    file = ../secrets/cloudflare-api-env.age;
+  };
+
   services.caddy = {
       enable = true;
       package = pkgs.callPackage ../packages/caddy.nix {
         externalPlugins = [
+          {name = "cloudflare"; repo = "github.com/caddy-dns/cloudflare";
+           version = "89f16b99c18ef49c8bb470a82f895bce01cbaece";}
           {name = "caddy-fs-git"; repo = "github.com/tecosaur/caddy-fs-git";
            version = "ef9d0ab232f4fe5d7e86312cbba45ff8afea98a1";}
           {name = "replace-response"; repo = "github.com/caddyserver/replace-response";
            version = "f92bc7d0c29d0588f91f29ecb38a0c4ddf3f85f8";}
         ];
-        vendorHash = "sha256-SFepy3A/Dxqnke78lwzxGmtctkUpgnDU3uVhCxLQAQ0=";
+        vendorHash = "sha256-DoWPvOAAHOLBhlOvOXTlMHMZ9LTKhYAVUbIR/5YVMB8=";
       };
+      globalConfig =
+        ''
+        acme_dns cloudflare {env.CLOUDFLARE_AUTH_TOKEN}
+        '';
       virtualHosts."${config.site.domain}".extraConfig = ''
 @assets path /favicon.ico
 file_server @assets {
@@ -90,6 +102,14 @@ In future, I'm also considering setting up:
 • Koel (music streaming)
 "
   '';
+      virtualHosts."*.${config.site.domain}".extraConfig =
+        ''
+        respond "In the beginning, there was darkness." 404
+        '';
+  };
+
+  systemd.services.caddy.serviceConfig = {
+    EnvironmentFile = config.age.secrets.cloudflare-api-env.path;
   };
 
   environment.etc."site-assets/favicon.ico" = {
