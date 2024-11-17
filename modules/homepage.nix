@@ -6,6 +6,12 @@ let
     search = "https://kagi.com/search?q=";
     suggest = "https://kagi.com/api/autosuggest?q=";
   };
+  capitalizeFirst = str:
+    let
+      firstChar = builtins.substring 0 1 str;
+      restOfString = builtins.substring 1 (builtins.stringLength str - 1) str;
+    in
+      lib.toUpper firstChar + restOfString;
   mkAppStatus = { title, app, icon ? null, extraOptions ? {} }:
     {
       "${title}" = ({
@@ -24,6 +30,7 @@ let
     {
       "${app.name}" = [({
         href = app.homepage;
+        description = capitalizeFirst app.description;
       } // (if icon != null then
         { icon = icon; }
       else if app.simpleicon != null then
@@ -40,11 +47,11 @@ in {
     services = [
       {
         "Storage" = [
-          (mkAppStatus {
-            title = "Files";
-            app = config.site.apps.sftpgo;
-            icon = "mdi-folder-network";
-          })
+          # (mkAppStatus {
+          #   title = "Files";
+          #   app = config.site.apps.sftpgo;
+          #   icon = "mdi-folder-network";
+          # })
           (mkAppStatus {
             title = "Syncthing";
             app = config.site.apps.syncthing;
@@ -63,6 +70,10 @@ in {
             app = config.site.apps.mealie;
             icon = "mdi-silverware-fork-knife";
           })
+          # (mkAppStatus {
+          #   title = "Photos";
+          #   app = config.site.apps.immich;
+          # })
           (mkAppStatus {
             title = "Code";
             app = config.site.apps.forgejo;
@@ -95,49 +106,160 @@ in {
         ];
       }
     ];
-    bookmarks = [{
-      "Service documentation" = builtins.map mkAppLink [
-        { app = config.site.apps.authelia; }
-        { app = config.site.apps.forgejo; }
-        { app = config.site.apps.headscale; }
-        { app = config.site.apps.mealie;
-          icon = "mdi-silverware-fork-knife";}
-        { app = config.site.apps.microbin;
-          icon = "mdi-content-paste"; }
-        { app = config.site.apps.syncthing; }
-        { app = config.site.apps.lldap;
-          icon = "mdi-account-edit";}
-        { app = config.site.apps.uptime; }
-      ];
-    }
-    {
-      "Server management" = [
-        {
-          "Hetzner" = [{
-            icon = "si-hetzner";
-            href = "https://console.hetzner.cloud";
-          }];
-        }
-        {
-          "Cloudflare" = [{
-            icon = "si-cloudflare";
-            href = "https://dash.cloudflare.com";
-          }];
-        }
-        {
-          "Porkbun" = [{
-            icon = "si-porkbun";
-            href = "https://porkbun.com/account";
-          }];
-        }
-        {
-          "Uptime" = [{
-            icon = "mdi-circle-slice-8";
-            href = "https://stats.uptimerobot.com/ah8wBH3PYy";
-          }];
-        }
-      ];
-    }];
+    bookmarks = [
+      {
+        "Installed services" = ([
+          (mkAppLink { app = config.site.apps.authelia; })
+          {
+            "Caddy" = [{
+              icon = "si-caddy";
+              href = "https://caddyserver.com/";
+              description = "Web server";
+            }];
+          }
+        ] ++ builtins.map mkAppLink [
+          { app = config.site.apps.forgejo; }
+          { app = config.site.apps.headscale;
+            icon = "mdi-dots-hexagon"; }
+          { app = config.site.apps.homepage;
+            icon = "mdi-home-circle"; }
+          # { app = config.site.apps.immich; }
+          { app = config.site.apps.mealie;
+            icon = "mdi-silverware-fork-knife";}
+          { app = config.site.apps.microbin;
+            icon = "mdi-content-paste"; }
+          # { app = config.site.apps.sftpgo;
+          #   icon = "mdi-folder-network"; }
+          { app = config.site.apps.syncthing; }
+          { app = config.site.apps.lldap;
+            icon = "mdi-account-edit";}
+          { app = config.site.apps.uptime; }
+        ]);
+      }
+      {
+        "Planned services" = [
+          {
+            "Immich" = [{
+              icon = "si-immich";
+              href = "https://immich.com";
+              description = "Photo and video management";
+            }];
+          }
+          {
+            "TBD" = [{
+              icon = "mdi-folder-network-outline";
+              description = "File storage and sharing";
+            }];
+          }
+          {
+            "Navidrome" = [{
+              icon = "mdi-playlist-music";
+              href = "https://www.navidrome.org/";
+              description = "Music server";
+            }];
+          }
+        ];
+      }
+      {
+        "Candidate services" = [
+          {
+            "SFTPGo" = [{
+              icon = "mdi-folder-network";
+              href = "https://sftpgo.com";
+              description = "File storage and sharing (1)";
+            }];
+          }
+          {
+            "ownCloud" = [{
+              icon = "si-owncloud";
+              href = "https://owncloud.com/infinite-scale";
+              description = "File storage and sharing (2)";
+            }];
+          }
+          {
+            "Paperless-ngx" = [{
+              icon = "si-paperlessngx";
+              href = "https://paperless-ngx.com";
+              description = "Document management";
+            }];
+          }
+          {
+            "Home Assistant" = [{
+              icon = "si-homeassistant";
+              href = "https://www.home-assistant.io";
+              description = "Smart automation";
+            }];
+          }
+          {
+            "Jellyfin" = [{
+              icon = "si-jellyfin";
+              href = "https://jellyfin.org";
+              description = "Media server";
+            }];
+          }
+          {
+            "Feishin" = [{
+              icon = "mdi-music";
+              href = "https://github.com/jeffvli/feishin";
+              description = "Music player";
+            }];
+          }
+          {
+            "Memos" = [{
+              icon = "mdi-text";
+              href = "https://www.usememos.com/";
+              description = "Lightweight note-taking";
+            }];
+          }
+          {
+            "Vikunja" = [{
+              icon = "mdi-format-list-checks";
+              href = "https://vikunja.io";
+              description = "To-do list and task manager";
+            }];
+          }
+        ];
+      }
+      {
+        "Server management" = [
+          {
+            "Hetzner" = [{
+              icon = "si-hetzner";
+              href = "https://console.hetzner.cloud";
+              description = "VPS hosting";
+            }];
+          }
+          {
+            "Cloudflare" = [{
+              icon = "si-cloudflare";
+              href = "https://dash.cloudflare.com";
+              description = "DNS and CDN";
+            }];
+          }
+          {
+            "Porkbun" = [{
+              icon = "si-porkbun";
+              href = "https://porkbun.com/account";
+              description = "Domain registrar";
+            }];
+          }
+          {
+            "System" = [{
+              icon = "si-nixos";
+              href = "https://code.tecosaur.net/tec/golgi";
+              description = "Server configuration";
+            }];
+          }
+          {
+            "Uptime" = [{
+              icon = "mdi-circle-slice-8";
+              href = "https://stats.uptimerobot.com/ah8wBH3PYy";
+              description = "Server monitoring";
+            }];
+          }
+        ];
+      }
+    ];
     widgets = [
       {
         search = {
