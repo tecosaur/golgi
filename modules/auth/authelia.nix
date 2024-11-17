@@ -67,14 +67,10 @@ in {
     };
     settings = {
       theme = "auto";
-      authentication_backend.ldap = {
-        address = "ldap://localhost:${toString config.services.lldap.settings.ldap_port}";
-        base_dn = config.services.lldap.settings.ldap_base_dn;
-        users_filter = "(&({username_attribute}={input})(objectClass=person))";
-        groups_filter = "(member={dn})";
-        user = "uid=${config.services.lldap.settings.ldap_user_dn},ou=people,${config.services.lldap.settings.ldap_base_dn}";
+      server = {
+        address = "tcp://:${toString authelia-port}";
+        asset_path = assets-no-symlinks;
       };
-      server.address = "tcp://:${toString authelia-port}";
       session = {
         cookies = [
           ({
@@ -93,6 +89,17 @@ in {
             policy = "one_factor";
           }
         ];
+      };
+      password_policy.standard = {
+        enabled = true;
+        min_length = 12;
+      };
+      authentication_backend.ldap = {
+        address = "ldap://localhost:${toString config.services.lldap.settings.ldap_port}";
+        base_dn = config.services.lldap.settings.ldap_base_dn;
+        users_filter = "(&({username_attribute}={input})(objectClass=person))";
+        groups_filter = "(member={dn})";
+        user = "uid=${config.services.lldap.settings.ldap_user_dn},ou=people,${config.services.lldap.settings.ldap_base_dn}";
       };
       storage.postgres = {
         address = "unix:///run/postgresql";
@@ -120,9 +127,6 @@ in {
             }
           ];
         };
-      };
-      server = {
-        asset_path = assets-no-symlinks;
       };
       # Necessary for Caddy integration
       # See https://www.authelia.com/integration/proxies/caddy/#implementation
