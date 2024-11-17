@@ -53,6 +53,7 @@
                   subdomain = "code";
                   user-group = "forge";
                 };
+                headscale.magicdns-subdomain = "on";
                 lldap.subdomain = "users";
               };
             };

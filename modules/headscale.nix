@@ -3,7 +3,7 @@
 let
   headscale-domain = "${config.site.apps.headscale.subdomain}.${config.site.domain}";
   headscale-port = config.site.apps.headscale.port;
-  tailnet-domain = "${config.site.apps.headscale.dns-subdomain}.${config.site.domain}";
+  magicdns-domain = "${config.site.apps.headscale.magicdns-subdomain}.${config.site.domain}";
 in {
   site.apps.headscale.enabled = true;
 
@@ -18,7 +18,7 @@ in {
       port = headscale-port;
       settings = {
         server_url = "https://${headscale-domain}";
-        dns.base_domain = tailnet-domain;
+        dns.base_domain = magicdns-domain;
         ip_prefixes = [ "fd7a:115c:a1e0::/48" "100.64.0.0/10" ];
         oidc = {
           issuer = "https://${config.site.apps.authelia.subdomain}.${config.site.domain}";

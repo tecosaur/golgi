@@ -87,14 +87,13 @@ in {
         name = "Headscale";
         homepage = "https://headscale.net";
         description = "mesh virtual private network";
-        simpleicon = "tailscale";
         subdomain = "headscale";
         port = 8174;
         extraOptions = {
-          dns-subdomain = lib.mkOption {
+          magicdns-subdomain = lib.mkOption {
             type = lib.types.str;
-            default = "tails";
-            description = "Base domain to use for tailnet DNS.";
+            default = "headnet";
+            description = "Subdomain to use in the base domain for MagicDNS.";
           };
         };
       };
