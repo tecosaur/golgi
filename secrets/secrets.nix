@@ -17,4 +17,5 @@ in
   "mealie-credentials.env".publicKeys = systems;
   "postgres-authelia.age".publicKeys = systems;
   "postgres-forgejo.age".publicKeys = systems;
+  "tailscale-preauth.age".publicKeys = systems;
 }

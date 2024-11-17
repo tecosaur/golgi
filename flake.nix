@@ -35,6 +35,7 @@
           site-config
           syncthing
           system
+          tailscale
           uptime
           zsh
           {
