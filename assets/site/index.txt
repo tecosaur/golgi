@@ -1,0 +1,62 @@
+                ⠀⠀⠀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿⣷⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠈⢙⣿⣿⣿⣿⣿⣿⡿⠻⣿⣴⡿⠿⣿⣿⣿⣿⣷⣶⡄⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠘⠛⠛⠛⠋⠉⠙⢿⠁⠀⢻⣿⣿⣿⣿⣿⣿⣿⣾⣿⣥⡄⠀⠀⠀⠀⠀
+        ⠀⠀⠀⢾⣿⣿⣿⣷⣤⣄⣈⡇⢀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀
+        ⠀⠀⠀⢀⣿⣿⣿⣿⣷⣾⣿⣿⡿⢿⡿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀⠀⠀
+        ⠀⣴⣶⣿⡿⠿⢿⡿⠿⠛⠉⠹⣇⢸⡇⠠⣾⠿⢷⣶⣶⣶⣶⣾⣏⣁⣀⣀⠀⠀
+        ⠀⠀⠀⠀⢀⣴⣶⣶⣶⣶⣶⠶⠿⣾⡇⣸⠃⣠⡾⠛⣿⣿⣿⡟⠻⠿⠛⠉⠀⠀
+        ⠀⢀⣠⣴⠿⠿⠿⣿⣿⣿⡿⢷⡀⣹⣷⡟⢠⡿⣠⢬⣽⣷⣾⣶⣦⣤⣀⠀⠀⠀
+        ⠀⠸⡿⠃⠀⣀⣀⣠⣤⣤⣤⣌⠳⣿⡟⠀⣾⣇⡏⠀⠻⢿⣿⣿⣿⣿⣿⠗⠀⠀
+        ⠀⠀⠀⠀⠸⠟⠋⣿⣿⣯⣉⠉⠙⣿⣷⣾⠿⢛⣶⣶⣶⣶⣿⣿⣿⣿⡀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠈⠉⠛⠋⠉⠁⠀⣿⣿⡏⠀⠸⠿⠿⠿⠿⣿⣿⣿⣿⣿⡿⠟⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠰⢾⣷⣶⣶⣿⣿⣷⣶⡶⠦⠀⠀⠀⠀⠀⠉⠙⠋⠀⠀⠀
+                   ⠉⠉⠉
+
+This is my personal general-purpose server, where I host various services,
+projects, and utilities.
+
+__        __   _
+\ \      / /__| | ___ ___  _ __ ___   ___
+ \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \
+  \ V  V /  __/ | (_| (_) | | | | | |  __/
+   \_/\_/ \___|_|\___\___/|_| |_| |_|\___|
+
+If you're interested in the projects I'm working on, and increasing number
+of them are hosted on <https://$FORGE_SUBDOMAIN.$DOMAIN>.
+
+Occasionally I write about developments in Org Mode, and put them on
+<https://blog.$DOMAIN/tmio>. I also have a collection of public documents
+under <https://public.$DOMAIN>.
+
+Enjoy!
+
+┌╴───────────────╶┐
+| Online presence |
+└╴───────────────╶┘
+
+• @tecosaur on Github: <https://github.com/tecosaur>
+• @tecosaur around Julia spaces:
+  – Discourse <https://discourse.julialang.org/u/tecosaur>
+  – Zulip <https://julialang.zulipchat.com>
+  – Slack <https://julialang.slack.com>
+• @tecosaur:matrix.org
+• @tecosaur on Discord
+• @tecosaur (with a tree avatar) around the net…
+
+I'm generally happy to be contacted, and can also be reached
+by email at contact@<this domain>.
+
+┌╴─────────────────╶┐
+| Technical details |
+└╴─────────────────╶┘
+
+This server is managed by NixOS (with flakes and deploy-rs), and is running:
+$APPS_TEXT
+
+In future, I'm also considering setting up:
+• Dendrite/Conduit (Matrix servers)
+• My TMiO blog
+• Kopia (backups)
+• Koel (music streaming)

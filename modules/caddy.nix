@@ -2,7 +2,38 @@
 
 with lib;
 
-{
+let
+  static-root = pkgs.runCommand "static-root" { buildInputs = [ pkgs.gettext ]; } ''
+      export DOMAIN='${config.site.domain}'
+      export FORGE_SUBDOMAIN='${config.site.apps.forgejo.subdomain}'
+      export HOMEPAGE_SUBDOMAIN='${config.site.apps.homepage.subdomain}'
+      export APPS_TEXT=$(cat <<'HEREDOC'
+      ${concatStringsSep "\n" (map (app: "• ${app.name} (${app.description})")
+        (builtins.filter (app: app.enabled) (builtins.attrValues config.site.apps)))}
+      HEREDOC
+      )
+
+      apply_template() {
+          for file in "$@"; do
+              tmpout=$(mktemp)
+              envsubst < "$file" > "$tmpout"
+              mv "$tmpout" "$file"
+          done
+      }
+
+      mkdir -p $out
+      cp -r ${../assets/site}/* $out
+      cd $out
+      apply_template index.txt welcome-public.html welcome-private.html
+      cp index.html index-public.html
+      export WELCOME=`sed 's/^/            /g' welcome-public.html`
+      apply_template index-public.html
+      cp index.html index-private.html
+      export WELCOME=`sed 's/^/            /g' welcome-private.html`
+      apply_template index-private.html
+      rm index.html welcome-public.html welcome-private.html
+    '';
+in {
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   networking.firewall.allowedUDPPorts = [ 443 ];
 
@@ -30,78 +61,26 @@ with lib;
         acme_dns cloudflare {env.CLOUDFLARE_AUTH_TOKEN}
         '';
       virtualHosts."${config.site.domain}".extraConfig = ''
-@assets path /favicon.ico
-file_server @assets {
-  root /etc/site-assets
-}
-respond / "  ⠀      ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿⣷⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠈⢙⣿⣿⣿⣿⣿⣿⡿⠻⣿⣴⡿⠿⣿⣿⣿⣿⣷⣶⡄⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠘⠛⠛⠛⠋⠉⠙⢿⠁⠀⢻⣿⣿⣿⣿⣿⣿⣿⣾⣿⣥⡄⠀⠀⠀⠀⠀
-        ⠀⠀⠀⢾⣿⣿⣿⣷⣤⣄⣈⡇⢀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀
-        ⠀⠀⠀⢀⣿⣿⣿⣿⣷⣾⣿⣿⡿⢿⡿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀⠀⠀
-        ⠀⣴⣶⣿⡿⠿⢿⡿⠿⠛⠉⠹⣇⢸⡇⠠⣾⠿⢷⣶⣶⣶⣶⣾⣏⣁⣀⣀⠀⠀
-        ⠀⠀⠀⠀⢀⣴⣶⣶⣶⣶⣶⠶⠿⣾⡇⣸⠃⣠⡾⠛⣿⣿⣿⡟⠻⠿⠛⠉⠀⠀
-        ⠀⢀⣠⣴⠿⠿⠿⣿⣿⣿⡿⢷⡀⣹⣷⡟⢠⡿⣠⢬⣽⣷⣾⣶⣦⣤⣀⠀⠀⠀
-        ⠀⠸⡿⠃⠀⣀⣀⣠⣤⣤⣤⣌⠳⣿⡟⠀⣾⣇⡏⠀⠻⢿⣿⣿⣿⣿⣿⠗⠀⠀
-        ⠀⠀⠀⠀⠸⠟⠋⣿⣿⣯⣉⠉⠙⣿⣷⣾⠿⢛⣶⣶⣶⣶⣿⣿⣿⣿⡀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠈⠉⠛⠋⠉⠁⠀⣿⣿⡏⠀⠸⠿⠿⠿⠿⣿⣿⣿⣿⣿⡿⠟⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠰⢾⣷⣶⣶⣿⣿⣷⣶⡶⠦⠀⠀⠀⠀⠀⠉⠙⠋⠀⠀⠀
-                      ⠉⠉⠉
-
-This is my personal general-purpose server, where I
-host various services, projects, and utilities.
-
-__        __   _
-\ \      / /__| | ___ ___  _ __ ___   ___
- \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \
-  \ V  V /  __/ | (_| (_) | | | | | |  __/
-   \_/\_/ \___|_|\___\___/|_| |_| |_|\___|
-
-If you're interested in the projects I'm working on,
-and increacing number of them are hosted on
-<https://${config.site.apps.forgejo.subdomain}.${config.site.domain}>.
-
-Occasionally I write about developments in Org Mode,
-and put them on <https://blog.${config.site.domain}/tmio>.
-I also have a collection of public documents under
-<https://public.${config.site.domain}>.
-
-Enjoy!
-
-┌╴───────────────╶┐
-| Online presence |
-└╴───────────────╶┘
-
-• @tecosaur on Github: <https://github.com/tecosaur>
-• @tecosaur around Julia spaces:
-  – Discourse <https://discourse.julialang.org/u/tecosaur>
-  – Zulip <https://julialang.zulipchat.com>
-  – Slack <https://julialang.slack.com>
-• @tecosaur:matrix.org
-• @tecosaur on Discord
-• @tecosaur (with a tree avatar) around the net…
-
-I'm generally happy to be contacted, and can also be reached
-by email at contact@<this domain>.
-
-┌╴─────────────────╶┐
-| Technical details |
-└╴─────────────────╶┘
-
-This server is managed by NixOS (with flakes and deploy-rs),
-and is composed of:
-${concatStringsSep "\n" (map (app: "• ${app.name} (${app.description})")
-  (builtins.filter (app: app.enabled) (builtins.attrValues config.site.apps)))}
-
-In future, I'm also considering setting up:
-• Dendrite/Conduit (Matrix servers)
-• My TMiO blog
-• Kopia (backups)
-• Koel (music streaming)
-"
-  '';
+        @browser-auth {
+            header User-Agent *Mozilla*
+            header Cookie *authelia_session*
+        }
+        @browser header User-Agent *Mozilla*
+        route {
+            file_server @browser-auth {
+              root ${static-root}
+              index index-private.html
+            }
+            file_server @browser {
+              root ${static-root}
+              index index-public.html
+            }
+            file_server {
+              root ${static-root}
+              index index.txt
+            }
+        }
+        '';
       virtualHosts."*.${config.site.domain}".extraConfig =
         ''
         respond "In the beginning, there was darkness." 404
@@ -110,11 +89,6 @@ In future, I'm also considering setting up:
 
   systemd.services.caddy.serviceConfig = {
     EnvironmentFile = config.age.secrets.cloudflare-api-env.path;
-  };
-
-  environment.etc."site-assets/favicon.ico" = {
-    source = ../assets/site/favicon.ico;
-    mode = "0444";
   };
 
   users.users.caddy = {
