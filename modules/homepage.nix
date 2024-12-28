@@ -141,7 +141,7 @@ in {
           {
             "Immich" = [{
               icon = "si-immich";
-              href = "https://immich.com";
+              href = "https://immich.app";
               description = "Photo and video management";
             }];
           }
