@@ -59,17 +59,29 @@ in {
     domain = lib.mkOption {
       type = lib.types.str;
       default = "example.com";
-      description = "Global domain for the server";
+      description = "Global domain name for the site";
     };
-    cloudflare-bypass = lib.mkOption {
+    cloudflare-bypass-subdomain = lib.mkOption {
       type = lib.types.str;
-      default = config.site.domain;
+      default = "ssh";
       description = "Domain to use for bypassing Cloudflare (e.g. for SSH).";
     };
-    ipv6 = lib.mkOption {
-      type = lib.types.str;
-      default = "";
-      description = "IPv6 address for the server";
+    server = {
+      authoritative = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Whether this server is authoritative for the domain";
+      };
+      host = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "Server name";
+      };
+      ipv6 = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "IPv6 address for the server";
+      };
     };
     apps = {
       authelia = mkAppOption {

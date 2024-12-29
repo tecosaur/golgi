@@ -33,6 +33,7 @@
           mealie
           microbin
           site-config
+          site-root
           syncthing
           system
           tailscale
@@ -41,8 +42,10 @@
           {
             site = {
               domain = "tecosaur.net";
-              cloudflare-bypass = "ssh.tecosaur.net";
-              ipv6 = "2a01:4ff:f0:cc83::";
+              server = {
+                authoritative = true;
+                ipv6 = "2a01:4ff:f0:cc83::";
+              };
               apps = {
                 mealie.subdomain = "food";
                 microbin = {
@@ -64,7 +67,7 @@
 
       deploy.nodes = {
         golgi = {
-          hostname = "${self.nixosConfigurations.golgi.config.site.cloudflare-bypass}";
+          hostname = "${self.nixosConfigurations.golgi.config.site.cloudflare-bypass-subdomain}.${self.nixosConfigurations.golgi.config.site.domain}";
           fastConnection = false;
           profiles = {
             system = {
