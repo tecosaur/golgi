@@ -60,6 +60,7 @@ in {
     syncthing = {
         homeMode = "750";
     };
+    caddy.extraGroups = [ config.services.syncthing.user ];
   });
 
   services.caddy.virtualHosts."${syncthing-domain}".extraConfig =

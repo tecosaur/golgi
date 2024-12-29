@@ -90,7 +90,7 @@
       [ "lo" ] ++ (if config.services.tailscale.enable then [ "tailscale0" ] else []);
     networks."10-uplink" = {
       matchConfig.Name = "enp1s0";
-      addresses = [ { Address = "${config.site.ipv6}/64"; } ];
+      addresses = [ { Address = "${config.site.server.ipv6}/64"; } ];
       domains = [ config.site.domain ];
       routes = [ { Gateway = "fe80::1"; } ];
       dns = [ "2606:4700:4700::1111" # Cloudflare

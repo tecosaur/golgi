@@ -134,7 +134,7 @@ in {
         DESCRIPTION = "The personal forge of TEC";
       };
       server = {
-        SSH_DOMAIN = "${config.site.cloudflare-bypass}";
+        SSH_DOMAIN = "${config.site.cloudflare-bypass-subdomain}.${config.site.domain}";
       };
       federation = {
         ENABLED = true;
@@ -150,6 +150,8 @@ in {
   };
 
   users.groups.${forgejo-user} = {};
+
+  users.users.caddy.extraGroups = [ forgejo-user ];
 
   systemd.tmpfiles.rules = [
     "L+ ${config.services.forgejo.stateDir}/custom/templates/home.tmpl - - - - ${./template-home.tmpl}"
