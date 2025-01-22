@@ -28,6 +28,7 @@
           auth
           caddy
           forgejo
+          hardware-hetzner
           headscale
           homepage
           mealie
