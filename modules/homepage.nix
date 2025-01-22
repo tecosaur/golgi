@@ -117,6 +117,13 @@ in {
               description = "Web server";
             }];
           }
+          {
+            "CrowdSec" = [{
+              icon = "mdi-crowd";
+              href = "https://crowdsec.net";
+              description = "Collaborative security";
+            }];
+          }
         ] ++ builtins.map mkAppLink [
           { app = config.site.apps.forgejo; }
           { app = config.site.apps.headscale;

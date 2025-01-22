@@ -9,7 +9,6 @@
     PasswordAuthentication = false;
     KbdInteractiveAuthentication = false;
   };
-  services.fail2ban.enable = true;
 
   # Disable `useradd` and `passwd`
   users.mutableUsers = false;
@@ -56,6 +55,8 @@
     fallbackDns = ["2606:4700:4700::1112" "2606:4700:4700::1002"
                    "1.1.1.2" "1.0.0.2"];
   };
+
+  networking.nftables.enable = true;
 
   # Network stack hardening + perf
   boot.kernelModules = [ "tcp_bbr" ];

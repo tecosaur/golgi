@@ -5,6 +5,10 @@
     nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
     flake-utils-plus.url = github:gytis-ivaskevicius/flake-utils-plus;
     agenix.url = "github:ryantm/agenix";
+    crowdsec = {
+      url = "git+https://codeberg.org/kampka/nix-flake-crowdsec.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     deploy-rs = {
       url = github:serokell/deploy-rs;
       inputs.nixpkgs.follows = "nixpkgs";
@@ -13,7 +17,7 @@
 
   nixConfig.sandbox = "relaxed";
 
-  outputs = inputs@{ self, nixpkgs, flake-utils-plus, agenix, ... }:
+  outputs = inputs@{ self, nixpkgs, flake-utils-plus, agenix, crowdsec, ... }:
     let
       modules = flake-utils-plus.lib.exportModules (
         nixpkgs.lib.mapAttrsToList (name: value: ./modules/${name}) (builtins.readDir ./modules)
@@ -27,6 +31,9 @@
           agenix.nixosModules.default
           auth
           caddy
+          crowdsec.nixosModules.crowdsec
+          crowdsec.nixosModules.crowdsec-firewall-bouncer
+          crowdsec-setup
           forgejo
           hardware-hetzner
           headscale
