@@ -17,13 +17,13 @@ let
     builtins.map ({name, repo, version}: "${repo}@${version}") attrs;
 in buildGoModule rec {
   pname = "caddy";
-  version = "2.8.4";
+  version = "2.9.1";
 
   dist = fetchFromGitHub {
     owner = "caddyserver";
     repo = "dist";
     rev = "v${version}";
-    hash = "sha256-uY6MU8iXfGK6+HP2Lc+3iPE5wY35NbGp8pMZWpNVPSg=";
+    hash = "sha256-28ahonJ0qeynoqf02gws0LstaL4E08dywSJ8s3tgEDI=";
   };
 
   src = fetchFromGitHub {

@@ -37,7 +37,7 @@ in {
           {name = "replace-response"; repo = "github.com/caddyserver/replace-response";
            version = "f92bc7d0c29d0588f91f29ecb38a0c4ddf3f85f8";}
         ];
-        vendorHash = "sha256-dlolM+dbV0VPs9PJu2rPPNfdeN1Ek5uz2ev/vRCuxuM=";
+        vendorHash = "sha256-cQ+E1nSIo4Hnmc7NsZHXmgHE7ZWGU6w1jicQKzATCXc=";
       };
       globalConfig =
         ''

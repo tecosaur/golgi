@@ -10,12 +10,12 @@
 }:
 
 let
-  version = "2.1.0";
+  version = "2.4.1";
   src = fetchFromGitHub {
     owner = "mealie-recipes";
     repo = "mealie";
     rev = "v${version}";
-    hash = "sha256-GsmhE+eAT7hHmPDDvW5ig33BNNWmYED24wq+oxSw+7M=";
+    hash = "sha256-+dQJfe+UW8lYw84ZgCIpp9dGGob1mKN2FJqMbG3Y0Qc=";
   };
 
   frontend = callPackage (import ./mealie-frontend.nix src version) { };
@@ -102,14 +102,11 @@ pythonpkgs.buildPythonApplication rec {
     substituteInPlace mealie/__init__.py \
       --replace-fail '__version__ = ' '__version__ = "v${version}" #'
 
-    substituteInPlace mealie/services/backups_v2/alchemy_exporter.py \
-      --replace-fail 'PROJECT_DIR = ' "PROJECT_DIR = Path('$out') #"
+    substituteInPlace mealie/repos/repository_cookbooks.py \
+      --replace-fail '({new_slug})(-\d+)' '({new_slug})(-\\d+)'
 
-    substituteInPlace mealie/db/init_db.py \
-      --replace-fail 'PROJECT_DIR = ' "PROJECT_DIR = Path('$out') #"
-
-    substituteInPlace mealie/services/backups_v2/alchemy_exporter.py \
-      --replace-fail '"script_location", path.join(PROJECT_DIR, "alembic")' '"script_location", "${src}/alembic"'
+    substituteInPlace mealie/schema/response/query_search.py \
+      --replace-fail '"!\#' '"!\\#'
   '';
 
   postInstall = let
@@ -123,9 +120,6 @@ pythonpkgs.buildPythonApplication rec {
   in ''
     mkdir -p $out/bin $out/libexec
     rm -f $out/bin/*
-
-    substitute ${src}/alembic.ini $out/alembic.ini \
-      --replace-fail 'script_location = alembic' 'script_location = ${src}/alembic'
 
     makeWrapper ${start_script} $out/bin/mealie \
       --set PYTHONPATH "$out/${python.sitePackages}:${pythonpkgs.makePythonPath dependencies}" \
