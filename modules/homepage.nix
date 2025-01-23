@@ -92,6 +92,14 @@ in {
             icon = "mdi-account-edit";
           })
           (mkAppStatus {
+            title = "Headscale";
+            app = config.site.apps.headscale;
+            icon = "mdi-dots-hexagon";
+            extraOptions = {
+              href = "https://${config.site.apps.headscale.subdomain}.${config.site.domain}/admin/";
+            };
+          })
+          (mkAppStatus {
             title = "Status";
             app = config.site.apps.uptime;
             extraOptions = {
