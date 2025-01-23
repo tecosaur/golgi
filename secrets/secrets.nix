@@ -13,6 +13,7 @@ in
   "crowdsec-enroll-key.age".publicKeys = systems;
   "fastmail.age".publicKeys = systems;
   "headscale-oidc-secret.age".publicKeys = systems;
+  "headplane-env.age".publicKeys = systems;
   "lldap-admin-password.age".publicKeys = systems;
   "lldap-jwt.age".publicKeys = systems;
   "lldap-key-seed.age".publicKeys = systems;

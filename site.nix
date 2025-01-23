@@ -112,6 +112,11 @@ in {
             default = "headnet";
             description = "Subdomain to use in the base domain for MagicDNS.";
           };
+          headplane-port = lib.mkOption {
+            type = lib.types.int;
+            default = 8175;
+            description = "Port that the headplane service listens on";
+          };
         };
       };
       homepage = mkAppOption {
