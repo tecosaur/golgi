@@ -9,7 +9,7 @@ in {
   age.secrets.mealie-credentials = {
     owner = mealie-user;
     group = "users";
-    file = ../secrets/mealie-credentials.env;
+    file = ../secrets/mealie-credentials-env.age;
   };
 
   services.mealie = {
