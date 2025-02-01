@@ -100,6 +100,13 @@ in {
             };
           })
           (mkAppStatus {
+            title = "Notifications";
+            app = config.site.apps.ntfy;
+            extraOptions = {
+              href = "https://${config.site.apps.ntfy.subdomain}.${config.site.domain}/app";
+            };
+          })
+          (mkAppStatus {
             title = "Status";
             app = config.site.apps.uptime;
             extraOptions = {
@@ -138,6 +145,7 @@ in {
             icon = "mdi-dots-hexagon"; }
           { app = config.site.apps.homepage;
             icon = "mdi-home-circle"; }
+          { app = config.site.apps.ntfy; }
           # { app = config.site.apps.immich; }
           { app = config.site.apps.mealie;
             icon = "mdi-silverware-fork-knife";}

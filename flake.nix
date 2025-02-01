@@ -38,6 +38,7 @@
           hardware-hetzner
           headscale
           homepage
+          ntfy
           mealie
           microbin
           site-config
