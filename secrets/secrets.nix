@@ -18,6 +18,7 @@ in
   "lldap-jwt.age".publicKeys = systems;
   "lldap-key-seed.age".publicKeys = systems;
   "mealie-credentials-env.age".publicKeys = systems;
+  "memos-oidc-secret.age".publicKeys = systems;
   "ntfy-webpush-keys-env.age".publicKeys = systems;
   "postgres-authelia.age".publicKeys = systems;
   "postgres-forgejo.age".publicKeys = systems;
