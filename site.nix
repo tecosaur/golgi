@@ -133,6 +133,13 @@ in {
         subdomain = "mealie";
         port = 9000;
       };
+      memos = mkAppOption {
+        name = "Memos";
+        homepage = "https://usememos.com";
+        description = "quick notes";
+        subdomain = "memos";
+        port = 5230;
+      };
       microbin = mkAppOption {
         name = "Microbin";
         homepage = "https://github.com/szabodanika/microbin";

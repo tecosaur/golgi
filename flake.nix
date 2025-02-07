@@ -40,6 +40,7 @@
           homepage
           ntfy
           mealie
+          memos
           microbin
           site-config
           site-root

@@ -70,6 +70,11 @@ in {
             app = config.site.apps.mealie;
             icon = "mdi-silverware-fork-knife";
           })
+          (mkAppStatus {
+            title = "Notes";
+            app = config.site.apps.memos;
+            icon = "mdi-card-text-outline";
+          })
           # (mkAppStatus {
           #   title = "Photos";
           #   app = config.site.apps.immich;
@@ -149,6 +154,8 @@ in {
           # { app = config.site.apps.immich; }
           { app = config.site.apps.mealie;
             icon = "mdi-silverware-fork-knife";}
+          { app = config.site.apps.memos;
+            icon = "mdi-card-text-outline";}
           { app = config.site.apps.microbin;
             icon = "mdi-content-paste"; }
           # { app = config.site.apps.sftpgo;
@@ -225,13 +232,6 @@ in {
               icon = "mdi-music";
               href = "https://github.com/jeffvli/feishin";
               description = "Music player";
-            }];
-          }
-          {
-            "Memos" = [{
-              icon = "mdi-text";
-              href = "https://www.usememos.com/";
-              description = "Lightweight note-taking";
             }];
           }
           {
