@@ -46,6 +46,12 @@ in {
           devices = my-computers;
           type = "receiveonly";
         };
+        "Finances" = {
+          id = "tec-ledger";
+          path = "~/tec-ledger";
+          devices = [ "tranquillity" ];
+          type = "sendreceive";
+        };
         "Fonts" = {
           id = "tec-fonts";
           path = "~/tec-fonts";

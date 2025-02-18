@@ -92,6 +92,13 @@ in {
         subdomain = "auth";
         port = 9091;
       };
+      fava = mkAppOption {
+        name = "Fava";
+        homepage = "https://beancount.github.io/fava/";
+        description = "Beancount web interface";
+        subdomain = "fava";
+        port = 5025;
+      };
       forgejo = mkAppOption {
         name = "Forgejo";
         homepage = "https://forgejo.org";
