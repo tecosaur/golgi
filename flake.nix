@@ -34,6 +34,7 @@
           crowdsec.nixosModules.crowdsec
           crowdsec.nixosModules.crowdsec-firewall-bouncer
           crowdsec-setup
+          fava
           forgejo
           hardware-hetzner
           headscale
