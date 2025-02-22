@@ -107,6 +107,10 @@ pythonpkgs.buildPythonApplication rec {
 
     substituteInPlace mealie/schema/response/query_search.py \
       --replace-fail '"!\#' '"!\\#'
+
+    # Fix with 2.6.1
+    substituteInPlace mealie/services/openai/openai.py \
+      --replace-fail 'from openai.resources.chat.completions import ChatCompletion' 'from openai.types.chat import ChatCompletion'
   '';
 
   postInstall = let
