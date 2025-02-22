@@ -15,6 +15,12 @@ src: version:
     (yarn.override { nodejs = nodejs_18; })
   ];
 
+  # See <https://github.com/mealie-recipes/mealie/issues/4563>
+  postPatch = ''
+    substituteInPlace nuxt.config.js \
+      --replace-warn 'E58325' '239A58'
+  '';
+
   configurePhase = ''
     runHook preConfigure
 
