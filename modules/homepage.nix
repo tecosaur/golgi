@@ -71,6 +71,11 @@ in {
             icon = "mdi-silverware-fork-knife";
           })
           (mkAppStatus {
+            title = "Todos";
+            app = config.site.apps.vikunja;
+            icon = "mdi-format-list-checks";
+          })
+          (mkAppStatus {
             title = "Notes";
             app = config.site.apps.memos;
             icon = "mdi-card-text-outline";
@@ -164,6 +169,8 @@ in {
           { app = config.site.apps.lldap;
             icon = "mdi-account-edit";}
           { app = config.site.apps.uptime; }
+          { app = config.site.apps.vikunja;
+            icon = "mdi-format-list-checks";}
         ]);
       }
       {
@@ -232,13 +239,6 @@ in {
               icon = "mdi-music";
               href = "https://github.com/jeffvli/feishin";
               description = "Music player";
-            }];
-          }
-          {
-            "Vikunja" = [{
-              icon = "mdi-format-list-checks";
-              href = "https://vikunja.io";
-              description = "To-do list and task manager";
             }];
           }
         ];

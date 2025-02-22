@@ -182,6 +182,13 @@ in {
         subdomain = "uptime";
         port = 3001;
       };
+      vikunja = mkAppOption {
+        name = "Vikunja";
+        homepage = "https://vikunja.io/";
+        description = "task and project management";
+        subdomain = "tasks";
+        port = 3456;
+      };
     };
   };
 }

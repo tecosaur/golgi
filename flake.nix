@@ -49,6 +49,7 @@
           system
           tailscale
           uptime
+          vikunja
           zsh
           {
             site = {
