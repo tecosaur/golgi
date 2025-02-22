@@ -109,7 +109,7 @@ in {
       notifier.smtp = {
         address = "smtp.fastmail.com:587";
         username = "tec@tecosaur.net";
-        sender = "${config.site.domain} — Authentication <auth@${config.site.domain}>";
+        sender = "${config.site.domain} — Authentication <services.authentication@${config.site.domain}>";
         subject = "{title}";
       };
       log.level = "info";
