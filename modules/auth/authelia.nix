@@ -80,6 +80,7 @@ in {
             default_redirection_url = "https://${config.site.apps.homepage.subdomain}.${config.site.domain}";
           })
         ];
+        redis.host = "/run/redis-authelia-main/redis.sock";
       };
       access_control = {
         default_policy = "deny";
@@ -147,6 +148,14 @@ in {
         ensureDBOwnership = true;
       }
     ];
+  };
+
+  services.redis.servers.authelia-main = {
+    enable = true;
+    user = authelia-user;
+    port = 0;
+    unixSocket = "/run/redis-authelia-main/redis.sock";
+    unixSocketPerm = 600;
   };
 
   systemd.services."authelia-main" = let
