@@ -23,4 +23,5 @@ in
   "postgres-authelia.age".publicKeys = systems;
   "postgres-forgejo.age".publicKeys = systems;
   "tailscale-preauth.age".publicKeys = systems;
+  "vikunja-oidc.age".publicKeys = systems;
 }
