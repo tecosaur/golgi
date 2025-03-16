@@ -16,14 +16,14 @@
 }:
 
 let
-  version = "0.24.0";
+  version = "0.24.1";
   src = fetchFromGitHub {
     owner = "usememos";
     repo = "memos";
     rev = "v${version}";
-    hash = "sha256-pEFdVxKhTNzP8gOlViD2vAmpMgHS0v149tnqlgwSnnc=";
+    hash = "sha256-0dryx3xhtnQm3dNdfXrdCu/B/HasJFZNxCXdBX9WiCg=";
   };
-  goModulesHash = "sha256-E8vGpoVICfVsjaSK4k28WYYfWXaw8mKZXMX1QcvAnTI=";
+  goModulesHash = "sha256-ceRWVed0a0tBMjQN4aoue3vtCQWtns5W2gZNA67OKMg=";
 
   buildMemosProtocGen =
     name:
@@ -86,7 +86,7 @@ let
       protoc-gen-validate
     ];
     outputPath = "gen";
-    hash = "sha256-Vp7i+bfEAs4dpAqhMDeb3em5Jry57KvY63rPHCZv9lc=";
+    hash = "sha256-ppQAdaK+N900g+WwkIvloShpEhGlEpjP/SXYHzrsD8c=";
   };
 
   protobufTypes = generateProtobufCode {
@@ -98,7 +98,7 @@ let
       protoc-gen-validate
     ];
     outputPath = "../web/src/types/proto";
-    hash = "sha256-NIWIvdeP+Xs2MPe7ij0dEiFEGMFyRhm8dwUlmCi/xK0=";
+    hash = "sha256-NoiLU4xdchpjgqSLXmwbPQ532vnWRQA/vlzvqP6kb8Q=";
   };
 
   frontend = stdenvNoCC.mkDerivation (finalAttrs: {
@@ -107,7 +107,7 @@ let
     pnpmDeps = pnpm.fetchDeps {
       inherit (finalAttrs) pname version src;
       sourceRoot = "${finalAttrs.src.name}/web";
-      hash = "sha256-z6Q5t8M7gjDRs8K5XsvnOpcp0PYLXte8OJfEDasgBHU=";
+      hash = "sha256-lopCa7F/foZ42cAwCxE+TWAnglTZg8jY8eRWmeck/W8=";
     };
     pnpmRoot = "web";
     nativeBuildInputs = with pkgs; [ nodejs pnpm.configHook ];
