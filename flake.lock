@@ -29,11 +29,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1735050278,
-        "narHash": "sha256-vOVVbmuS83mjd5aWfU4uLdbig/r/OBA4v/NyQW8RD7w=",
+        "lastModified": 1741195753,
+        "narHash": "sha256-EYME6JRSz/6MmyBYSS6fx6Ivqoqu/uDZBbyI4VrxF7w=",
         "ref": "refs/heads/main",
-        "rev": "c6aa259c883e3810167b754fed72fc06119734a0",
-        "revCount": 35,
+        "rev": "6e29e3574d56f8397cda8794564ccff4d0cf25ee",
+        "revCount": 37,
         "type": "git",
         "url": "https://codeberg.org/kampka/nix-flake-crowdsec.git"
       },
@@ -194,11 +194,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1739866667,
-        "narHash": "sha256-EO1ygNKZlsAC9avfcwHkKGMsmipUk1Uc0TbrEZpkn64=",
+        "lastModified": 1741851582,
+        "narHash": "sha256-cPfs8qMccim2RBgtKGF+x9IBCduRvd/N5F4nYpU0TVE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "73cf49b8ad837ade2de76f87eb53fc85ed5d4680",
+        "rev": "6607cf789e541e7873d40d3a8f7815ea92204f32",
         "type": "github"
       },
       "original": {

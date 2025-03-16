@@ -14,7 +14,6 @@ in {
 
   services.mealie = {
     enable = true;
-    package = pkgs.callPackage ../packages/mealie.nix { }; # Newer version of mealie
     port = config.site.apps.mealie.port;
     settings = {
       ALLOW_SIGNUP = "false";
