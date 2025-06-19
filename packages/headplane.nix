@@ -2,38 +2,46 @@
   lib,
   stdenv,
   fetchFromGitHub,
+  buildGoModule,
   makeWrapper,
-  nodejs,
-  pnpm_9,
+  nodejs_22,
+  pnpm_10,
   git,
   ...
 }:
 
-# Source: <https://gist.github.com/feathecutie/8ebc00237bcdefd517e6b65f5ea5e0dc>.
-
 stdenv.mkDerivation (finalAttrs: {
   pname = "headplane";
-  version = "0.4.1";
+  version = "v0.6.0";
 
   src = fetchFromGitHub {
     owner = "tale";
     repo = finalAttrs.pname;
     tag = finalAttrs.version;
-    hash = "sha256-2M0OpTIFfsF7khZviaAGIhKV7zEtX2ks6D6xfujmFMk=";
+    hash = "sha256-IRQw59eefznj0jVrn/3aGX3VAof2MsRIn5Iyoh42RDI=";
     # Needed for build process
     leaveDotGit = true;
   };
 
+  hp_agent = buildGoModule {
+    inherit (finalAttrs) src version;
+    pname = "hp_agent";
+    vendorHash = "sha256-5TmX9ZUotNC3ZnNWRlyugAmzQG/WSZ66jFfGljql/ww=";
+    ldflags = ["-s" "-w"];
+    env.CGO_ENABLED = 0;
+    meta.mainProgram = "hp_agent";
+  };
+
   nativeBuildInputs = [
     makeWrapper
-    nodejs
-    pnpm_9.configHook
+    nodejs_22
+    pnpm_10.configHook
     git
   ];
 
-  pnpmDeps = pnpm_9.fetchDeps {
+  pnpmDeps = pnpm_10.fetchDeps {
     inherit (finalAttrs) pname version src;
-    hash = "sha256-W0ba9xvs1LRKYLjO7Ldmus4RrJiEbiJ7+Zo92/ZOoMQ=";
+    hash = "sha256-OOWgYaGwa5PtWhFEEkRCojCDmkPIR6tJ5cfFMOLND3I=";
   };
 
   buildPhase = ''
@@ -54,13 +62,14 @@ stdenv.mkDerivation (finalAttrs: {
     # node_modules seems to be required as well
     cp -r {build,node_modules} $out/share/headplane/
     # Ugly hacks (why!?!)
-    sed -i 's;/build/source/node_modules/react-router/dist/development/index.mjs;react-router;' $out/share/headplane/build/headplane/server.js
-    sed -i 's;define_process_env_default.PORT;process.env.PORT;' $out/share/headplane/build/headplane/server.js
-    makeWrapper ${lib.getExe nodejs} $out/bin/headplane \
+    sed -i "s;$PWD;../..;" $out/share/headplane/build/server/index.js
+    makeWrapper ${lib.getExe nodejs_22} $out/bin/headplane \
         --chdir $out/share/headplane \
         --set BUILD_PATH $out/share/headplane/build \
         --set NODE_ENV production \
-        --add-flags $out/share/headplane/build/headplane/server.js
+        --add-flags $out/share/headplane/build/server/index.js
+    # Copy the agent over
+    cp ${lib.getExe finalAttrs.hp_agent} $out/bin/hp_agent
     runHook postInstall
   '';
 })

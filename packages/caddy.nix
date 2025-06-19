@@ -19,6 +19,8 @@ in buildGoModule rec {
   pname = "caddy";
   version = "2.9.1";
 
+  # See "FIXME: Dep issue" in ../modules/caddy.nix for updating to 2.10
+
   dist = fetchFromGitHub {
     owner = "caddyserver";
     repo = "dist";

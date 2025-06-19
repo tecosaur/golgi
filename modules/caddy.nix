@@ -24,6 +24,15 @@ in {
     file = ../secrets/cloudflare-api-env.age;
   };
 
+  # FIXME: Dep issue
+  # I'd like to upgrade caddy to 2.10, but then I need to bump
+  # dynamicdns so that libdns works, and that produces this error:
+  #   go: github.com/caddyserver/caddy/v2/modules/caddyhttp tested by
+  #       github.com/caddyserver/caddy/v2/modules/caddyhttp.test imports
+  #       github.com/prometheus/client_golang/prometheus/testutil imports
+  # *     github.com/kylelemons/godebug/diff: missing go.sum entry for module providing package github.com/kylelemons/godebug/diff (imported by github.com/prometheus/client_gola  ng/prometheus/testutil); to add:
+  #       go get github.com/prometheus/client_golang/prometheus/testutil@v1.22.0
+
   services.caddy = {
       enable = true;
       package = pkgs.callPackage ../packages/caddy.nix {
@@ -37,7 +46,7 @@ in {
           {name = "replace-response"; repo = "github.com/caddyserver/replace-response";
            version = "f92bc7d0c29d0588f91f29ecb38a0c4ddf3f85f8";}
         ];
-        vendorHash = "sha256-cQ+E1nSIo4Hnmc7NsZHXmgHE7ZWGU6w1jicQKzATCXc=";
+        vendorHash = "sha256-xejoBqtl/JUKHwpUOeJs9dbMvDyRqfhVCf8wCjR+61g=";
       };
       globalConfig =
         ''

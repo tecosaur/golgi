@@ -27,7 +27,10 @@ in {
       port = headscale-port;
       settings = {
         server_url = "https://${headscale-domain}";
-        dns.base_domain = magicdns-domain;
+        dns = {
+          base_domain = magicdns-domain;
+          override_local_dns = false;
+        };
         ip_prefixes = [ "fd7a:115c:a1e0::/48" "100.64.0.0/10" ];
         oidc = {
           issuer = "https://${config.site.apps.authelia.subdomain}.${config.site.domain}";
@@ -45,7 +48,6 @@ in {
   };
 
   systemd.services.headscale.serviceConfig = {
-    RestartSec = 2;
     ExecStartPre = "/bin/sh -c 'touch -a ${config.services.headscale.settings.policy.path}'";
   };
 

@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  memos-pkg = pkgs.callPackage ../packages/memos.nix { };
+  memos-pkg = pkgs.memos;
   memos-domain = "${config.site.apps.memos.subdomain}.${config.site.domain}";
   memos-port = toString config.site.apps.memos.port;
 in {

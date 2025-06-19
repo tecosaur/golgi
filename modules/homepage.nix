@@ -44,6 +44,8 @@ in {
   site.apps.homepage.enabled = true;
   services.homepage-dashboard = {
     enable = true;
+    listenPort = config.site.apps.homepage.port;
+    allowedHosts = "${home-domain}";
     services = [
       {
         "Storage" = [
@@ -324,6 +326,6 @@ in {
   services.caddy.virtualHosts."${home-domain}".extraConfig =
     ''
     import auth
-    reverse_proxy :${toString config.services.homepage-dashboard.listenPort}
+    reverse_proxy :${toString config.site.apps.homepage.port}
     '';
 }
