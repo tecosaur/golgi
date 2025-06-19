@@ -98,7 +98,7 @@
           name = "deploy";
           buildInputs = with channels.nixpkgs; [
             nixVersions.latest
-            inputs.deploy-rs.defaultPackage.${system}
+            inputs.deploy-rs.packages.${system}.default
           ];
         };
       });
