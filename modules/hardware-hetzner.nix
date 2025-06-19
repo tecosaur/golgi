@@ -1,6 +1,9 @@
 { config, pkgs, modulesPath, ... }:
 
 {
+  nixpkgs.hostPlatform = "x86_64-linux";
+  system.stateVersion = "23.05";
+
   boot = {
     initrd = {
       availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sd_mod" "sr_mod" ];
