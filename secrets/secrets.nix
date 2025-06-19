@@ -1,27 +1,30 @@
 let
   base = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt tec@tranquillity";
   golgi = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEEmWE6y+gkNdOdgooahbgalxguyoPos7dKCAeVzokm/ root@golgi";
-  systems = [ base golgi ];
+  nucleus = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOeDXHlRp0k18hSszwUYw+5FiNbPE+XLxRdXSqUUdYOF root@nucleus";
+  gbase = [ base golgi ];
+  nbase = [ base nucleus ];
+  all = [ base golgi nucleus ];
 in
 {
-  "authelia-jwt.age".publicKeys = systems;
-  "authelia-oidc-hmac.age".publicKeys = systems;
-  "authelia-oidc-issuer.pem.age".publicKeys = systems;
-  "authelia-session.age".publicKeys = systems;
-  "authelia-storage.age".publicKeys = systems;
-  "cloudflare-api-env.age".publicKeys = systems;
-  "crowdsec-enroll-key.age".publicKeys = systems;
-  "fastmail.age".publicKeys = systems;
-  "headscale-oidc-secret.age".publicKeys = systems;
-  "headplane-env.age".publicKeys = systems;
-  "lldap-admin-password.age".publicKeys = systems;
-  "lldap-jwt.age".publicKeys = systems;
-  "lldap-key-seed.age".publicKeys = systems;
-  "mealie-credentials-env.age".publicKeys = systems;
-  "memos-oidc-secret.age".publicKeys = systems;
-  "ntfy-webpush-keys-env.age".publicKeys = systems;
-  "postgres-authelia.age".publicKeys = systems;
-  "postgres-forgejo.age".publicKeys = systems;
-  "tailscale-preauth.age".publicKeys = systems;
-  "vikunja-oidc.age".publicKeys = systems;
+  "authelia-jwt.age".publicKeys = gbase;
+  "authelia-oidc-hmac.age".publicKeys = gbase;
+  "authelia-oidc-issuer.pem.age".publicKeys = gbase;
+  "authelia-session.age".publicKeys = gbase;
+  "authelia-storage.age".publicKeys = gbase;
+  "cloudflare-api-env.age".publicKeys = all;
+  "crowdsec-enroll-key.age".publicKeys = all;
+  "fastmail.age".publicKeys = all;
+  "headscale-oidc-secret.age".publicKeys = gbase;
+  "headplane-env.age".publicKeys = gbase;
+  "lldap-admin-password.age".publicKeys = gbase;
+  "lldap-jwt.age".publicKeys = gbase;
+  "lldap-key-seed.age".publicKeys = gbase;
+  "mealie-credentials-env.age".publicKeys = gbase;
+  "memos-oidc-secret.age".publicKeys = gbase;
+  "ntfy-webpush-keys-env.age".publicKeys = gbase;
+  "postgres-authelia.age".publicKeys = gbase;
+  "postgres-forgejo.age".publicKeys = gbase;
+  "tailscale-preauth.age".publicKeys = all;
+  "vikunja-oidc.age".publicKeys = gbase;
 }

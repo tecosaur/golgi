@@ -1,5 +1,5 @@
 {
-  description = "Golgi flake";
+  description = "Deployable system configurations";
 
   inputs = {
     nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
@@ -77,6 +77,21 @@
           }
         ];
 
+      hosts.nucleus.modules = with modules; [
+        agenix.nixosModules.default
+        hardware-nas
+        system
+        zsh
+        site-config
+        tailscale
+        {
+          site = {
+            domain = "tecosaur.net";
+            server.host = "nucleus";
+          };
+        }
+      ];
+
       deploy.nodes = {
         golgi = {
           hostname = "${self.nixosConfigurations.golgi.config.site.cloudflare-bypass-subdomain}.${self.nixosConfigurations.golgi.config.site.domain}";
@@ -87,6 +102,19 @@
               sshOpts = ["-o" "ControlMaster=no"];
               path =
                 inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.golgi;
+              user = "root";
+            };
+          };
+        };
+        nucleus = {
+          hostname = "nas.lan";
+          fastConnection = false;
+          profiles = {
+            system = {
+              sshUser = "admin";
+              sshOpts = ["-o" "ControlMaster=no"];
+              path =
+                inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.nucleus;
               user = "root";
             };
           };
