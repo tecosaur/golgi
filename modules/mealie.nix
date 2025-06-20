@@ -68,40 +68,6 @@ in {
   };
   users.groups.${mealie-user} = {};
 
-  services.authelia.instances.main.settings = {
-    identity_providers.oidc = {
-      # authorization_policies.mealie = {
-      #   default_policy = "one_factor";
-        # rules = [
-        #   {
-        #     policy = "two_factor";
-        #     subject = [ [ "group:${config.site.apps.mealie.user-group}"
-        #                   "group:${config.site.apps.mealie.admin-group}" ] ];
-        #   }
-        # ];
-      # };
-      clients = [
-        {
-          client_id = "mealie";
-          client_name = "Mealie";
-          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$hTubW+z8HklfQlm2mi8oPA$cFVnkx8aYkDkPlSJUcHo5F88vCfN/ija/U44sEqOa64";
-          # authorization_policy = "mealie";
-          authorization_policy = "one_factor";
-          public = false;
-          consent_mode = "implicit";
-          redirect_uris = [ "https://${mealie-domain}/login"
-                            "http://localhost:${toString config.site.apps.mealie.port}/login" ];
-          # require_pkce = true;
-          pkce_challenge_method = "S256";
-          scopes = [ "openid" "email" "profile" "groups" ];
-          userinfo_signed_response_alg = "none";
-          token_endpoint_auth_method = "client_secret_basic";
-          grant_types = [ "authorization_code" ];
-        }
-      ];
-    };
-  };
-
   services.caddy.virtualHosts."${mealie-domain}".extraConfig =
     ''
     handle_path /icons/* {

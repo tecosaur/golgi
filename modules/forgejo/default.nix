@@ -166,35 +166,6 @@ in {
     "L+ ${config.services.forgejo.stateDir}/custom/public/robots.txt - - - - ${./robots.txt}"
   ];
 
-  services.authelia.instances.main.settings = {
-    identity_providers.oidc = {
-      authorization_policies.forgejo = {
-        default_policy = "one_factor";
-        rules = [
-          {
-            policy = "two_factor";
-            subject = [ [ "group:${config.site.apps.forgejo.user-group}"
-                          "group:${config.site.apps.forgejo.admin-group}" ] ];
-          }
-        ];
-      };
-      clients = [
-        {
-          client_id = "forgejo";
-          client_name = "Forgejo";
-          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$fRdkE7fHqAPkVQYXn1Zksw$O6WQ4fsNoN/0vzOK4hT1oreVPyFoVcK2hOIFx3axe/A";
-          authorization_policy = "forgejo";
-          public = false;
-          consent_mode = "implicit";
-          redirect_uris = [ "https://${forgejo-domain}/user/oauth2/authelia/callback" ];
-          scopes = [ "openid" "email" "profile" "groups" ];
-          userinfo_signed_response_alg = "none";
-          token_endpoint_auth_method = "client_secret_basic";
-        }
-      ];
-    };
-  };
-
   services.caddy.virtualHosts."git.${config.site.domain}".extraConfig =
     "redir https://${forgejo-domain}{uri} 301";
 
