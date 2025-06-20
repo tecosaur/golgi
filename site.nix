@@ -133,6 +133,14 @@ in {
         subdomain = "home";
         port = 8082;
       };
+      ntfy = mkAppOption {
+        name = "Ntfy";
+        homepage = "https://ntfy.sh";
+        description = "push notifications";
+        simpleicon = "ntfy";
+        subdomain = "ntfy";
+        port = 2586;
+      };
       mealie = mkAppOption {
         name = "Mealie";
         homepage = "https://docs.mealie.io";
