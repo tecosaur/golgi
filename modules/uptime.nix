@@ -29,17 +29,4 @@ in
         reverse_proxy :${config.services.uptime-kuma.settings.PORT}
     }
     '';
-
-  services.authelia.instances.main.settings.access_control.rules = [
-    {
-      domain = kuma-domain;
-      policy = "one_factor";
-      subject = ["group:${config.site.apps.uptime.user-group}"
-                 "group:${config.site.apps.uptime.admin-group}"];
-    }
-    {
-      domain = kuma-domain;
-      policy = "deny";
-    }
-  ];
 }

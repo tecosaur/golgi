@@ -30,39 +30,6 @@ in {
 
   users.groups.memos = { };
 
-  services.authelia.instances.main.settings = {
-    identity_providers.oidc = {
-      authorization_policies.memos = {
-        default_policy = "deny";
-        rules = [
-          {
-            policy = "one_factor";
-            subject = "group:${config.site.apps.memos.user-group}";
-          }
-          {
-            policy = "two_factor";
-            subject = "group:${config.site.apps.memos.admin-group}";
-          }
-        ];
-      };
-      clients = [
-        {
-          client_id = "memos";
-          client_name = "Memos";
-          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$5SHxB5qqWhPiYFeZ/cUXQQ$u1lemwNPR6FCopfiR65/jAt0DOfa5GXeKd/YqkD8l7M";
-          authorization_policy = "memos";
-          public = false;
-          consent_mode = "implicit";
-          redirect_uris = [ "https://${memos-domain}/auth/callback" ];
-          scopes = [ "openid" "email" "profile" ];
-          userinfo_signed_response_alg = "none";
-          token_endpoint_auth_method = "client_secret_post";
-          grant_types = [ "authorization_code" ];
-        }
-      ];
-    };
-  };
-
   # See <https://github.com/usememos/memos/issues/4318> for why
   # the `redir` directive is used here.
   services.caddy.virtualHosts."${memos-domain}".extraConfig =

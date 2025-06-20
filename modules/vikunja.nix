@@ -80,35 +80,6 @@ in {
   };
   users.groups.${vikunja-user} = {};
 
-  services.authelia.instances.main.settings = {
-    identity_providers.oidc = {
-      authorization_policies.vikunja = {
-        default_policy = "one_factor";
-        rules = [
-          {
-            policy = "two_factor";
-            subject = [ [ "group:${config.site.apps.vikunja.user-group}"
-                          "group:${config.site.apps.vikunja.admin-group}" ] ];
-          }
-        ];
-      };
-      clients = [
-        {
-          client_id = "vikunja";
-          client_name = "Vikunja";
-          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$zRMdh029w57vBVKYJUbrOA$XpthqZlqEa6neEoIffR8wHEt++KuMykATd/tte//4II";
-          authorization_policy = "vikunja";
-          public = false;
-          consent_mode = "implicit";
-          redirect_uris = [ "https://${vikunja-domain}/auth/openid/authelia" ];
-          scopes = [ "openid" "email" "profile" ];
-          userinfo_signed_response_alg = "none";
-          token_endpoint_auth_method = "client_secret_basic";
-        }
-      ];
-    };
-  };
-
   services.caddy.virtualHosts."${vikunja-domain}".extraConfig =
     ''
     @public-assets path /favicon.ico /images/icons/*

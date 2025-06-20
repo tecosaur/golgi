@@ -8,6 +8,8 @@ let
   static-assets-dir = ../assets/microbin;
 in
 let
+  site.apps.microbin.enabled = true;
+
   caddy-static-assets-filter =
     ''
     handle_path /static/* {
@@ -140,17 +142,4 @@ in {
         redir https://${ubin-domain}{uri}
     }
     '';
-
-  services.authelia.instances.main.settings.access_control.rules = [
-    {
-      domain = ubin-domain;
-      policy = "one_factor";
-      subject = ["group:${config.site.apps.microbin.user-group}"
-                 "group:${config.site.apps.microbin.admin-group}"];
-    }
-    {
-      domain = ubin-domain;
-      policy = "deny";
-    }
-  ];
 }

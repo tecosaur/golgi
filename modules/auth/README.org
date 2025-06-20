@@ -18,3 +18,7 @@ it should be sufficient.
 #+begin_src shell
 nix run 'nixpkgs#authelia' -- crypto hash generate argon2 --random --random.length 72 --random.charset rfc3986
 #+end_src
+
+Taking the output of Authelia's handy generator:
+1. Record the password in a secret file
+2. Add the digest to a new OIDC client spec (in =clients.nix=)

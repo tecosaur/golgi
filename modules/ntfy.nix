@@ -55,17 +55,4 @@ in {
         reverse_proxy :${toString config.site.apps.ntfy.port}
     }
     '';
-
-  services.authelia.instances.main.settings.access_control.rules = [
-    {
-      domain = ntfy-domain;
-      policy = "two_factor";
-      subject = ["group:${config.site.apps.ntfy.user-group}"
-                 "group:${config.site.apps.ntfy.admin-group}"];
-    }
-    {
-      domain = ntfy-domain;
-      policy = "deny";
-    }
-  ];
 }
