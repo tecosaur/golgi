@@ -9,9 +9,6 @@ let
     ''
     else
     ''
-    domains {
-            ${config.site.domain}
-    }
     dynamic_domains
     '';
 in {

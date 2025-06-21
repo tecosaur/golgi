@@ -93,6 +93,9 @@ in {
         (mkPolicy config.site.apps.headscale {
           admins = false;
         })
+        (mkPolicy config.site.apps.immich {
+          user_policy = "two_factor";
+        })
         (mkPolicy config.site.apps.memos {})
         (mkPolicy config.site.apps.vikunja {
           user_policy = "two_factor";
@@ -118,6 +121,16 @@ in {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$JxZLRd3W145f3uB3D2UVqw$kJVGMuaLzESu9kWDYE8p8mnM2qRRAiaLgAI0vJaCu5k";
           redirect_paths = [ "oidc/callback" "admin/oidc/callback" ];
         })
+        (mkClient config.site.apps.immich {
+          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$MZZGRuALuFh6qmXYhBFRTg$27qX6xv264Cs6cuj18afQa1oc4ddt/X+ndYBkDVcMVU";
+          redirect_paths = [ "auth/login" "user-settings" ];
+          redirect_uris = [ "app.immich:///oauth-callback" ];
+          response_types = [ "code" ];
+          require_pkce = false;
+          pkce_challenge_method = "";
+          grant_types = [ "authorization_code" ];
+          token_endpoint_auth_method = "client_secret_post";
+        })
         (mkClient config.site.apps.mealie {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$hTubW+z8HklfQlm2mi8oPA$cFVnkx8aYkDkPlSJUcHo5F88vCfN/ija/U44sEqOa64";
           authorization_policy = "one_factor";
@@ -134,7 +147,7 @@ in {
         })
         (mkClient config.site.apps.sftpgo {
           authorization_policy = "one_factor";
-          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$nmXHWgFsirqw51Fy9/gmuQ$qzFhiwI8klkCUoMyv3x0ZPU6nY1oyTLvWXd06hTL03g";
+          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$XY2jSGxOVxEMvFvJ4hQ1Fg$hZah2TkuBoQrlJi8wiO5oyMGh3y09nc1CPr9UHbe/7k";
           claims_policy = "sftpgo";
           redirect_paths = [ "web/oidc/redirect" "web/oauth2/redirect" ];
           grant_types = [ "authorization_code" ];
