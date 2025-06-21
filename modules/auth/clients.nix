@@ -97,7 +97,18 @@ in {
         (mkPolicy config.site.apps.vikunja {
           user_policy = "two_factor";
         })
+        (mkPolicy config.site.apps.sftpgo {
+          user_policy = "two_factor";
+          admins = false;
+        })
       ];
+      claims_policies = {
+        sftpgo = {
+          # An ugly hack because SFTPGo doesn't support the bare
+          # minimum of an OIDC client 🙃.
+          id_token = [ "preferred_username" "email" "name" ];
+        };
+      };
       clients = lib.flatten [
         (mkClient config.site.apps.forgejo {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$fRdkE7fHqAPkVQYXn1Zksw$O6WQ4fsNoN/0vzOK4hT1oreVPyFoVcK2hOIFx3axe/A";
@@ -120,6 +131,13 @@ in {
           redirect_paths = [ "auth/callback" ];
           grant_types = [ "authorization_code" ];
           token_endpoint_auth_method = "client_secret_post";
+        })
+        (mkClient config.site.apps.sftpgo {
+          authorization_policy = "one_factor";
+          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$nmXHWgFsirqw51Fy9/gmuQ$qzFhiwI8klkCUoMyv3x0ZPU6nY1oyTLvWXd06hTL03g";
+          claims_policy = "sftpgo";
+          redirect_paths = [ "web/oidc/redirect" "web/oauth2/redirect" ];
+          grant_types = [ "authorization_code" ];
         })
         (mkClient config.site.apps.vikunja {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$zRMdh029w57vBVKYJUbrOA$XpthqZlqEa6neEoIffR8wHEt++KuMykATd/tte//4II";
