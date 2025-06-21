@@ -25,6 +25,8 @@ in
   "ntfy-webpush-keys-env.age".publicKeys = gbase;
   "postgres-authelia.age".publicKeys = gbase;
   "postgres-forgejo.age".publicKeys = gbase;
+  "sftpgo-env.age".publicKeys = nbase;
+  "sftpgo-oidc-secret.age".publicKeys = nbase;
   "tailscale-preauth.age".publicKeys = all;
   "vikunja-oidc.age".publicKeys = gbase;
 }

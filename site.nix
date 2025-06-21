@@ -174,6 +174,25 @@ in {
           };
         };
       };
+      sftpgo = mkAppOption {
+        name = "SFTPGo";
+        homepage = "https://sftpgo.com";
+        description = "SFTP server";
+        subdomain = "files";
+        port = 8083;
+        extraOptions = {
+          webdavd-port = lib.mkOption {
+            type = lib.types.int;
+            default = 3303;
+            description = "Port that the webdavd service listens on";
+          };
+          sftpd-port = lib.mkOption {
+            type = lib.types.int;
+            default = 2022;
+            description = "Port that the sftpd service listens on";
+          };
+        };
+      };
       syncthing = mkAppOption {
         name = "Syncthing";
         homepage = "https://syncthing.net";
