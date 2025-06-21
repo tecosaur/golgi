@@ -6,9 +6,11 @@ let
     domains {
             ${config.site.domain} @ * ${config.site.cloudflare-bypass-subdomain}
     }
+    ip_source simple_http https://icanhazip.com
     ''
     else
     ''
+    ip_source simple_http https://icanhazip.com
     dynamic_domains
     '';
 in {
