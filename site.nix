@@ -133,6 +133,14 @@ in {
         subdomain = "home";
         port = 8082;
       };
+      immich = mkAppOption {
+        name = "Immich";
+        homepage = "https://immich.app";
+        description = "photo and video management";
+        simpleicon = "immich";
+        subdomain = "photos";
+        port = 2283;
+      };
       ntfy = mkAppOption {
         name = "Ntfy";
         homepage = "https://ntfy.sh";
