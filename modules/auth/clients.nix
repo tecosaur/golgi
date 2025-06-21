@@ -97,7 +97,16 @@ in {
         (mkPolicy config.site.apps.vikunja {
           user_policy = "two_factor";
         })
+        (mkPolicy config.site.apps.sftpgo {
+          user_policy = "two_factor";
+          admins = false;
+        })
       ];
+      claims_policies = {
+        sftpgo = {
+          id_token = [ "preferred_username" ];
+        };
+      };
       clients = lib.flatten [
         (mkClient config.site.apps.forgejo {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$fRdkE7fHqAPkVQYXn1Zksw$O6WQ4fsNoN/0vzOK4hT1oreVPyFoVcK2hOIFx3axe/A";
@@ -118,6 +127,13 @@ in {
         (mkClient config.site.apps.memos {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$5SHxB5qqWhPiYFeZ/cUXQQ$u1lemwNPR6FCopfiR65/jAt0DOfa5GXeKd/YqkD8l7M";
           redirect_paths = [ "auth/callback" ];
+          grant_types = [ "authorization_code" ];
+        })
+        (mkClient config.site.apps.sftpgo {
+          authorization_policy = "one_factor";
+          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$nmXHWgFsirqw51Fy9/gmuQ$qzFhiwI8klkCUoMyv3x0ZPU6nY1oyTLvWXd06hTL03g";
+          claims_policy = "sftpgo";
+          redirect_paths = [ "web/oidc/redirect" "web/oauth2/redirect" ];
           grant_types = [ "authorization_code" ];
         })
         (mkClient config.site.apps.vikunja {
