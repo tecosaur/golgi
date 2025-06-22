@@ -175,6 +175,13 @@ in {
           };
         };
       };
+      scrutiny = mkAppOption {
+        name = "Scrutiny";
+        homepage = "https://github.com/AnalogJ/scrutiny";
+        description = "disk health monitoring";
+        subdomain = "drives.health";
+        port = 8606;
+      };
       sftpgo = mkAppOption {
         name = "SFTPGo";
         homepage = "https://sftpgo.com";
