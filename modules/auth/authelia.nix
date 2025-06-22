@@ -174,17 +174,6 @@ in {
   };
   users.groups.${authelia-user} = {};
 
-  services.caddy = {
-    virtualHosts."${auth-domain}".extraConfig = ''reverse_proxy localhost:${toString authelia-port}'';
-    # A Caddy snippet that can be imported to enable Authelia in front of a service
-    # Taken from https://www.authelia.com/integration/proxies/caddy/#subdomain
-    extraConfig = ''
-        (auth) {
-            forward_auth localhost:${toString authelia-port} {
-                uri /api/authz/forward-auth
-                copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
-            }
-        }
-    '';
-  };
+  services.caddy.virtualHosts."${auth-domain}".extraConfig =
+    ''reverse_proxy localhost:${toString authelia-port}'';
 }
