@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Services</title>
+        <meta name="description" content="A menagerie of services and pages.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#229454">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <style>
+            body {
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: space-around;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                padding: 0.6em;
+                box-sizing: border-box;
+                font-size: 1.1rem;
+                font-family: monospace;
+                background: #ebfdf0;
+            }
+            header, section {
+                margin: 0;
+                width: 100%;
+                max-width: 40em;
+            }
+            h1, h2, h3, strong, dt, a {
+                color: #229454;
+            }
+            a {
+                white-space: nowrap;
+            }
+            dt {
+                font-weight: 650;
+            }
+            details {
+                margin-top: 0.4em;
+            }
+            summary {
+                color: #229454;
+                font-weight: 600;
+                font-size: 1.2em;
+            }
+            details details > summary {
+                font-size: 1em;
+            }
+            details[open] {
+                border: 1px solid #229454;
+                background: #239a5811;
+                padding: 0.1em 0.5em;
+                margin-left: -0.5em;
+                margin-right: -0.5em;
+            }
+            code {
+                background: #239a5844;
+                opacity: 0.9;
+                font-size: 0.95em;
+            }
+            ::selection {
+                background: #239a5855;
+            }
+            @media (prefers-color-scheme: dark) {
+                body {
+                    background: #0e1d13;
+                    color: #fafafa;
+                }
+                h1, h2, h3 {
+                    color: #27a560;
+                }
+                strong, dt, a, summary {
+                    color: #30c370;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+        <header>
+            <h1>Services <a href=".." style="float: right;">↩</a></h1>
+            <p>An overview of potentially-useful serivces I'm running,
+               (in no particular order) and instructions on how to start using them.</p>
+        </header>
+        <section>
+            <details id="photos">
+                <summary>Photo management and storage</summary>
+                <p><a href="https://immich.app/">Immich</a> is a polished photo and video management system.
+                    It is designed for uploading, storing, and sharing media with good support for sharing as well
+                    as bells and whistles like face recognition and geotagging.</p>
+                <p>There are three ways you can use Immich:</p>
+                <dl>
+                    <dt>Web</dt>
+                    <dd>Visit <a href="https://$IMMICH_URL">$IMMICH_SUBDOMAIN.■</a> and sign in.</dd>
+                    <dt>iOS</dt>
+                    <dd>Download the Immich app from the <a href="https://apps.apple.com/sg/app/immich/id1613945652">App Store</a>,
+                        then supply the server URL <code>http<b>s</b>://$IMMICH_URL</code>. Log in.</dd>
+                    <dt>Android</dt>
+                    <dd>Download the Immich app from the <a href="https://play.google.com/store/apps/details?id=app.alextran.immich">Play Store</a>
+                        (or <a href="https://f-droid.org/en/packages/app.alextran.immich/">F-Droid</a>),
+                        then supply the server URL <code>http<b>s</b>://$IMMICH_URL</code>. Log in.</dd>
+                </dl>
+                <p>When using the iOS or Android app, after logging in you can select albums on the device
+                    to back up (tap on the cloud icon next to the top right corner).
+                    I recommend <em>Camera</em> on Android and <em>Recent</em> on iOS.</p>
+            </details>
+            <details id="storage">
+                <summary>Cloud storage</summary>
+                <p>You can easily access the storage from the web at <a href="https://$SFTPGO_URL">$SFTPGO_SUBDOMAIN.■</a>.
+                   The first time you log in, your account will automatically be created.</p>
+                <details id="storage-macos">
+                    <summary>MacOS</summary>
+                    <p>TODO</p>
+                </details>
+                <details id="storage-windows">
+                    <summary>Windows</summary>
+                    <p>TODO</p>
+                </details>
+                <details id="storage-linux">
+                    <summary>Linux</summary>
+                    <p>TODO</p>
+                </details>
+                <details id="storage-ios">
+                    <summary>iOS</summary>
+                    <p>TODO</p>
+                </details>
+                <details id="storage-android">
+                    <summary>Android</summary>
+                    <p>TODO</p>
+                </details>
+            </details>
+            <details id="notes">
+                <summary>Quick notes</summary>
+                <p><a href="https://www.usememos.com/">Memos</a> is a lightweight notes app, with a small but well-considered set of features.
+                    It can be used in the following ways:</p>
+                <dl>
+                    <dt>Web</dt>
+                    <dd>Visit <a href="https://$MEMOS_URL">$MEMOS_SUBDOMAIN.■</a> and sign in.</dd>
+                    <dt>iOS</dt>
+                    <dd>Download the Moe Memos app from the <a href="https://apps.apple.com/app/moe-memos/id1643902185">App Store</a>
+                        then supply the server URL <code>https://$MEMOS_URL</code>. Log in.</dd>
+                    <dt>iOS</dt>
+                    <dd>Download the Moe Memos app from the <a href="https://apps.apple.com/app/moe-memos/id1643902185">Play Store</a>
+                        (or <a href="https://f-droid.org/packages/me.mudkip.moememos/">F-Droid</a>), then supply the server URL
+                        <code>https://$MEMOS_URL</code>. Log in.</dd>
+                </dl>
+            </details>
+            <details>
+                <summary>Recipe management</summary>
+                <p>TODO</p>
+            </details>
+            <details>
+                <summary>Warranty tracking</summary>
+                <p>TODO</p>
+            </details>
+            <details>
+                <summary>E-book library</summary>
+                <p>TODO</p>
+            </details>
+        </section>
+        </div>
+        <script>
+         if (location.hash) {
+             let el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+             while (el) {
+                 if (el.tagName === 'DETAILS') el.open = true;
+                 el = el.parentElement;
+             }
+         }
+         setTimeout(() => {
+            document.addEventListener('toggle', e => {
+                if (!e.target.id) return;
+                history.replaceState(null, '', e.target.open ? '#' + e.target.id : location.pathname + location.search);
+            }, { capture: true });
+         }, 0);
+        </script>
+    </body>
+</html>
