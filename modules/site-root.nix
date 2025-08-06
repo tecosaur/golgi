@@ -3,10 +3,22 @@
 with lib;
 
 let
+  mkAppExport = name: app: let
+    prefix = lib.toUpper (lib.replaceStrings [ "-" ] [ "_" ] name);
+  in
+    ''
+    export ${prefix}_SUBDOMAIN="${app.subdomain}";
+    export ${prefix}_URL="${app.subdomain}.${config.site.domain}";
+    '';
+  mkAppExports = apps: lib.concatStringsSep "\n"
+    (lib.attrsets.mapAttrsToList mkAppExport
+      (lib.filterAttrs (_: v: v.enabled) apps));
+  apps-exports = mkAppExports config.site.apps;
   static-root = pkgs.runCommand "static-root" { buildInputs = [ pkgs.gettext ]; } ''
       export DOMAIN='${config.site.domain}'
       export FORGE_SUBDOMAIN='${config.site.apps.forgejo.subdomain}'
       export HOMEPAGE_SUBDOMAIN='${config.site.apps.homepage.subdomain}'
+      ${apps-exports}
       export APPS_TEXT=$(cat <<'HEREDOC'
       ${concatStringsSep "\n" (map (app: "• ${app.name} (${app.description})")
         (builtins.filter (app: app.enabled) (builtins.attrValues config.site.apps)))}
@@ -32,6 +44,7 @@ let
       export WELCOME=`sed 's/^/            /g' welcome-private.html`
       apply_template index-private.html
       rm index.html welcome-public.html welcome-private.html
+      apply_template services.html
     '';
 in {
   services.caddy = {
@@ -41,17 +54,16 @@ in {
             header Cookie *authelia_session*
         }
         @browser header User-Agent *Mozilla*
+        try_files {path} {path}.html
+        root * ${static-root}
         route {
             file_server @browser-auth {
-              root ${static-root}
               index index-private.html
             }
             file_server @browser {
-              root ${static-root}
               index index-public.html
             }
             file_server {
-              root ${static-root}
               index index.txt
             }
         }
