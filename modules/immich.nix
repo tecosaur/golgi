@@ -16,6 +16,7 @@ in {
 
   services.immich = {
     enable = true;
+    group = "users";
     openFirewall = false;
     host = "0.0.0.0";
     port = config.site.apps.immich.port;
@@ -82,6 +83,7 @@ in {
   };
 
   systemd.services.immich-server = {
+    serviceConfig.UMask = lib.mkForce "0027";
     preStart = let
       refConfig = (pkgs.formats.json { }).generate "config.json" config.services.immich.settings;
       newConfig = "${immich-secret-conf-dir}/config.json";
