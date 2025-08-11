@@ -75,6 +75,7 @@
     useNetworkd = true;
     useDHCP = true;
     dhcpcd.enable = false;
+    firewall.allowedUDPPorts = [ 5353 ]; # mDNS
   };
 
   systemd.network = {
@@ -88,7 +89,9 @@
       networkConfig = {
         DHCP = "yes";
         IPv6AcceptRA = true;
+        MulticastDNS = true;
       };
+      linkConfig.Multicast = true;
       ipv6AcceptRAConfig = {
         Token = "eui64";
         UseDNS = true;
