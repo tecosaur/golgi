@@ -77,7 +77,7 @@ in {
             domain = config.site.domain;
             authelia_url = "https://${auth-domain}";
           } // lib.optionalAttrs config.site.apps.homepage.enabled {
-            default_redirection_url = "https://${config.site.apps.homepage.subdomain}.${config.site.domain}";
+            default_redirection_url = "https://${config.site.domain}/reload";
           })
         ];
         redis.host = "/run/redis-authelia-main/redis.sock";
