@@ -98,8 +98,10 @@ in {
       webauthn = {
         enable_passkey_login = true;
         experimental_enable_passkey_uv_two_factors = true;
+        experimental_enable_passkey_upgrade = true;
         selection_criteria = {
           attachment = "platform";
+          discoverability = "required";
           user_verification = "preferred";
         };
         attestation_conveyance_preference = "direct";
