@@ -57,14 +57,18 @@ in {
         try_files {path} {path}.html
         root * ${static-root}
         route {
+            handle /reload {
+                header Clear-Site-Data "\"cache\""
+                redir * /
+            }
             file_server @browser-auth {
-              index index-private.html
+                index index-private.html
             }
             file_server @browser {
-              index index-public.html
+                index index-public.html
             }
             file_server {
-              index index.txt
+                index index.txt
             }
         }
         '';
