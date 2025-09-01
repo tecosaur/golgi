@@ -126,6 +126,14 @@ in {
           };
         };
       };
+      home-assistant = mkAppOption {
+        name = "Home Assistant";
+        homepage = "https://www.home-assistant.io";
+        description = "home automation";
+        simpleicon = "homeassistant";
+        subdomain = "homeassistant";
+        port = 8123;
+      };
       homepage = mkAppOption {
         name = "Homepage";
         homepage = "https://gethomepage.dev";
