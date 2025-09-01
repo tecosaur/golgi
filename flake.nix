@@ -82,12 +82,16 @@
         hardware-nas
         system
         zsh
+        home-assistant
         site-config
         tailscale
         {
           site = {
             domain = "tecosaur.net";
             server.host = "nucleus";
+            apps = {
+              home-assistant.subdomain = "doonan";
+            };
           };
         }
       ];

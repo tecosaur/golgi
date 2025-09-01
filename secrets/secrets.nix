@@ -17,6 +17,7 @@ in
   "fastmail.age".publicKeys = all;
   "headscale-oidc-secret.age".publicKeys = gbase;
   "headplane-env.age".publicKeys = gbase;
+  "home-assistant-secrets.age".publicKeys = nbase;
   "immich-oidc-secret.age".publicKeys = nbase;
   "lldap-admin-password.age".publicKeys = gbase;
   "lldap-jwt.age".publicKeys = gbase;
