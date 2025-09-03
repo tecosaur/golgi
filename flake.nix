@@ -79,12 +79,18 @@
 
       hosts.nucleus.modules = with modules; [
         agenix.nixosModules.default
+        caddy
+        crowdsec-setup
+        crowdsec.nixosModules.crowdsec
+        crowdsec.nixosModules.crowdsec-firewall-bouncer
         hardware-nas
-        system
-        zsh
         home-assistant
+        immich
+        sftpgo
         site-config
+        system
         tailscale
+        zsh
         {
           site = {
             domain = "tecosaur.net";
