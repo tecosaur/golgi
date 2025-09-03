@@ -35,6 +35,7 @@ let
     default_policy ? "deny",
     user_policy ? "one_factor",
     admin_policy ? "two_factor",
+    extra_groups ? [],
     admins ? false,
     rules ? null,
     force ? false,
@@ -47,12 +48,16 @@ let
             (if user_policy == admin_policy then
               [{
                 policy = user_policy;
-                subject = [ [ "group:${app.user-group}"
-                              "group:${app.admin-group}" ] ];
+                subject = [ "group:${app.user-group}"
+                            "group:${app.admin-group}" ] ++
+                (lib.map (g: "group:${g}") extra_groups);
               }] else
                 [{
                   policy = user_policy;
-                  subject = "group:${app.user-group}";
+                  subject = if extra_groups != [] then
+                    [ "group:${app.user-group}" ] ++
+                    (lib.map (g: "group:${g}") extra_groups) else
+                      "group:${app.user-group}";
                 }] ++ (if admins then
                   [{
                     policy = admin_policy;
@@ -88,20 +93,24 @@ in {
     identity_providers.oidc = {
       authorization_policies = lib.mkMerge [
         (mkPolicy config.site.apps.forgejo {
-          default_policy = "one_factor";
+          user_policy = "one_factor";
         })
         (mkPolicy config.site.apps.headscale {
           admins = false;
         })
         (mkPolicy config.site.apps.immich {
-          user_policy = "two_factor";
+          user_policy = "one_factor";
+          extra_groups = [ "family" ];
         })
-        (mkPolicy config.site.apps.memos {})
+        (mkPolicy config.site.apps.memos {
+          extra_groups = [ "family" ];
+        })
         (mkPolicy config.site.apps.vikunja {
           user_policy = "two_factor";
         })
         (mkPolicy config.site.apps.sftpgo {
           user_policy = "two_factor";
+          extra_groups = [ "family" ];
           admins = false;
         })
       ];
