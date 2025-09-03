@@ -107,6 +107,14 @@ in {
         subdomain = "forgejo";
         port = 3000;
       };
+      jellyfin = mkAppOption {
+        name = "Jellyfin";
+        homepage = "https://jellyfin.org";
+        description = "media server";
+        simpleicon = "jellyfin";
+        subdomain = "stream";
+        port = 8096;
+      };
       headscale = mkAppOption {
         name = "Headscale";
         homepage = "https://headscale.net";

@@ -90,6 +90,10 @@ in {
             title = "Code";
             app = config.site.apps.forgejo;
           })
+          (mkAppStatus {
+            title = "Streaming";
+            app = config.site.apps.jellyfin;
+          })
         ];
       }
       {
@@ -227,13 +231,6 @@ in {
               icon = "si-homeassistant";
               href = "https://www.home-assistant.io";
               description = "Smart automation";
-            }];
-          }
-          {
-            "Jellyfin" = [{
-              icon = "si-jellyfin";
-              href = "https://jellyfin.org";
-              description = "Media server";
             }];
           }
           {
