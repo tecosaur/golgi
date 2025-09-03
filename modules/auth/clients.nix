@@ -23,6 +23,7 @@ let
         consent_mode = "implicit";
         redirect_uris = oidcRedirects;
         scopes = [ "openid" "email" "profile" "groups" ];
+        access_token_signed_response_alg = "none";
         userinfo_signed_response_alg = "none";
         token_endpoint_auth_method = "client_secret_basic";
       };
