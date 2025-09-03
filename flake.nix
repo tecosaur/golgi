@@ -9,6 +9,8 @@
       url = "git+https://codeberg.org/kampka/nix-flake-crowdsec.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    declarative-jellyfin.url = "github:Sveske-Juice/declarative-jellyfin";
+    declarative-jellyfin.inputs.nixpkgs.follows = "nixpkgs";
     deploy-rs = {
       url = github:serokell/deploy-rs;
       inputs.nixpkgs.follows = "nixpkgs";
@@ -17,7 +19,7 @@
 
   nixConfig.sandbox = "relaxed";
 
-  outputs = inputs@{ self, nixpkgs, flake-utils-plus, agenix, crowdsec, ... }:
+  outputs = inputs@{ self, nixpkgs, flake-utils-plus, agenix, crowdsec, declarative-jellyfin, ... }:
     let
       modules = flake-utils-plus.lib.exportModules (
         nixpkgs.lib.mapAttrsToList (name: value: ./modules/${name}) (builtins.readDir ./modules)
@@ -39,6 +41,7 @@
         lldap.subdomain = "users";
         sftpgo.enabled = true;
         immich.enabled = true;
+        jellyfin.enabled = true;
       };
     in
     flake-utils-plus.lib.mkFlake {
@@ -89,6 +92,8 @@
         hardware-nas
         home-assistant
         immich
+        declarative-jellyfin.nixosModules.default
+        jellyfin
         sftpgo
         site-config
         system
