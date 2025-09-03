@@ -23,6 +23,23 @@
         nixpkgs.lib.mapAttrsToList (name: value: ./modules/${name}) (builtins.readDir ./modules)
       );
       site-config = import ./site.nix;
+      app-setup = {
+        mealie.subdomain = "food";
+        microbin = {
+          title = "μPaste";
+          subdomain = "pastes";
+          short-subdomain = "p";
+          user-group = "paste";
+        };
+        forgejo = {
+          subdomain = "code";
+          user-group = "forge";
+        };
+        headscale.magicdns-subdomain = "on";
+        lldap.subdomain = "users";
+        sftpgo.enabled = true;
+        immich.enabled = true;
+      };
     in
     flake-utils-plus.lib.mkFlake {
       inherit self inputs modules;
@@ -56,23 +73,9 @@
               domain = "tecosaur.net";
               server = {
                 authoritative = true;
-                ipv6 = "2a01:4ff:f0:cc83::";
+                ipv6 = "2a01:4ff:f0:cc83";
               };
-              apps = {
-                mealie.subdomain = "food";
-                microbin = {
-                  title = "μPaste";
-                  subdomain = "pastes";
-                  short-subdomain = "p";
-                  user-group = "paste";
-                };
-                forgejo = {
-                  subdomain = "code";
-                  user-group = "forge";
-                };
-                headscale.magicdns-subdomain = "on";
-                lldap.subdomain = "users";
-              };
+              apps = app-setup;
             };
           }
         ];
