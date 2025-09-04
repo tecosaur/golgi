@@ -1,0 +1,95 @@
+@import url('https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/theme.css');
+@import url('https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/colorschemes/blue.css');
+
+#loginPage {background: url("https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/images/login-wallpapers/minimal-gray.png") !important;}
+.layout-tv .backgroundContainer, .layout-desktop .backgroundContainer {background: url("https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/images/gradients/gray.png") no-repeat center center;}
+.sessionAppInfo img {filter: invert(0%) sepia(70%) saturate(250%) hue-rotate(320deg) brightness(130%) contrast(60%);}
+
+/* SSO */
+
+a.raised.emby-button,
+.loginDisclaimerContainer,
+.loginDisclaimer,
+.manualLoginForm {
+  all: unset;
+}
+
+.btnQuick,
+.btnSelectServer,
+.btnForgotPassword,
+a.raised.emby-button,
+.emby-button.block,
+.loginDisclaimerContainer,
+.loginDisclaimer {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1em;
+  color: inherit !important;
+}
+
+.btnForgotPassword {
+  display: none !important;
+}
+
+.manualLoginForm > :not(:first-child) {
+  display: none !important;
+}
+
+.sso-icon {
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+/* Personal tweaks */
+
+#loginPage form {
+    padding: 0;
+}
+
+.headerRight {
+  margin-right: 0.6em;
+}
+
+body, h1, h2, h3, h4, .textActionButton, .emby-button-foreground  {
+  text-shadow: none !important;
+}
+
+.detailRibbon {
+    margin-bottom: 1em;
+}
+
+.layout-desktop .nextUpSection {
+    margin-top: 17vh;
+}
+
+.detailSectionContent .detail-clamp-text {
+    font-weight: 450;
+}
+
+#itemDetailPage .tagline {
+    font-style: italic;
+    font-weight: 300;
+    border-left: 2px solid rgb(var(--white-off));
+}
+
+.headerHelpButton, .button-alt {
+    padding: 0.4em !important;
+    text-decoration: none;
+}
+
+.headerTop {
+    justify-content: space-between;
+}
+
+.headerLeft {
+    backdrop-filter: blur(50px);
+    flex-grow: 0;
+    padding-right: 1em;
+    border-radius: var(--rounding-circle);
+}
+
+#loginPage .padded-left.padded-right.padded-bottom-page {
+    padding-bottom: 1em !important;
+}
