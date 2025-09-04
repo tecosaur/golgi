@@ -89,13 +89,13 @@
         crowdsec-setup
         crowdsec.nixosModules.crowdsec
         crowdsec.nixosModules.crowdsec-firewall-bouncer
+        declarative-jellyfin.nixosModules.default
         hardware-nas
         home-assistant
         immich
-        declarative-jellyfin.nixosModules.default
-        jellyfin
         sftpgo
         site-config
+        streaming
         system
         tailscale
         zsh
