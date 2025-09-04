@@ -112,12 +112,12 @@ in {
     ''
     handle /web/assets/img/icon-transparent.png {
         uri strip_prefix /web/assets/img
-        root * ${../assets/jellyfin}
+        root * ${../../assets/jellyfin}
         file_server
     }
     handle /web/*.ico {
         rewrite * /jellyfin.ico
-        root * ${../assets/jellyfin}
+        root * ${../../assets/jellyfin}
         file_server
     }
     reverse_proxy :${toString config.site.apps.jellyfin.port}
