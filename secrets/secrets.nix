@@ -19,6 +19,7 @@ in
   "headplane-env.age".publicKeys = gbase;
   "home-assistant-secrets.age".publicKeys = nbase;
   "immich-oidc-secret.age".publicKeys = nbase;
+  "jellyfin-oidc-secret.age".publicKeys = nbase;
   "lldap-admin-password.age".publicKeys = gbase;
   "lldap-jwt.age".publicKeys = gbase;
   "lldap-key-seed.age".publicKeys = gbase;

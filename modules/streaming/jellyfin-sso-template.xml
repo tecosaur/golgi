@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PluginConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SamlConfigs />
+  <OidConfigs>
+    <item>
+      <key>
+        <string>authelia</string>
+      </key>
+      <value>
+        <PluginConfiguration>
+          <OidEndpoint>#oidc_endpoint#</OidEndpoint>
+          <OidClientId>jellyfin</OidClientId>
+          <OidSecret>#oidc_secret#</OidSecret>
+          <Enabled>true</Enabled>
+          <EnableAuthorization>true</EnableAuthorization>
+          <EnableAllFolders>false</EnableAllFolders>
+          <EnabledFolders>
+#enabled_folders#
+          </EnabledFolders>
+          <AdminRoles>
+            <string>admin</string>
+          </AdminRoles>
+          <Roles>
+            <string>stream</string>
+            <string>family</string>
+          </Roles>
+          <EnableFolderRoles>true</EnableFolderRoles>
+          <EnableLiveTvRoles>false</EnableLiveTvRoles>
+          <EnableLiveTv>false</EnableLiveTv>
+          <EnableLiveTvManagement>false</EnableLiveTvManagement>
+          <LiveTvRoles />
+          <LiveTvManagementRoles />
+          <FolderRoleMappings>
+#folder_role_mappings#
+          </FolderRoleMappings>
+          <RoleClaim>groups</RoleClaim>
+          <OidScopes>
+            <string>groups</string>
+          </OidScopes>
+          <SchemeOverride>https</SchemeOverride>
+          <NewPath>true</NewPath>
+          <CanonicalLinks />
+          <DefaultUsernameClaim>preferred_username</DefaultUsernameClaim>
+          <DisableHttps>false</DisableHttps>
+          <DoNotValidateEndpoints>false</DoNotValidateEndpoints>
+          <DoNotValidateIssuerName>false</DoNotValidateIssuerName>
+        </PluginConfiguration>
+      </value>
+    </item>
+  </OidConfigs>
+</PluginConfiguration>
