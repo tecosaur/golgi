@@ -123,6 +123,13 @@ in {
         };
       };
       clients = lib.flatten [
+        (mkClient config.site.apps.calibre-web {
+          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$gp1Cbb/JlA4DELmIpprUEQ$Ah2w2L4m/cwFCDHkQlYga3uaYGZ66X5ksj7W2pTFFQc";
+          redirect_paths = [ "login/generic/authorized" ];
+          require_pkce = false;
+          pkce_challenge_method = "";
+          authorization_policy = "one_factor";
+        })
         (mkClient config.site.apps.forgejo {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$fRdkE7fHqAPkVQYXn1Zksw$O6WQ4fsNoN/0vzOK4hT1oreVPyFoVcK2hOIFx3axe/A";
           redirect_paths = [ "user/oauth2/authelia/callback" ];
