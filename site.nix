@@ -92,6 +92,13 @@ in {
         subdomain = "auth";
         port = 9091;
       };
+      calibre-web = mkAppOption {
+        name = "Calibre web";
+        homepage = "https://github.com/crocodilestick/Calibre-Web-Automated";
+        description = "eBook management";
+        subdomain = "ebooks";
+        port = 8085;
+      };
       fava = mkAppOption {
         name = "Fava";
         homepage = "https://beancount.github.io/fava/";
