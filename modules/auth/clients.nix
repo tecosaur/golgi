@@ -14,16 +14,21 @@ let
       oidcRedirects = (if redirect_paths != null then
         pathsToUris redirect_paths else
           []) ++ (if redirect_uris != null then redirect_uris else []);
+      safeName = lib.toLower (lib.replaceStrings [ " " ] [ "-" ] app.name);
       baseClient = {
-        client_id = lib.toLower app.name;
+        client_id = safeName;
         client_name = app.name;
-        authorization_policy = lib.toLower app.name;
+        authorization_policy = safeName;
         client_secret = client_secret;
         public = false;
         consent_mode = "implicit";
+        require_pkce = true;
+        pkce_challenge_method = "S256";
         redirect_uris = oidcRedirects;
         scopes = [ "openid" "email" "profile" "groups" ];
         access_token_signed_response_alg = "none";
+        response_types = [ "code" ];
+        grant_types = [ "authorization_code" ];
         userinfo_signed_response_alg = "none";
         token_endpoint_auth_method = "client_secret_basic";
       };
@@ -42,7 +47,7 @@ let
     force ? false,
   }:
     lib.optionalAttrs (force || app.enabled) {
-      "${lib.toLower app.name}" =
+      "${lib.toLower (lib.replaceStrings [ " " ] [ "-" ] app.name)}" =
         {
           default_policy = default_policy;
           rules = if rules != null then rules else
@@ -145,7 +150,12 @@ in {
           response_types = [ "code" ];
           require_pkce = false;
           pkce_challenge_method = "";
-          grant_types = [ "authorization_code" ];
+          token_endpoint_auth_method = "client_secret_post";
+        })
+        (mkClient config.site.apps.jellyfin {
+          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$LuRHBAoKS3llgeNibFAJCg$fqaNlYvfRKiGdbVUOi89pXeWQwe5pStzNhrvmvvJrWc";
+          redirect_paths = [ "sso/OID/redirect/authelia" ];
+          authorization_policy = "one_factor";
           token_endpoint_auth_method = "client_secret_post";
         })
         (mkClient config.site.apps.mealie {
@@ -153,13 +163,12 @@ in {
           authorization_policy = "one_factor";
           redirect_paths = [ "login" ];
           redirect_uris = [ "http://localhost:${toString config.site.apps.mealie.port}/login" ];
-          pkce_challenge_method = "S256";
-          grant_types = [ "authorization_code" ];
         })
         (mkClient config.site.apps.memos {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$5SHxB5qqWhPiYFeZ/cUXQQ$u1lemwNPR6FCopfiR65/jAt0DOfa5GXeKd/YqkD8l7M";
           redirect_paths = [ "auth/callback" ];
-          grant_types = [ "authorization_code" ];
+          require_pkce = false;
+          pkce_challenge_method = "";
           token_endpoint_auth_method = "client_secret_post";
         })
         (mkClient config.site.apps.sftpgo {
@@ -167,7 +176,6 @@ in {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$XY2jSGxOVxEMvFvJ4hQ1Fg$hZah2TkuBoQrlJi8wiO5oyMGh3y09nc1CPr9UHbe/7k";
           claims_policy = "sftpgo";
           redirect_paths = [ "web/oidc/redirect" "web/oauth2/redirect" ];
-          grant_types = [ "authorization_code" ];
         })
         (mkClient config.site.apps.vikunja {
           client_secret = "$argon2id$v=19$m=65536,t=3,p=4$zRMdh029w57vBVKYJUbrOA$XpthqZlqEa6neEoIffR8wHEt++KuMykATd/tte//4II";
