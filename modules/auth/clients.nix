@@ -114,6 +114,10 @@ in {
         (mkPolicy config.site.apps.vikunja {
           user_policy = "two_factor";
         })
+        (mkPolicy config.site.apps.paperless {
+          user_policy = "two_factor";
+          extra_groups = [ "family" ];
+        })
         (mkPolicy config.site.apps.sftpgo {
           user_policy = "two_factor";
           extra_groups = [ "family" ];
@@ -170,6 +174,10 @@ in {
           require_pkce = false;
           pkce_challenge_method = "";
           token_endpoint_auth_method = "client_secret_post";
+        })
+        (mkClient config.site.apps.paperless {
+          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$eqYYBvna/cLi1FZ8nE+AVg$6fZX2RlCRTgJwBAR1fLwq2fCytjSheS5AJ0uDB9Rkwk";
+          redirect_paths = [ "accounts/oidc/authelia/login/callback/" ];
         })
         (mkClient config.site.apps.sftpgo {
           authorization_policy = "one_factor";

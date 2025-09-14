@@ -205,6 +205,13 @@ in {
           };
         };
       };
+      paperless = mkAppOption {
+        name = "Paperless";
+        homepage = "https://paperless-ngx.readthedocs.io";
+        description = "document management";
+        subdomain = "tray";
+        port = 28981;
+      };
       scrutiny = mkAppOption {
         name = "Scrutiny";
         homepage = "https://github.com/AnalogJ/scrutiny";
