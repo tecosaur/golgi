@@ -5,6 +5,7 @@ let
     client_secret ? null,
     redirect_paths ? null,
     redirect_uris ? null,
+    require_pkce ? true,
     force ? false,
     ...
   }:
@@ -25,8 +26,8 @@ let
           client_secret else readSecret safeName;
         public = false;
         consent_mode = "implicit";
-        require_pkce = true;
-        pkce_challenge_method = "S256";
+        require_pkce = require_pkce;
+        pkce_challenge_method = if require_pkce then "S256" else "";
         redirect_uris = oidcRedirects;
         scopes = [ "openid" "email" "profile" "groups" ];
         access_token_signed_response_alg = "none";
@@ -138,7 +139,6 @@ in {
         (mkClient config.site.apps.calibre-web {
           redirect_paths = [ "login/generic/authorized" ];
           require_pkce = false;
-          pkce_challenge_method = "";
           authorization_policy = "one_factor";
         })
         (mkClient config.site.apps.forgejo {
@@ -152,7 +152,6 @@ in {
           redirect_uris = [ "app.immich:///oauth-callback" ];
           response_types = [ "code" ];
           require_pkce = false;
-          pkce_challenge_method = "";
           token_endpoint_auth_method = "client_secret_post";
         })
         (mkClient config.site.apps.jellyfin {
@@ -168,7 +167,6 @@ in {
         (mkClient config.site.apps.memos {
           redirect_paths = [ "auth/callback" ];
           require_pkce = false;
-          pkce_challenge_method = "";
           token_endpoint_auth_method = "client_secret_post";
         })
         (mkClient config.site.apps.paperless {
