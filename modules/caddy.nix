@@ -11,6 +11,7 @@ let
     else
     ''
     ip_source simple_http https://icanhazip.com
+    versions ${lib.strings.concatStringsSep " " config.site.server.ipversions}
     dynamic_domains
     '';
   authelia-uri = if builtins.hasAttr "main" config.services.authelia.instances &&
