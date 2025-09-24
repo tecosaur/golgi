@@ -29,6 +29,7 @@ let
 
     pnpmDeps = pnpm_9.fetchDeps {
       inherit (finalAttrs) pname version src sourceRoot;
+      fetcherVersion = 1;
       hash = "sha256-SypmK4A1JhZgueuobdscDCcowHx8aX/LlRqRAO8J+RI=";
     };
 
