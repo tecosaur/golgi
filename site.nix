@@ -111,7 +111,7 @@ in {
         homepage = "https://forgejo.org";
         description = "personal software forge";
         simpleicon = "forgejo";
-        subdomain = "forgejo";
+        subdomain = "code";
         port = 3000;
       };
       jellyfin = mkAppOption {
@@ -119,7 +119,7 @@ in {
         homepage = "https://jellyfin.org";
         description = "media server";
         simpleicon = "jellyfin";
-        subdomain = "stream";
+        subdomain = "media";
         port = 8096;
       };
       headscale = mkAppOption {
@@ -131,7 +131,7 @@ in {
         extraOptions = {
           magicdns-subdomain = lib.mkOption {
             type = lib.types.str;
-            default = "headnet";
+            default = "on";
             description = "Subdomain to use in the base domain for MagicDNS.";
           };
           headplane-port = lib.mkOption {
@@ -209,7 +209,7 @@ in {
         name = "Paperless";
         homepage = "https://paperless-ngx.readthedocs.io";
         description = "document management";
-        subdomain = "tray";
+        subdomain = "folio";
         port = 28981;
       };
       scrutiny = mkAppOption {
@@ -250,7 +250,7 @@ in {
         name = "LLDAP";
         homepage = "https://github.com/lldap/lldap";
         description = "user account management";
-        subdomain = "lldap";
+        subdomain = "users";
         port = 17170;
       };
       uptime = mkAppOption {
