@@ -127,8 +127,8 @@ in {
         username = authelia-user;
       };
       notifier.smtp = {
-        address = "smtp.fastmail.com:587";
-        username = "tec@tecosaur.net";
+        address = "${config.site.email.server}:${toString config.site.email.port}";
+        username = config.site.email.username;
         sender = "${config.site.domain} — Authentication <services.authentication@${config.site.domain}>";
         subject = "{title}";
       };

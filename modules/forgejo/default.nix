@@ -66,9 +66,9 @@ in {
       mailer = {
         ENABLED = true;
         PROTOCOL = "smtp+startls";
-        FROM = "forgejo@${forgejo-domain}";
-        USER = "tec@${config.site.domain}";
-        SMTP_ADDR = "smtp.fastmail.com:587";
+        FROM = "noreply@${forgejo-domain}";
+        USER = config.site.email.username;
+        SMTP_ADDR = "${config.site.email.server}:${toString config.site.email.port}";
       };
       service = {
         REGISTER_EMAIL_CONFIRM = false;
