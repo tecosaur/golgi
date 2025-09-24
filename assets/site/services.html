@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>Services</title>
-        <meta name="description" content="A menagerie of services and pages.">
+        <meta name="description" content="A quick guide to availible services">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#229454">
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
@@ -34,6 +34,7 @@
             }
             dt {
                 font-weight: 650;
+                margin: 0.25em 0 0.1em 0;
             }
             details {
                 margin-top: 0.4em;
@@ -86,8 +87,8 @@
             <details id="photos">
                 <summary>Photo management and storage</summary>
                 <p><a href="https://immich.app/">Immich</a> is a polished photo and video management system.
-                    It is designed for uploading, storing, and sharing media with good support for sharing as well
-                    as bells and whistles like face recognition and geotagging.</p>
+                    It is designed for uploading, storing, and sharing media with as bells and whistles like
+                    face recognition and geotagging.</p>
                 <p>There are three ways you can use Immich:</p>
                 <dl>
                     <dt>Web</dt>
@@ -101,12 +102,41 @@
                         then supply the server URL <code>http<b>s</b>://$IMMICH_URL</code>. Log in.</dd>
                 </dl>
                 <p>When using the iOS or Android app, after logging in you can select albums on the device
-                    to back up (tap on the cloud icon next to the top right corner).
+                    to back up (tap on the ☁️ icon next to the top right corner).
                     I recommend <em>Camera</em> on Android and <em>Recent</em> on iOS.</p>
+                <details id="photos-migrating">
+                    <summary>Migrating from Google Photos or iCloud</summary>
+                    <p>With a little effort, it's not too hard to migrate from backup drives or cloud storage, thanks to
+                        the tool <a href="https://github.com/simulot/immich-go">immich-go</a>. If you're happy running
+                        a simple command line tool, you can <a href="https://github.com/simulot/immich-go/releases/latest">download</a>
+                        the appropriate binary for your system, and figure out how to use it.</p>
+                </details>
+            </details>
+            <details id="document-management">
+                <summary>Document management</summary>
+                <p><a href="https://docs.paperless-ngx.com/">Paperless</a> is a document management system,
+                   designed for scanning, storing, and tagging documents such as receipts, bills, letters, and manuals.</p>
+                <p>Because paperwork and filing is no fun, it learns from the labels and categories you assign to documents,
+                    and will automatically apply them to new documents. Simply throw everything in, and rely on the tagging
+                    and full-text search to dig out documents with ease later.</p>
+                <p>You can use Paperless a few different ways:</p>
+                <dl>
+                    <dt>Web</dt>
+                    <dd>Visit <a href="https://$PAPERLESS_URL">$PAPERLESS_SUBDOMAIN.■</a> and sign in.</dd>
+                    <dt>iOS</dt>
+                    <dd>You may download the 3rd party <emph>Swift Paperless</emph> from the <a href="https://apps.apple.com/us/app/swift-paperless/id6448698521">App Store</a>.
+                        <a href="https://www.quickscanapp.com/">QuickScan</a> also has built-in support for Paperless.</dd>
+                    <dt>Android</dt>
+                    <dd>There's <emph>Paperless Mobile</emph> on the <a href="https://play.google.com/store/apps/details?id=de.astubenbord.paperless_mobile">Play Store</a>
+                        (or <a href="https://f-droid.org/packages/de.astubenbord.paperless_mobile">F-Droid</a>). It hasn't been updated in a while though.</dd>
+                </dl>
             </details>
             <details id="storage">
                 <summary>Cloud storage</summary>
-                <p>You can easily access the storage from the web at <a href="https://$SFTPGO_URL">$SFTPGO_SUBDOMAIN.■</a>.
+                <p>⚠️ <b>Work in progress</b></p>
+                <p>In addition to apps that use storage (such as photo management), you can also make use of the
+                    availible storage as general-purpose cloud storage.</p>
+                <p>This storage can be easily accessed from the web at <a href="https://$SFTPGO_URL">$SFTPGO_SUBDOMAIN.■</a>.
                    The first time you log in, your account will automatically be created.</p>
                 <details id="storage-macos">
                     <summary>MacOS</summary>
@@ -118,7 +148,7 @@
                 </details>
                 <details id="storage-linux">
                     <summary>Linux</summary>
-                    <p>TODO</p>
+                    <p>You should be able to just visit <code>sftp://<it>&lt;user&gt;</it>@$SFTPGO_URL</code> in your file browser.</p>
                 </details>
                 <details id="storage-ios">
                     <summary>iOS</summary>
@@ -128,6 +158,35 @@
                     <summary>Android</summary>
                     <p>TODO</p>
                 </details>
+            </details>
+            <details id="backups">
+                <summary>Backups</summary>
+                <p>⚠️ <b>Planned but not set up yet</b></p>
+                <!-- Maybe mention https://apps.apple.com/us/app/parachute-backup-mobile/id6749824842 ? -->
+            </details>
+            <details id="streaming">
+                <summary>Media streaming</summary>
+                <p><a href="https://jellyfin.org/">Jellyfin</a> is a media server for movies, TV, and music.
+                    It supports user profiles, watch history, subtitles, casting, and streaming over the internet.</p>
+                <p>You can use Jellyfin online or through a variety of apps:</p>
+                <dl>
+                    <dt>Web</dt>
+                    <dd>Visit <a href="https://$JELLYFIN_URL">$JELLYFIN_SUBDOMAIN.■</a> and sign in.</dd>
+                    <dt>iOS/Android 📽️</dt>
+                    <dd>Download Streamyfin from the <a href="https://apps.apple.com/app/streamyfin/id6593660679">App Store</a>
+                        or <a href="https://play.google.com/store/apps/details?id=com.fredrikburmester.streamyfin">Play Store</a>,
+                        supply the server URL <code>https://$JELLYFIN_URL</code>, then log in <emph>using a quick-connect code</emph>
+                        (the smaller button to the right of Log in).</dd>
+                    <dt>iOS/Android 🎵</dt>
+                    <dd>For music listening specifically, consider Finamp, which is availible on the
+                        <a href="https://apps.apple.com/us/app/finamp/id1574922594">App Store</a>,
+                        <a href="https://play.google.com/store/apps/details?id=com.unicornsonlsd.finamp">Play Store</a>,
+                        and <a href="https://f-droid.org/packages/com.unicornsonlsd.finamp/">F-Droid</a>.
+                        Make sure you grab the beta version (it's much improved).
+                    </dd>
+                    <dt>More apps</dt>
+                    <dd>See the list of <a href="https://jellyfin.org/downloads/clients/">recommended clients</a>.</dd>
+                </dl>
             </details>
             <details id="notes">
                 <summary>Quick notes</summary>
@@ -145,17 +204,20 @@
                         <code>https://$MEMOS_URL</code>. Log in.</dd>
                 </dl>
             </details>
-            <details>
+            <details id="recipes">
                 <summary>Recipe management</summary>
-                <p>TODO</p>
+                <p><a href="https://mealie.io/">Mealie</a> offers recipie management and meal planning,
+                    with built-in importers from various recipe sites.</p>
+                <p>Visit <a href="https://$MEALIE_URL">$MEALIE_SUBDOMAIN.■</a> and sign in. On mobile devices,
+                    you should be able to add this to your home screen as a <abbr title="Progressive Web App">PWA</abbr>.</p>
             </details>
-            <details>
+            <details id="warranties">
                 <summary>Warranty tracking</summary>
-                <p>TODO</p>
+                <p>⚠️ <b>Work in progress</b></p>
             </details>
-            <details>
+            <details id="ebooks">
                 <summary>E-book library</summary>
-                <p>TODO</p>
+                <p>⚠️ <b>Planned but not set up yet</b></p>
             </details>
         </section>
         </div>
