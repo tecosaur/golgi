@@ -10,6 +10,9 @@ let
     ''
     else
     ''
+    domains {
+            ${config.site.domain} _${config.site.server.host}
+    }
     ip_source simple_http https://icanhazip.com
     versions ${lib.strings.concatStringsSep " " config.site.server.ipversions}
     dynamic_domains
