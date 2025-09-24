@@ -51,9 +51,9 @@ in {
       };
       mailer = {
         enabled = true;
-        host = "smtp.fastmail.com";
-        post = 587;
-        username = "tec@${config.site.domain}";
+        host = config.site.email.server;
+        post = config.site.email.port;
+        username = config.site.email.username;
         password.file = config.age.secrets.vikunja-fastmail.path;
         fromemail = "services.tasks@${config.site.domain}";
       };

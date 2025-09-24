@@ -57,13 +57,13 @@ in {
       };
       notifications.smtp = {
         enabled = true;
-        from = "services.immich@tecosaur.net";
-        replyTo = "contact.immich@tecosaur.net";
+        from = "services.immich@${config.site.domain}";
+        replyTo = "contact.immich@${config.site.domain}";
         transport = {
           ignoreCert = false;
-          host = "smtp.fastmail.com";
-          port = 587;
-          username = "tec@tecosaur.net";
+          host = config.site.email.server;
+          port = config.site.email.port;
+          username = config.site.email.username;
           password = "";
         };
       };
