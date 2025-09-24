@@ -40,6 +40,13 @@
         immich.enabled = true;
         jellyfin.enabled = true;
       };
+      site-setup = {
+        domain = "tecosaur.net";
+        email = {
+          server = "smtp.fastmail.com";
+          username = "tec@tecosaur.net";
+        };
+      };
     in
     flake-utils-plus.lib.mkFlake {
       inherit self inputs modules;
@@ -69,9 +76,9 @@
           vikunja
           zsh
           {
-            site = {
-              domain = "tecosaur.net";
+            site = site-setup // {
               server = {
+                host = "golgi";
                 authoritative = true;
                 ipv6 = "2a01:4ff:f0:cc83";
               };
@@ -97,10 +104,9 @@
         tailscale
         zsh
         {
-          site = {
-            domain = "tecosaur.net";
+          site = site-setup // {
             server.host = "nucleus";
-            apps = {
+            apps = app-setup // {
               home-assistant.subdomain = "doonan";
             };
           };

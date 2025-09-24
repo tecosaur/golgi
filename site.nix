@@ -88,6 +88,23 @@ in {
         description = "what versions of ip to use: ipv4 and/or ipv6";
       };
     };
+    email = {
+      server = lib.mkOption {
+        type = lib.types.str;
+        default = "smtp.example.com";
+        description = "SMTP server to use for sending email";
+      };
+      port = lib.mkOption {
+        type = lib.types.int;
+        default = 587;
+        description = "Port to use for the SMTP server";
+      };
+      username = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "Username for the SMTP server";
+      };
+    };
     apps = {
       authelia = mkAppOption {
         name = "Authelia";
