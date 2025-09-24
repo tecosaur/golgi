@@ -34,11 +34,8 @@
           user-group = "paste";
         };
         forgejo = {
-          subdomain = "code";
           user-group = "forge";
         };
-        headscale.magicdns-subdomain = "on";
-        lldap.subdomain = "users";
         sftpgo.enabled = true;
         immich.enabled = true;
         jellyfin.enabled = true;
