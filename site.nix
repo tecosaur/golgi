@@ -82,6 +82,11 @@ in {
         default = "";
         description = "IPv6 address for the server";
       };
+      ipversions = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = ["ipv4" "ipv6"];
+        description = "what versions of ip to use: ipv4 and/or ipv6";
+      };
     };
     apps = {
       authelia = mkAppOption {
