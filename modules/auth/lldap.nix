@@ -30,12 +30,13 @@ in {
       ldap_base_dn = "dc=tecosaur,dc=net";
       ldap_user_dn = "admin";
       ldap_user_email = "lldap-admin@${config.site.domain}";
+      ldap_user_pass_file = config.age.secrets.lldap-admin-password.path;
+      jwt_secret_file = config.age.secrets.lldap-jwt.path;
+      force_ldap_user_pass_reset = "always";
       database_url = "postgresql://${lldap-user}@localhost/${lldap-user}?host=/run/postgresql";
     };
     environment = {
-      LLDAP_JWT_SECRET_FILE = config.age.secrets.lldap-jwt.path;
       LLDAP_KEY_SEED_FILE = config.age.secrets.lldap-key-seed.path;
-      LLDAP_LDAP_USER_PASS_FILE = config.age.secrets.lldap-admin-password.path;
     };
   };
 
