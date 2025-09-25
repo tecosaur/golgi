@@ -67,6 +67,18 @@ in {
       description = "Domain to use for bypassing Cloudflare (e.g. for SSH).";
     };
     server = {
+      admin = {
+        hashedPassword = lib.mkOption {
+          type = lib.types.str;
+          default = "";
+          description = "Hashed password for the admin user";
+        };
+        authorizedKeys = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [];
+          description = "SSH public keys for the admin user";
+        };
+      };
       authoritative = lib.mkOption {
         type = lib.types.bool;
         default = false;
