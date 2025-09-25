@@ -25,26 +25,33 @@
         nixpkgs.lib.mapAttrsToList (name: value: ./modules/${name}) (builtins.readDir ./modules)
       );
       site-config = import ./site.nix;
-      app-setup = {
-        mealie.subdomain = "food";
-        microbin = {
-          title = "μPaste";
-          subdomain = "pastes";
-          short-subdomain = "p";
-          user-group = "paste";
-        };
-        forgejo = {
-          user-group = "forge";
-        };
-        sftpgo.enabled = true;
-        immich.enabled = true;
-        jellyfin.enabled = true;
-      };
       site-setup = {
         domain = "tecosaur.net";
+        server = {
+          hashedPassword = "$6$ET8BLqODvw77VOmI$oun2gILUqBr/3WonH2FO1L.myMIM80KeyO5W1GrYhJTo./jk7XcG8B3vEEcbpfx3R9h.sR0VV187/MgnsnouB1";
+          authorizedKeys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt tec@tranquillity" ];
+        };
         email = {
           server = "smtp.fastmail.com";
           username = "tec@tecosaur.net";
+        };
+        apps = {
+          mealie.subdomain = "food";
+          microbin = {
+            title = "μPaste";
+            subdomain = "pastes";
+            short-subdomain = "p";
+            user-group = "paste";
+          };
+          forgejo = {
+            user-group = "forge";
+          };
+          headscale.enabled = true;
+          # calibre-web.enabled = true;
+          paperless.enabled = true;
+          sftpgo.enabled = true;
+          immich.enabled = true;
+          jellyfin.enabled = true;
         };
       };
     in
@@ -82,7 +89,6 @@
                 authoritative = true;
                 ipv6 = "2a01:4ff:f0:cc83";
               };
-              apps = app-setup;
             };
           }
         ];
@@ -104,12 +110,7 @@
         tailscale
         zsh
         {
-          site = site-setup // {
-            server.host = "nucleus";
-            apps = app-setup // {
-              home-assistant.subdomain = "doonan";
-            };
-          };
+          site = site-setup // { server.host = "nucleus"; };
         }
       ];
 
