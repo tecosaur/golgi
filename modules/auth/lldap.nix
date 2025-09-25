@@ -3,6 +3,7 @@
 let
   lldap-user = "lldap";
   lldap-web-domain = "${config.site.apps.lldap.subdomain}.${config.site.domain}";
+  lldap-base-dn = lib.strings.concatMapStringsSep "," (dc: "dc=" + dc) (lib.splitString "." config.site.domain);
 in {
   site.apps.lldap.enabled = true;
 
@@ -27,7 +28,7 @@ in {
   services.lldap = {
     enable = true;
     settings = {
-      ldap_base_dn = "dc=tecosaur,dc=net";
+      ldap_base_dn = lldap-base-dn;
       ldap_user_dn = "admin";
       ldap_user_email = "lldap-admin@${config.site.domain}";
       ldap_user_pass_file = config.age.secrets.lldap-admin-password.path;
