@@ -2,7 +2,7 @@
 
 {
   time.timeZone = "UTC";
-  services.openssh.enable = true;
+
   services.journald.extraConfig = ''
 SystemMaxUse=1G
 SystemMaxFileSize=100M
