@@ -2,6 +2,8 @@
 
 {
   networking.firewall.allowedTCPPorts = [ 22 ];
+  services.openssh.enable = true;
+
   users.users.admin = {
     name = "admin";
     hashedPassword = "$6$ET8BLqODvw77VOmI$oun2gILUqBr/3WonH2FO1L.myMIM80KeyO5W1GrYhJTo./jk7XcG8B3vEEcbpfx3R9h.sR0VV187/MgnsnouB1";
