@@ -127,6 +127,10 @@ in {
           extra_groups = [ "family" ];
           admins = false;
         })
+        (mkPolicy config.site.apps.warracker {
+          user_policy = "one_factor";
+          extra_groups = [ "family" ];
+        })
       ];
       claims_policies = {
         sftpgo = {
@@ -179,6 +183,10 @@ in {
         })
         (mkClient config.site.apps.vikunja {
           redirect_paths = [ "auth/openid/authelia" ];
+        })
+        (mkClient config.site.apps.warracker {
+          redirect_paths = [ "api/oidc/callback" ];
+          require_pkce = false;
         })
       ];
     };

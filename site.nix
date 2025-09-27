@@ -310,6 +310,13 @@ in {
         subdomain = "tasks";
         port = 3456;
       };
+      warracker = mkAppOption {
+        name = "Warracker";
+        homepage = "https://warracker.com";
+        description = "warranty tracking";
+        subdomain = "warracker";
+        port = 8087;
+      };
     };
   };
 }
