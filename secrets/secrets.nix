@@ -34,4 +34,5 @@ in
   "sftpgo-oidc-secret.age".publicKeys = nbase;
   "tailscale-preauth.age".publicKeys = all;
   "vikunja-oidc.age".publicKeys = gbase;
+  "warracker-oidc-secret.age".publicKeys = nbase;
 }
