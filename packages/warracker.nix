@@ -1,0 +1,92 @@
+{ lib
+, python3Packages
+, fetchFromGitHub
+}:
+
+python3Packages.buildPythonApplication rec {
+  pname = "warracker";
+  version = "0.10.1.12";
+  pyproject = false;
+
+  src = fetchFromGitHub {
+    owner = "sassanix";
+    repo  = "Warracker";
+    rev   = version;
+    hash  = "sha256-xkjAikdA3ZjW9U6EsVZAXCpQLoetYjQ90G04yxERUxo=";
+  };
+
+  dependencies = with python3Packages; [
+    apprise
+    apscheduler
+    authlib
+    babel
+    email-validator
+    flask
+    flask-babel
+    flask-bcrypt
+    flask-cors
+    flask-login
+    gevent
+    gunicorn
+    psycopg2
+    pyjwt
+    python-dateutil
+    requests
+  ];
+
+  passthru = {
+    python = python3Packages.python;
+    pythonPath = python3Packages.makePythonPath dependencies;
+  };
+
+  postBuild = ''
+  PYTHONPATH=$PYTHONPATH:warracker/
+  '';
+
+  # We only "install" (copy) files here—no wrapping or path logic.
+  installPhase = ''
+    runHook preInstall
+
+    site="$out/${python3Packages.python.sitePackages}"
+    mkdir -p "$site" "$out/share/warracker/static" "$out/bin"
+
+    # Install the Python server code
+    cp -r backend "$site/backend"
+
+    # Install static frontend assets (adjust if upstream layout changes)
+    cp -r frontend/* "$out/share/warracker/static/"
+
+    # Executable: gunicorn launcher
+    cat > "$out/bin/.unwrapped-warracker-gunicorn" <<'EOF'
+#!/bin/sh
+exec ${python3Packages.gunicorn}/bin/gunicorn "$@" 'backend:create_app()'
+EOF
+    chmod +x "$out/bin/.unwrapped-warracker-gunicorn"
+
+    # Executable: migrations
+    cat > "$out/bin/.unwrapped-warracker-migrate" <<'EOF'
+#!/bin/sh
+exec ${python3Packages.python.interpreter} -m backend.migrations.apply_migrations "$@"
+EOF
+    chmod +x "$out/bin/.unwrapped-warracker-migrate"
+
+    for prog in warracker-gunicorn warracker-migrate; do
+      makeWrapper "$out/bin/.unwrapped-$prog" "$out/bin/$prog" \
+        --prefix PYTHONPATH : "$out/${python3Packages.python.sitePackages}:$PYTHONPATH"
+    done
+
+    runHook postInstall
+  '';
+
+  # Simple import verification.
+  pythonImportsCheck = [ "backend" ];
+
+  meta = with lib; {
+    description = "Warracker – Warranty tracking Flask application";
+    homepage    = "https://github.com/sassanix/Warracker";
+    license     = licenses.gpl3Only;
+    platforms   = platforms.unix;
+    mainProgram = "warracker-gunicorn";
+    maintainers = []; # add yourself or others if upstreamed to nixpkgs
+  };
+}

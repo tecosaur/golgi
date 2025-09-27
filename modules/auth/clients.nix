@@ -180,6 +180,11 @@ in {
         (mkClient config.site.apps.vikunja {
           redirect_paths = [ "auth/openid/authelia" ];
         })
+        (mkClient config.site.apps.warracker {
+          authorization_policy = "one_factor";
+          redirect_paths = [ "oidc/login" ];
+          require_pkce = false;
+        })
       ];
     };
     access_control.rules = lib.flatten [
