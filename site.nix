@@ -280,6 +280,14 @@ in {
         subdomain = "syncthing";
         port = 8384;
       };
+      transmission = mkAppOption {
+        name = "Transmission";
+        homepage = "https://transmissionbt.com";
+        description = "torrent client";
+        simpleicon = "transmission";
+        subdomain = "torrent";
+        port = 9092;
+      };
       lldap = mkAppOption {
         name = "LLDAP";
         homepage = "https://github.com/lldap/lldap";
