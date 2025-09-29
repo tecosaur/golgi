@@ -123,7 +123,7 @@
           profiles = {
             system = {
               sshUser = "admin";
-              sshOpts = ["-o" "ControlMaster=no"];
+              sshOpts = ["-S" "none"];
               path =
                 inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.golgi;
               user = "root";
@@ -136,7 +136,7 @@
           profiles = {
             system = {
               sshUser = "admin";
-              sshOpts = ["-o" "ControlMaster=no"];
+              sshOpts = ["-S" "none"];
               path =
                 inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.nucleus;
               user = "root";
