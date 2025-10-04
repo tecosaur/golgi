@@ -4,14 +4,21 @@ let
   immich-domain = "${config.site.apps.immich.subdomain}.${config.site.domain}";
   immich-data = "/data/immich";
   immich-oidc-secret-template = "#=OIDC_CLIENT_SECRET=#";
+  immich-smtp-password-template = "#=SMTP_PASSWORD=#";
   immich-secret-conf-dir = "/run/immich";
 in {
   site.apps.immich.enabled = true;
 
-  age.secrets.immich-oidc = {
-    owner = "immich";
-    group = "users";
-    file = ../secrets/immich-oidc-secret.age;
+  age.secrets = {
+    immich-oidc = {
+      owner = "immich";
+      group = "users";
+      file = ../secrets/immich-oidc-secret.age;
+    };
+    immich-smtp = {
+      owner = "immich";
+      file = ../secrets/fastmail.age;
+    };
   };
 
   services.immich = {
@@ -64,7 +71,7 @@ in {
           host = config.site.email.server;
           port = config.site.email.port;
           username = config.site.email.username;
-          password = "";
+          password = immich-smtp-password-template;
         };
       };
     };
@@ -93,6 +100,7 @@ in {
     cp -f '${refConfig}' '${newConfig}'
     chmod u+w '${newConfig}'
     ${replaceSecretBin} '${immich-oidc-secret-template}' '${config.age.secrets.immich-oidc.path}' '${newConfig}'
+    ${replaceSecretBin} '${immich-smtp-password-template}' '${config.age.secrets.immich-smtp.path}' '${newConfig}'
     '';
   };
 
