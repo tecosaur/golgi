@@ -103,6 +103,7 @@
         hardware-nas
         home-assistant
         immich
+        lyrion
         sftpgo
         site-config
         streaming
