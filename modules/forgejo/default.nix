@@ -142,6 +142,17 @@ in {
     };
   };
 
+  # If forgejo is aggressively scrapped, it can
+  # stall the entire system. Limit its resource usage.
+  systemd.services.forgejo.serviceConfig = {
+    MemoryAccounting = true;
+    MemoryHigh = "768M";
+    MemoryMax = "1G";
+    MemorySwapMax = "1G";
+    CPUAccounting = true;
+    CPUQuota = "100%"; # Limit to one full core
+  };
+
   users.users.${forgejo-user} = {
     home = config.services.forgejo.stateDir;
     useDefaultShell = true;
