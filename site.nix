@@ -198,6 +198,13 @@ in {
         subdomain = "photos";
         port = 2283;
       };
+      llm = mkAppOption {
+        name = "llama-cpp";
+        homepage = "https://github.com/ggml-org/llama.cpp";
+        description = "LLM inference endpoint";
+        subdomain = "llm";
+        port = 8089;
+      };
       ntfy = mkAppOption {
         name = "Ntfy";
         homepage = "https://ntfy.sh";

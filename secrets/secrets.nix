@@ -23,6 +23,7 @@ in
   "lldap-admin-password.age".publicKeys = gbase;
   "lldap-jwt.age".publicKeys = gbase;
   "lldap-key-seed.age".publicKeys = gbase;
+  "llm-api-key.age".publicKeys = all;
   "mealie-credentials-env.age".publicKeys = gbase;
   "memos-oidc-secret.age".publicKeys = gbase;
   "ntfy-webpush-keys-env.age".publicKeys = gbase;
