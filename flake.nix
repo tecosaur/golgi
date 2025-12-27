@@ -106,6 +106,7 @@
         lyrion
         sftpgo
         site-config
+        speedtest
         streaming
         system
         tailscale

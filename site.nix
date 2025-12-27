@@ -272,6 +272,13 @@ in {
           };
         };
       };
+      speedtest = mkAppOption {
+        name = "Speedtest";
+        homepage = "https://openspeedtest.com";
+        description = "connection speed testing";
+        subdomain = "speed";
+        port = 8076;
+      };
       syncthing = mkAppOption {
         name = "Syncthing";
         homepage = "https://syncthing.net";
