@@ -36,6 +36,7 @@
           username = "tec@tecosaur.net";
         };
         apps = {
+          beszel.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6RP5omIbCzQsC/NizUg56JgpgMdl0/VXmCAE0VyJlq";
           mealie.subdomain = "food";
           microbin = {
             title = "μPaste";
@@ -61,6 +62,8 @@
       hosts.golgi.modules = with modules; [
           agenix.nixosModules.default
           auth
+          beszel-hub
+          beszel-agent
           caddy
           crowdsec.nixosModules.crowdsec
           crowdsec.nixosModules.crowdsec-firewall-bouncer
@@ -95,6 +98,7 @@
 
       hosts.nucleus.modules = with modules; [
         agenix.nixosModules.default
+        beszel-agent
         caddy
         crowdsec-setup
         crowdsec.nixosModules.crowdsec
@@ -114,6 +118,7 @@
         {
           site = nixpkgs.lib.recursiveUpdate site-setup {
             server.host = "nucleus";
+            apps.beszel.extra-filesystems = [ "/data__Data Volume" ];
           };
         }
       ];

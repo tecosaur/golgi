@@ -102,6 +102,9 @@ in {
   services.authelia.instances.main.settings = {
     identity_providers.oidc = {
       authorization_policies = lib.mkMerge [
+        (mkPolicy config.site.apps.beszel {
+          extra_groups = [ "admin" ];
+        })
         (mkPolicy config.site.apps.forgejo {
           user_policy = "one_factor";
         })
@@ -140,6 +143,9 @@ in {
         };
       };
       clients = lib.flatten [
+        (mkClient config.site.apps.beszel {
+          redirect_paths = [ "api/oauth2-redirect" ];
+        })
         (mkClient config.site.apps.calibre-web {
           redirect_paths = [ "login/generic/authorized" ];
           require_pkce = false;

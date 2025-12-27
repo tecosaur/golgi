@@ -12,6 +12,8 @@ in
   "authelia-oidc-issuer.pem.age".publicKeys = gbase;
   "authelia-session.age".publicKeys = gbase;
   "authelia-storage.age".publicKeys = gbase;
+  "beszel-oidc-secret.age".publicKeys = gbase;
+  "beszel-token.age".publicKeys = all;
   "cloudflare-api-env.age".publicKeys = all;
   "crowdsec-enroll-key.age".publicKeys = all;
   "fastmail.age".publicKeys = all;

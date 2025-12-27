@@ -126,6 +126,35 @@ in {
         subdomain = "auth";
         port = 9091;
       };
+      beszel = mkAppOption {
+        name = "Beszel";
+        homepage = "https://beszel.dev";
+        description = "System monitoring";
+        subdomain = "systems";
+        port = 8090;
+        extraOptions = {
+          publicKey = lib.mkOption {
+            type = lib.types.str;
+            default = "";
+            description = "Public key of the Beszel hub";
+          };
+          agent-port = lib.mkOption {
+            type = lib.types.int;
+            default = 45876;
+            description = "Port that the Beszel agent listens on";
+          };
+          extra-filesystems = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = "Additional filesystems the agent should monitor";
+          };
+          systems = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = "List of system hosts, that have Beszel agents";
+          };
+        };
+      };
       calibre-web = mkAppOption {
         name = "Calibre web";
         homepage = "https://github.com/crocodilestick/Calibre-Web-Automated";
