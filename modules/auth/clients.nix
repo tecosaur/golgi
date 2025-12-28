@@ -2,6 +2,7 @@
 
 let
   mkClient = app: overrides@{
+    name ? app.name,
     client_secret ? null,
     redirect_paths ? null,
     redirect_uris ? null,
@@ -17,10 +18,10 @@ let
       oidcRedirects = (if redirect_paths != null then
         pathsToUris redirect_paths else
           []) ++ (if redirect_uris != null then redirect_uris else []);
-      safeName = lib.toLower (lib.replaceStrings [ " " ] [ "-" ] app.name);
+      safeName = lib.toLower (lib.replaceStrings [ " " ] [ "-" ] name);
       baseClient = {
         client_id = safeName;
-        client_name = app.name;
+        client_name = name;
         authorization_policy = safeName;
         client_secret = if client_secret != null then
           client_secret else readSecret safeName;
@@ -37,7 +38,7 @@ let
         token_endpoint_auth_method = "client_secret_basic";
       };
       cleanedOverrides = builtins.removeAttrs
-        overrides [ "client_secret" "redirect_paths" "redirect_uris" "force" ];
+        overrides [ "name" "client_secret" "redirect_paths" "redirect_uris" "force" ];
     in
       lib.optionals (force || app.enabled)
         [(baseClient // cleanedOverrides)];
