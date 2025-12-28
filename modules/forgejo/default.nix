@@ -134,7 +134,8 @@ in {
         DESCRIPTION = "The personal forge of TEC";
       };
       server = {
-        SSH_DOMAIN = "${config.site.cloudflare-bypass-subdomain}.${config.site.domain}";
+        SSH_DOMAIN = if config.site.cloudflare-bypass-subdomain == null then
+          forgejo-domain else "${config.site.cloudflare-bypass-subdomain}.${config.site.domain}";
       };
       federation = {
         ENABLED = true;

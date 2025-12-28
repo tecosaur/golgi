@@ -23,6 +23,7 @@
       site-config = import ./site.nix;
       site-setup = {
         domain = "tecosaur.net";
+        cloudflare-bypass-subdomain = "ssh";
         server.admin = {
           hashedPassword = "$6$ET8BLqODvw77VOmI$oun2gILUqBr/3WonH2FO1L.myMIM80KeyO5W1GrYhJTo./jk7XcG8B3vEEcbpfx3R9h.sR0VV187/MgnsnouB1";
           authorizedKeys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt tec@tranquillity" ];
@@ -117,7 +118,9 @@
 
       deploy.nodes = {
         golgi = {
-          hostname = "${self.nixosConfigurations.golgi.config.site.cloudflare-bypass-subdomain}.${self.nixosConfigurations.golgi.config.site.domain}";
+          hostname = if self.nixosConfigurations.golgi.config.site.cloudflare-bypass-subdomain then
+            "${self.nixosConfigurations.golgi.config.site.cloudflare-bypass-subdomain}.${self.nixosConfigurations.golgi.config.site.domain}"
+                     else self.nixosConfigurations.golgi.config.site.domain;
           fastConnection = false;
           profiles = {
             system = {

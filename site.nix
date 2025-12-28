@@ -62,8 +62,8 @@ in {
       description = "Global domain name for the site";
     };
     cloudflare-bypass-subdomain = lib.mkOption {
-      type = lib.types.str;
-      default = "ssh";
+      type = lib.types.nullOr lib.types.str;
+      default = null;
       description = "Domain to use for bypassing Cloudflare (e.g. for SSH).";
     };
     server = {

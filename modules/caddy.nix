@@ -1,10 +1,12 @@
 { config, lib, pkgs, ... }:
 
 let
+  cloudflare-bypass-stub = if config.site.cloudflare-bypass-subdomain != null then
+    " ${config.site.cloudflare-bypass-subdomain}" else "";
   dynamicdns-config = if config.site.server.authoritative then
     ''
     domains {
-            ${config.site.domain} @ * ${config.site.cloudflare-bypass-subdomain}
+            ${config.site.domain} @ * _${config.site.server.host}${cloudflare-bypass-stub}
     }
     ip_source simple_http https://icanhazip.com
     ''
