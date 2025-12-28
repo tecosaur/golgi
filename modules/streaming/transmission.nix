@@ -19,6 +19,8 @@ in {
       rpc-whitelist = "127.0.0.1,192.168.1.*,100.*.*.*"; # Self, LAN, Tailnet
       rpc-host-whitelist = "192.168.1.*,${config.site.apps.transmission.subdomain}.${config.site.domain},100.*.*.*,nas.lan,${config.site.server.host}.${config.site.apps.headscale.magicdns-subdomain}.${config.site.domain}";
       rpc-authentication-required = false;
+      ratio-limit-enabled = true;
+      ratio-limit = 2;
       download-dir = download-dir;
       incomplete-dir = incomplete-dir;
       rename-partial-files = true;

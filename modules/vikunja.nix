@@ -3,7 +3,10 @@
 let
   vikunja-domain = "${config.site.apps.vikunja.subdomain}.${config.site.domain}";
   vikunja-user = "vikunja";
-  custom-public-dir = ../assets/vikunja/public;
+  vikunja-assets = builtins.path {
+    name = "vikunja-assets";
+    path = "${config.site.assets}/vikunja";
+  };
 in {
   site.apps.vikunja.enabled = true;
 
@@ -21,7 +24,9 @@ in {
 
   services.vikunja = {
     enable = true;
-    package = pkgs.callPackage ../packages/vikunja.nix { };
+    package = pkgs.callPackage ../packages/vikunja.nix {
+      vikunja-assets = vikunja-assets;
+    };
     frontendScheme = "https";
     frontendHostname = vikunja-domain;
     port = config.site.apps.vikunja.port;
@@ -85,7 +90,7 @@ in {
     @public-assets path /favicon.ico /images/icons/*
     route {
         file_server @public-assets {
-            root ${custom-public-dir}
+            root ${config.site.assets}/vikunja/public
         }
         reverse_proxy :${toString config.site.apps.vikunja.port}
     }

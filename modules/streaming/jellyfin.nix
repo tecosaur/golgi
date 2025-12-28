@@ -231,13 +231,13 @@ in {
   services.caddy.virtualHosts."${config.site.apps.jellyfin.subdomain}.${config.site.domain}".extraConfig =
     ''
     handle_path /web/assets/img/* {
-        root * ${../../assets/jellyfin}
+        root ${config.site.assets}/jellyfin
         try_files {path} {http.request.uri}
         file_server
     }
     handle /web/*.ico {
         rewrite * /jellyfin.ico
-        root * ${../../assets/jellyfin}
+        root ${config.site.assets}/jellyfin
         file_server
     }
     reverse_proxy :${toString config.site.apps.jellyfin.port}

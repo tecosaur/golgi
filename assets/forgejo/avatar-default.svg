@@ -6,7 +6,7 @@
    width="32"
    height="32"
    sodipodi:docname="avatar-default.svg"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:version="1.4.2 (unknown)"
    inkscape:export-filename="avatar-default.png"
    inkscape:export-xdpi="600"
    inkscape:export-ydpi="600"
@@ -26,9 +26,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="45.34375"
-     inkscape:cx="15.988973"
-     inkscape:cy="16"
+     inkscape:zoom="22.671875"
+     inkscape:cx="16.209511"
+     inkscape:cy="18.988284"
      inkscape:window-width="3071"
      inkscape:window-height="1080"
      inkscape:window-x="0"
@@ -45,31 +45,31 @@
        id="path8-7"
        d="M21.199 93.084V66.338a44.575 44.575 0 0 1 44.575-44.575h17.83"
        class="red"
-       style="fill:none;stroke:#67bc85;stroke-width:23.2393;stroke-opacity:1" />
+       style="fill:none;stroke:#1c71d8;stroke-width:23.2393;stroke-opacity:1" />
     <path
        id="path8-3"
        d="M107.481 21.763h26.745a44.575 44.575 0 0 1 44.575 44.575v17.83"
        class="red"
-       style="fill:none;stroke:#239a58;stroke-width:23.2393;stroke-opacity:1" />
+       style="fill:none;stroke:#e66100;stroke-width:23.2393;stroke-opacity:1" />
     <circle
        id="circle12-36"
        cx="96.085"
        cy="21.763"
        r="16.047"
        class="red"
-       style="fill:none;stroke:#67bc85;stroke-width:13.9436;stroke-opacity:1" />
+       style="fill:none;stroke:#1c71d8;stroke-width:13.9436;stroke-opacity:1" />
     <path
        id="path8-7-2"
        d="M178.801 106.916v26.746a44.575 44.575 0 0 1-44.575 44.575h-17.83"
        class="red"
-       style="fill:none;stroke:#67bc85;stroke-width:23.2393;stroke-opacity:1" />
+       style="fill:none;stroke:#1c71d8;stroke-width:23.2393;stroke-opacity:1" />
     <circle
        id="circle12-5"
        cx="96.65"
        cy="-178.801"
        r="16.047"
        class="red"
-       style="fill:none;stroke:#239a58;stroke-width:13.9436;stroke-opacity:1"
+       style="fill:none;stroke:#e66100;stroke-width:13.9436;stroke-opacity:1"
        transform="rotate(90)" />
     <circle
        id="circle12-5-7"
@@ -77,20 +77,20 @@
        cy="21.199"
        r="16.047"
        class="red"
-       style="fill:none;stroke:#239a58;stroke-width:13.9436;stroke-opacity:1"
+       style="fill:none;stroke:#e66100;stroke-width:13.9436;stroke-opacity:1"
        transform="rotate(-90)" />
     <path
        id="path8-3-0"
        d="M92.519 178.237H65.774a44.575 44.575 0 0 1-44.575-44.575v-17.83"
        class="red"
-       style="fill:none;stroke:#239a58;stroke-width:23.2393;stroke-opacity:1" />
+       style="fill:none;stroke:#e66100;stroke-width:23.2393;stroke-opacity:1" />
     <circle
        id="circle12-36-1"
        cx="-103.915"
        cy="-178.237"
        r="16.047"
        class="red"
-       style="fill:none;stroke:#67bc85;stroke-width:13.9436;stroke-opacity:1"
+       style="fill:none;stroke:#1c71d8;stroke-width:13.9436;stroke-opacity:1"
        transform="scale(-1)" />
   </g>
   <xhtml:iframe

@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   mkAppOption = { name, description, homepage, simpleicon ? null, subdomain, port, extraOptions ? {} }:
@@ -54,6 +54,10 @@ let
         description = "User group that has admin access to the ${name} app";
       };
     } // extraOptions;
+  assets-pkg = pkgs.callPackage ./packages/site-assets.nix {
+    primary = config.site.accent.primary;
+    secondary = config.site.accent.secondary;
+  };
 in {
   options.site = {
     domain = lib.mkOption {
@@ -66,6 +70,19 @@ in {
       default = null;
       description = "Domain to use for bypassing Cloudflare (e.g. for SSH).";
     };
+    accent = {
+      primary = lib.mkOption {
+        type = lib.types.str;
+        default = "#4F46E5";
+        description = "Primary accent color in hex format";
+      };
+      secondary = lib.mkOption {
+        type = lib.types.str;
+        default = "#9333EA";
+        description = "Secondary accent color in hex format";
+      };
+    };
+    assets = lib.mkPackageOption { site-assets = assets-pkg; } "site-assets" { };
     server = {
       admin = {
         hashedPassword = lib.mkOption {

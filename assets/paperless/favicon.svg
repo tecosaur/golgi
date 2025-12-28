@@ -4,7 +4,7 @@
    width="900"
    height="900"
    id="svg3923"
-   sodipodi:docname="paperless.svg"
+   sodipodi:docname="favicon.svg"
    inkscape:export-filename="/tmp/test.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
@@ -44,8 +44,8 @@
      id="namedview3925"
      showgrid="false"
      inkscape:zoom="0.80333885"
-     inkscape:cx="362.86058"
-     inkscape:cy="547.09168"
+     inkscape:cx="363.48298"
+     inkscape:cy="548.33648"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -69,15 +69,15 @@
        inkscape:export-filename="/tmp/test.png"
        inkscape:export-xdpi="116.02285"
        inkscape:export-ydpi="116.02285"
-       style="fill:#239a58;fill-opacity:1">
+       style="fill:#e66100;fill-opacity:1">
       <defs
          id="defs3911" />
       <g
          id="g3915"
-         style="fill:#239a58;fill-opacity:1">
+         style="fill:#e66100;fill-opacity:1">
         <path
            d="M 231,798 C 227,779 219,741 218,741 49,640 69,465 125,365 c 12,126 235,213 105,367 -1,2 6,26 12,48 26,-44 65,-97 63,-102 C 145,288 645,258 749,16 c 47,234 -24,596 -426,688 -2,1 -73,126 -76,127 0,-2 -30,-1 -26,-11 2,-6 6,-14 10,-22 z M 330,625 C 267,476 452,312 544,271 356,439 324,564 330,625 Z m -104,79 c 51,-59 -9,-160 -45,-193 61,105 57,166 45,193 z"
-           style="fill:#239a58;fill-opacity:1"
+           style="fill:#e66100;fill-opacity:1"
            id="path3913"
            inkscape:connector-curvature="0" />
       </g>

@@ -135,12 +135,12 @@ in {
     encode
     header -Alt-svc
     handle_path /static/img/* {
-        root * ${../assets/sftpgo}
+        root ${config.site.assets}/sftpgo
         file_server
     }
     handle /static/favicon.png {
         uri strip_prefix /static
-        root * ${../assets/sftpgo}
+        root ${config.site.assets}/sftpgo
         file_server
     }
     reverse_proxy * :${toString config.site.apps.sftpgo.port} {

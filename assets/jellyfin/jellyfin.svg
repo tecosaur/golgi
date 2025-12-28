@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- ***** BEGIN LICENSE BLOCK *****
+  - Part of the Jellyfin project (https://jellyfin.media)
+  - 
+  - All copyright belongs to the Jellyfin contributors; a full list can
+  - be found in the file CONTRIBUTORS.md
+  - 
+  - This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+  - To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
+- ***** END LICENSE BLOCK ***** -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   viewBox="0 0 512 512"
+   sodipodi:docname="jellyfin.svg"
+   inkscape:version="1.4.2 (unknown)"
+   inkscape:export-filename="jellyfin.png"
+   inkscape:export-xdpi="105.62029"
+   inkscape:export-ydpi="105.62029"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview2"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.7084961"
+     inkscape:cx="605.50792"
+     inkscape:cy="301.34252"
+     inkscape:window-width="2370"
+     inkscape:window-height="1324"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="icon-transparent" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient6"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#e66100;stop-opacity:1;"
+         offset="0"
+         id="stop6" />
+      <stop
+         style="stop-color:#1c71d8;stop-opacity:1;"
+         offset="1"
+         id="stop7" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient1"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#e66100;stop-opacity:1;"
+         offset="0"
+         id="stop3" />
+      <stop
+         style="stop-color:#1c71d8;stop-opacity:1;"
+         offset="1"
+         id="stop4" />
+    </linearGradient>
+    <linearGradient
+       id="linear-gradient"
+       gradientUnits="userSpaceOnUse"
+       x1="110.25"
+       y1="213.3"
+       x2="496.14"
+       y2="436.09">
+      <stop
+         offset="0"
+         style="stop-color:#e66100;stop-opacity:1;"
+         id="stop1" />
+      <stop
+         offset="1"
+         style="stop-color:#00A4DC"
+         id="stop2" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1"
+       id="linearGradient5"
+       x1="107.74772"
+       y1="210.909"
+       x2="488.53513"
+       y2="430.75671"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6"
+       id="linearGradient7"
+       x1="211.33093"
+       y1="269.79163"
+       x2="325.52203"
+       y2="338.29211"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <title
+     id="title2">icon-transparent</title>
+  <g
+     id="icon-transparent">
+    <path
+       id="inner-shape"
+       d="M256,201.6c-20.4,0-86.2,119.3-76.2,139.4s142.5,19.9,152.4,0S276.5,201.6,256,201.6z"
+       fill="url(#linear-gradient)"
+       style="fill:url(#linearGradient7);fill-opacity:1" />
+    <path
+       id="outer-shape"
+       d="M256,23.3c-61.6,0-259.8,359.4-229.6,420.1s429.3,60,459.2,0S317.6,23.3,256,23.3z   M406.5,390.8c-19.6,39.3-281.1,39.8-300.9,0s110.1-275.3,150.4-275.3S426.1,351.4,406.5,390.8z"
+       fill="url(#linear-gradient)"
+       style="fill:url(#linearGradient5);fill-opacity:1" />
+  </g>
+</svg>

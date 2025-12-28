@@ -16,8 +16,7 @@ let
   apps-exports = mkAppExports config.site.apps;
   static-root = pkgs.runCommand "static-root" { buildInputs = [ pkgs.gettext ]; } ''
       export DOMAIN='${config.site.domain}'
-      export FORGE_SUBDOMAIN='${config.site.apps.forgejo.subdomain}'
-      export HOMEPAGE_SUBDOMAIN='${config.site.apps.homepage.subdomain}'
+      export ACCENT='${config.site.accent.primary}'
       ${apps-exports}
       export APPS_TEXT=$(cat <<'HEREDOC'
       ${concatStringsSep "\n" (map (app: "• ${app.name} (${app.description})")
@@ -34,7 +33,7 @@ let
       }
 
       mkdir -p $out
-      cp -r ${../assets/site}/* $out
+      cp -r ${config.site.assets}/site/* $out
       cd $out
       apply_template index.txt welcome-public.html welcome-private.html
       cp index.html index-public.html
@@ -44,7 +43,7 @@ let
       export WELCOME=`sed 's/^/            /g' welcome-private.html`
       apply_template index-private.html
       rm index.html welcome-public.html welcome-private.html
-      apply_template services.html
+      apply_template services.html # about.html
     '';
 in {
   services.caddy = {
@@ -55,7 +54,7 @@ in {
         }
         @browser header User-Agent *Mozilla*
         try_files {path} {path}.html
-        root * ${static-root}
+        root ${static-root}
         route {
             handle /reload {
                 header Clear-Site-Data "\"cache\""

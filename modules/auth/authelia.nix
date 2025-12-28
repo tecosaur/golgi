@@ -6,7 +6,7 @@ let
   authelia-user = "authelia";
   assets-no-symlinks = pkgs.runCommand "autheleia-assets" {} ''
     mkdir -p $out
-    cp -rL ${../../assets}/authelia/* $out
+    cp -rL ${config.site.assets}/authelia/* $out
   '';
 in {
   site.apps.authelia.enabled = true;

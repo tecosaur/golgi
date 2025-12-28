@@ -32,6 +32,10 @@
           server = "smtp.fastmail.com";
           username = "tec@tecosaur.net";
         };
+        accent = {
+          primary = "#239a58";
+          secondary = "#67bc85";
+        };
         apps = {
           beszel.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6RP5omIbCzQsC/NizUg56JgpgMdl0/VXmCAE0VyJlq";
           mealie.subdomain = "food";

@@ -121,7 +121,7 @@ in {
     ''
     route {
         file_server /favicon.ico {
-            root ${../assets/paperless}
+            root ${config.site.assets}/paperless
         }
         reverse_proxy :${toString config.site.apps.paperless.port}
     }

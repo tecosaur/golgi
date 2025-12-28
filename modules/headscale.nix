@@ -141,7 +141,7 @@ in {
         header User-Agent *Mozilla*
         path /
     }
-    root ${../assets/headscale}
+    root ${config.site.assets}/headscale
     route {
         redir @browser-root /admin/
         handle /admin/favicon.ico {

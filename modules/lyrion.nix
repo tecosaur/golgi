@@ -60,7 +60,7 @@ in {
       ''
       handle /html/images/icon* {
           uri strip_prefix /html/images/
-          root * ${../assets/lyrion}
+          root ${config.site.assets}/lyrion
           file_server
       }
       reverse_proxy :${toString lyrion-web-port}
@@ -70,7 +70,7 @@ in {
       ''
       handle /html/images/icon* {
           uri strip_prefix /html/images/
-          root ${../assets/lyrion}
+          root ${config.site.assets}/lyrion
           file_server
       }
       reverse_proxy :${toString lyrion-web-port}

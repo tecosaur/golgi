@@ -5,7 +5,7 @@
    viewBox="0 0 56.3 56.3"
    version="1.1"
    id="svg1"
-   sodipodi:docname="favicon.svg"
+   sodipodi:docname="icon-maskable.svg"
    inkscape:version="1.4.2 (unknown)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,17 +23,23 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="3.4094807"
-     inkscape:cx="273.64871"
-     inkscape:cy="110.42737"
-     inkscape:window-width="6144"
-     inkscape:window-height="1660"
+     inkscape:cx="100.60183"
+     inkscape:cy="73.618249"
+     inkscape:window-width="2878"
+     inkscape:window-height="1309"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1"
+     inkscape:window-maximized="0"
      inkscape:current-layer="svg1" />
+  <rect
+     style="fill:#e66100;stroke:none;stroke-width:0.264581;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     id="rect1"
+     width="56.299999"
+     height="56.299999"
+     x="0"
+     y="0" />
   <path
-     d="m73.777 99.462 12.384 12.383 24.05-24.05M73.777 78.475 86.161 90.86l24.05-24.05"
-     style="fill:none;stroke:#e66100;stroke-width:8;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1"
-     transform="translate(-63.844 -61.145)"
+     d="m 11.768638,37.263347 11.136125,11.135226 21.626599,-21.6266 M 11.768638,18.391105 22.904763,29.528129 44.531362,7.9015294"
+     style="fill:none;stroke:#ffffff;stroke-width:7.19388;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1"
      id="path1" />
 </svg>

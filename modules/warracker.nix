@@ -90,7 +90,7 @@ in {
   services.caddy.virtualHosts.${warracker-domain}.extraConfig = ''
     reverse_proxy /api/* :${toString config.site.apps.warracker.port}
     file_server /favicon* {
-      root ${../assets/warracker}
+      root ${config.site.assets}/warracker
     }
     file_server {
       root ${warracker-pkg}/share/warracker/static

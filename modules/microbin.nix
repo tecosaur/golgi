@@ -5,7 +5,6 @@ let
   short-domain = "${config.site.apps.microbin.short-subdomain}.${config.site.domain}";
   ubin-port = config.site.apps.microbin.port;
   page-name = config.site.apps.microbin.title;
-  static-assets-dir = ../assets/microbin;
 in
 let
   site.apps.microbin.enabled = true;
@@ -13,7 +12,7 @@ let
   caddy-static-assets-filter =
     ''
     handle_path /static/* {
-        root * ${static-assets-dir}
+        root ${config.site.assets}/microbin
         file_server
     }
     '';

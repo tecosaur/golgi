@@ -6,7 +6,7 @@
    width="32"
    height="32"
    sodipodi:docname="favicon.svg"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:version="1.4.2 (unknown)"
    inkscape:export-filename="favicon.png"
    inkscape:export-xdpi="540"
    inkscape:export-ydpi="540"
@@ -26,9 +26,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="8.0157183"
-     inkscape:cx="-1.6841909"
-     inkscape:cy="-3.5555142"
+     inkscape:zoom="16.031437"
+     inkscape:cx="15.032963"
+     inkscape:cy="15.251284"
      inkscape:window-width="2078"
      inkscape:window-height="1080"
      inkscape:window-x="0"
@@ -45,33 +45,33 @@
        id="path6"
        d="M58 168V70a50 50 0 0 1 50-50h20"
        class="orange"
-       style="stroke:#67bc85;stroke-opacity:1" />
+       style="stroke:#1c71d8;stroke-opacity:1" />
     <path
        id="path8"
        d="M58 168v-30a50 50 0 0 1 50-50h20"
        class="red"
-       style="stroke:#239a58;stroke-opacity:1;stroke-width:25.00275;stroke-dasharray:none" />
+       style="stroke:#e66100;stroke-opacity:1;stroke-width:25.00275;stroke-dasharray:none" />
     <circle
        id="circle10"
        cx="142"
        cy="20"
        r="18"
        class="orange"
-       style="stroke:#68bc85;stroke-opacity:1" />
+       style="stroke:#1c71d8;stroke-opacity:1" />
     <circle
        id="circle12"
        cx="142"
        cy="88"
        r="18"
        class="red"
-       style="stroke:#239a58;stroke-opacity:1" />
+       style="stroke:#e66100;stroke-opacity:1" />
     <circle
        id="circle14"
        cx="58"
        cy="180"
        r="18"
        class="red"
-       style="stroke:#239a58;stroke-opacity:1" />
+       style="stroke:#e66100;stroke-opacity:1" />
   </g>
   <xhtml:iframe
      id="cmdline_iframe"

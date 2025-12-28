@@ -22,7 +22,7 @@ in {
     ''
     handle /static/icon.svg {
         uri strip_prefix /static/
-        root ${../assets/beszel}
+        root ${config.site.assets}/beszel
         file_server
     }
     reverse_proxy :${toString config.site.apps.beszel.port}

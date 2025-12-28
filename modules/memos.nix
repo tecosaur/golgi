@@ -45,7 +45,7 @@ in {
     }
     redir @doauth https://${config.site.apps.authelia.subdomain}.${config.site.domain}/api/oidc/authorization?client_id=memos&redirect_uri=https://${memos-domain}/auth/callback&state=auth.signin.SSO%20(Authelia)-1&response_type=code&scope=openid%20profile%20email
     handle @custom-assets {
-        root * ${../assets/memos}
+        root ${config.site.assets}/memos
         file_server
     }
     reverse_proxy :${memos-port}

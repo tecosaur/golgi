@@ -5,7 +5,7 @@
         <title>Hello</title>
         <meta name="description" content="A menagerie of services and pages.">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#229454">
+        <meta name="theme-color" content="$ACCENT">
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <style>
             body {
@@ -19,7 +19,7 @@
                 box-sizing: border-box;
                 font-size: 1.1rem;
                 font-family: monospace;
-                background: #ebfdf0;
+                background: oklch(from $ACCENT 0.98 0.025 h);
             }
             section {
                 margin: 0;
@@ -27,24 +27,24 @@
                 max-width: 40em;
             }
             h1, strong, a {
-                color: #229454;
+                color: color-mix(in oklch, $ACCENT 97.5%, #000 2.5%);
             }
             a {
                 white-space: nowrap;
             }
             ::selection {
-                background: #239a5855;
+                background: ${ACCENT}55;
             }
             @media (prefers-color-scheme: dark) {
                 body {
-                    background: #0e1d13;
+                    background: oklch(from $ACCENT 0.21 0.025 h);
                     color: #fafafa;
                 }
                 h1 {
-                    color: #27a560;
+                    color: color-mix(in oklch, $ACCENT 95%, #fff 5%);
                 }
                 strong, a {
-                    color: #30c370;
+                    color: oklch(from $ACCENT 0.72 0.17 h);
                 }
             }
         </style>
@@ -58,9 +58,6 @@
             </p>
             <h1 style="text-align: center">Welcome</h1>
 $WELCOME
-            <p>
-                <strong>Enjoy!</strong>
-            </p>
         </section>
         <section>
         </section>

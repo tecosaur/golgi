@@ -10,6 +10,7 @@
   mage,
   writeShellScriptBin,
   nixosTests,
+  vikunja-assets
 }:
 
 let
@@ -42,7 +43,7 @@ let
 
     # Bonus theming
     prePatch = ''
-      cp -f ${../assets/vikunja/frontend}/* src/assets
+      cp -f ${vikunja-assets}/frontend/* src/assets
       # Webpage theming
       substituteInPlace src/styles/custom-properties/colors.scss --replace-warn \
         "--primary-h: 217deg" "--primary-h: 146deg"
