@@ -10,17 +10,18 @@ let
 in {
   site.apps.headscale.enabled = true;
 
-  age.secrets.headscale-oidc = {
-    owner = "headscale";
-    group = "users";
-    file = ../secrets/headscale-oidc-secret.age;
+  age.secrets = {
+    headscale-oidc = {
+      owner = "headscale";
+      file = ../secrets/headscale-oidc-secret.age;
+    };
+    headplane-oidc = {
+      owner = "headscale";
+      file = ../secrets/headplane-oidc-secret.age;
+    };
   };
 
-  age.secrets.headplane-env = {
-    owner = "headscale";
-    group = "users";
-    file = ../secrets/headplane-env.age;
-  };
+  networking.firewall.allowedUDPPorts = [ 41641 3478 ];
 
   services.headscale = {
       enable = true;
@@ -36,6 +37,12 @@ in {
           issuer = "https://${config.site.apps.authelia.subdomain}.${config.site.domain}";
           client_id = "headscale";
           client_secret_path = config.age.secrets.headscale-oidc.path;
+          scope = [ "openid" "profile" "email" "groups" ];
+          allowed_groups = [ "headscale" ];
+          pkce = {
+            enabled = true;
+            method = "S256";
+          };
           extra_params = {
             domain_hint = config.site.domain;
           };
@@ -47,61 +54,82 @@ in {
       };
   };
 
-  systemd.services.headscale.serviceConfig = {
-    ExecStartPre = "/bin/sh -c 'touch -a ${config.services.headscale.settings.policy.path}'";
+  systemd.services.headscale = lib.mkIf (config.services.authelia.instances ? main
+                                         && config.services.authelia.instances.main.enable) {
+    after = lib.mkAfter [ "authelia-main.target" ];
+    wants = lib.mkAfter [ "authelia-main.target" ];
+  };
+
+  environment.etc."headplane/config.yaml" = {
+    source = (pkgs.formats.yaml { }).generate "headplane.yaml" {
+      server = {
+        host = "127.0.0.1";
+        port = headplane-port;
+        cookie_secret_path = "/var/lib/headplane/cookie_secret";
+        cookie_secure = true;
+        data_path = "/var/lib/headplane";
+      };
+      headscale = {
+        url = "https://${headscale-domain}";
+        config_strict = true;
+        config_path = (pkgs.formats.yaml { }).generate "headscale.yaml" (config.services.headscale.settings // {
+          acme_email = "/dev/null";
+          tls_cert_path = "/dev/null";
+          tls_key_path = "/dev/null";
+        });
+      };
+      integration = {
+        agent = {
+          enabled = true;
+          executable_path = "${headplane-pkg}/bin/hp_agent";
+          pre_authkey_path = "/var/lib/headplane/preauth_key";
+          host_name = "headplane-agent";
+          cache_path = "/var/lib/headplane/agent_cache.json";
+          work_dir = "/var/lib/headplane/agent";
+        };
+        proc.enabled = true;
+      };
+      oidc = {
+        issuer = "https://${config.site.apps.authelia.subdomain}.${config.site.domain}";
+        client_id = "headplane";
+        client_secret_path = config.age.secrets.headplane-oidc.path;
+        disable_api_key_login = true;
+        headscale_api_key_path = "/var/lib/headplane/api_key";
+        redirect_uri = "https://${headscale-domain}/admin/oidc/callback";
+        token_endpoint_auth_method = "client_secret_basic";
+      };
+    };
+    user = config.services.headscale.user;
+    group = config.services.headscale.group;
   };
 
   systemd.services.headplane = {
-    description = "Headscale UI";
-    after = [ "network.target" ];
+    description = "Headplane";
+    after = [ "network.target" "headscale.target" ];
+    wants = [ "headscale.target" ];
     wantedBy = [ "multi-user.target" ];
+    environment = {
+      # HEADPLANE_DEBUG_LOG = "true";
+    };
+    preStart = ''
+    ${lib.getExe pkgs.headscale} users create system || true
+    umask 077
+    if [ ! -s /var/lib/headplane/cookie_secret ]; then
+        head -c 32 /dev/urandom | base64 > /var/lib/headplane/cookie_secret
+    fi
+    if [ ! -s /var/lib/headplane/api_key ]; then
+        ${lib.getExe pkgs.headscale} apikeys create > /var/lib/headplane/api_key
+    fi
+    ${lib.getExe pkgs.headscale} preauthkeys create -u 1 -e 5m > /var/lib/headplane/preauth_key
+    '';
     serviceConfig = {
       User = config.services.headscale.user;
       Group = config.services.headscale.group;
       ExecStart = "${headplane-pkg}/bin/headplane";
-      # Workaround for <https://github.com/tale/headplane/issues/48>
-      ExecStartPre = "/bin/sh -c 'cp ${headscale-config-copy} /tmp/headscale.yaml; chmod u+w /tmp/headscale.yaml'";
-      Environment = [
-        "HEADSCALE_INTEGRATION=proc"
-        # "CONFIG_FILE=${headscale-config-copy}"
-        "CONFIG_FILE=/tmp/headscale.yaml"
-        "PORT=${toString headplane-port}"
-        "DISABLE_API_KEY_LOGIN=true"
-      ];
-      # `COOKIE_SECRET` and `ROOT_API_KEY`
-      EnvironmentFile = config.age.secrets.headplane-env.path;
-      # Restart = "always";
-    };
-  };
-
-  services.authelia.instances.main.settings = {
-    identity_providers.oidc = {
-      authorization_policies.headscale = {
-        default_policy = "deny";
-        rules = [
-          {
-            policy = "two_factor";
-            subject = "group:headscale";
-          }
-        ];
-      };
-      clients = [
-        {
-          client_id = "headscale";
-          client_name = "Headscale";
-          client_secret = "$argon2id$v=19$m=65536,t=3,p=4$JxZLRd3W145f3uB3D2UVqw$kJVGMuaLzESu9kWDYE8p8mnM2qRRAiaLgAI0vJaCu5k";
-          authorization_policy = "headscale";
-          public = false;
-          consent_mode = "implicit";
-          redirect_uris = [
-            "https://${headscale-domain}/oidc/callback"
-            "https://${headscale-domain}/admin/oidc/callback"
-          ];
-          scopes = [ "openid" "email" "profile" "groups" ];
-          userinfo_signed_response_alg = "none";
-          token_endpoint_auth_method = "client_secret_basic";
-        }
-      ];
+      StateDirectory = "headplane";
+      WorkingDirectory = "/var/lib/headplane";
+      Restart = "always";
+      RestartSec = 5;
     };
   };
 
@@ -109,7 +137,20 @@ in {
   services.caddy.virtualHosts."${headscale-domain}".extraConfig =
     ''
     @ui path /admin /admin/*
-    reverse_proxy @ui :${toString headplane-port}
-    reverse_proxy :${toString headscale-port}
+    @browser-root {
+        header User-Agent *Mozilla*
+        path /
+    }
+    root ${../assets/headscale}
+    route {
+        redir @browser-root /admin/
+        handle /admin/favicon.ico {
+             uri strip_prefix /admin
+             file_server
+        }
+        reverse_proxy @ui :${toString headplane-port}
+        file_server /favicon.ico
+        reverse_proxy :${toString headscale-port}
+    }
     '';
 }

@@ -26,6 +26,7 @@ in {
 
   services.declarative-jellyfin = {
     enable = true;
+    package = pkgs.jellyfin;
     serverId = "f2d18e8c67994ce1baa11016df427c9f";
     network = {
       enableIPv6 = true;
@@ -64,6 +65,34 @@ in {
           content = {
             Name = "Jellyfin Stable";
             Url = "https://repo.jellyfin.org/files/plugin/manifest.json";
+          };
+        }
+        {
+          tag = "RepositoryInfo";
+          content = {
+            Name = "SSO";
+            Url = "https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json";
+          };
+        }
+        {
+          tag = "RepositoryInfo";
+          content = {
+            Name = "Intro Skipper";
+            Url = "https://intro-skipper.org/manifest.json";
+          };
+        }
+        {
+          tag = "RepositoryInfo";
+          content = {
+            Name = "Paradox Plugins";
+            Url = "https://www.iamparadox.dev/jellyfin/plugins/manifest.json";
+          };
+        }
+        {
+          tag = "RepositoryInfo";
+          content = {
+            Name = "Jellyfin Tweaks";
+            Url = "https://raw.githubusercontent.com/n00bcodr/jellyfin-plugins/main/10.10/manifest.json ";
           };
         }
       ];
@@ -112,28 +141,39 @@ in {
         };
       };
     };
+    branding = {
+      loginDisclaimer = ''
+      <form action="https://${jellyfin-domain}/sso/OID/start/authelia">
+        <button class="raised block emby-button button-submit">
+          Sign in
+        </button>
+      </form>'';
+      # Might want to try <https://github.com/lscambo13/ElegantFin> for 10.11, if Zesty isn't updated quickly
+      customCss = builtins.readFile ./jellyfin.css;
+    };
+    plugins = [
+      {
+        name = "intro skipper";
+        url = "https://github.com/intro-skipper/intro-skipper/releases/download/10.10/v1.10.10.23/intro-skipper-v1.10.10.23.zip";
+        version = "1.10.10.23";
+        targetAbi = "10.10.7.0"; # Required as intro-skipper doesn't provide a meta.json file
+        sha256 = "sha256:aaaaaaaaaaaahn97a596d559mr9cvrda5wiqnhzqs41qg6i8p2fd";
+      }
+    ];
+    # apikeys = {
+    #   Jellyseerr = {
+    #     key = "78878bf9fc654ff78ae332c63de5aeb6";
+    #   };
+    #   Homarr = {
+    #     keyPath = ../tests/example_apikey.txt;
+    #   };
+    # };
   };
 
   # Declarative Jellyfin replaces the `ExecStart` of the `jellyfin`
   # service with a wrapper script, which means we can safely claim
   # `preStart` ourselves.
   systemd.services.jellyfin.preStart = let
-    branding-xml =
-      ''
-      <?xml version="1.0" encoding="utf-8"?>
-      <BrandingOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-        <LoginDisclaimer>&lt;form action="https://${jellyfin-domain}/sso/OID/start/authelia"&gt;
-        &lt;button class="raised block emby-button button-submit"&gt;
-          Sign in
-        &lt;/button&gt;
-      &lt;/form&gt;</LoginDisclaimer>
-        <CustomCss>${builtins.replaceStrings [ "&" "<" ">" ] [ "&amp;" "&lt;" "&gt;" ]
-          (lib.trim (builtins.readFile ./jellyfin.css))}</CustomCss>
-        <SplashscreenEnabled>false</SplashscreenEnabled>
-      </BrandingOptions>
-      '';
-    branding-file = pkgs.writeText "jellyfin-branding.xml" branding-xml;
-    branding-path = "${config.services.jellyfin.configDir}/branding.xml";
     sso-template = builtins.replaceStrings [ "#oidc_endpoint#" ]
       [ "https://${config.site.apps.authelia.subdomain}.${config.site.domain}" ]
       (builtins.readFile ./jellyfin-sso-template.xml);
@@ -144,8 +184,6 @@ in {
   in
     ''
     umask 007
-    mkdir -p "$(dirname '${branding-path}')"
-    cp -rf '${branding-file}' '${branding-path}'
     mkdir -p '${config.services.jellyfin.configDir}/plugins/configurations'
     # Preserve folder settings that cannot (easily) be managed declaratively
     if [ -f '${sso-path}' ]; then
@@ -173,10 +211,13 @@ in {
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-      vaapiVdpau
+      libva-vdpau-driver
       libvdpau-va-gl
     ];
   };
+
+  networking.firewall.allowedUDPPorts = [ 1900 ]; # DLNA
+  networking.firewall.allowedTCPPorts = [ config.site.apps.jellyfin.port ];
 
   systemd.tmpfiles.rules = [
     "d ${media-dir} 0755 root users - -"

@@ -43,18 +43,14 @@ in {
 
   services.caddy = {
       enable = true;
-      package = pkgs.callPackage ../packages/caddy.nix {
-        externalPlugins = [
-          {name = "cloudflare"; repo = "github.com/caddy-dns/cloudflare";
-           version = "89f16b99c18ef49c8bb470a82f895bce01cbaece";}
-          {name = "dynamicdns"; repo = "github.com/mholt/caddy-dynamicdns";
-           version = "7c818ab3fc3485a72a346f85c77810725f19f9cf";}
-          {name = "caddy-fs-git"; repo = "github.com/tecosaur/caddy-fs-git";
-           version = "ef9d0ab232f4fe5d7e86312cbba45ff8afea98a1";}
-          {name = "replace-response"; repo = "github.com/caddyserver/replace-response";
-           version = "f92bc7d0c29d0588f91f29ecb38a0c4ddf3f85f8";}
+      package = pkgs.caddy.withPlugins {
+        plugins = [
+          "github.com/caddy-dns/cloudflare@v0.2.2"
+          "github.com/mholt/caddy-dynamicdns@v0.0.0-20251020155855-d8f490a28db6"
+          "github.com/tecosaur/caddy-fs-git@v0.0.0-20240109175104-ef9d0ab232f4"
+          "github.com/caddyserver/replace-response@v0.0.0-20250618171559-80962887e4c6"
         ];
-        vendorHash = "sha256-xejoBqtl/JUKHwpUOeJs9dbMvDyRqfhVCf8wCjR+61g=";
+        hash = "sha256-9pDBSPrGSOsFNg121EyhBxceeXojU7LjbfXp09eT6co=";
       };
       globalConfig =
         ''

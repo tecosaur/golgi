@@ -1,18 +1,9 @@
 # Copied from https://codeberg.org/robots.txt
 User-agent: *
-Disallow: /api/*
-Disallow: /avatars
-Disallow: /user/*
-Disallow: /*/*/src/commit/*
-Disallow: /*/*/commit/*
-Disallow: /*/*/*/refs/*
-Disallow: /*/*/*/star
-Disallow: /*/*/*/watch
-Disallow: /*/*/labels
-Disallow: /*/*/activity/*
-Disallow: /vendor/*
+Disallow: /api/
+Disallow: /avatars/
+Disallow: /user/
 Disallow: /swagger.*.json
-
 Disallow: /explore/*?*
 
 Disallow: /repo/create
@@ -24,59 +15,56 @@ Disallow: /*/*/watchers
 Disallow: /*/*/stargazers
 Disallow: /*/*/forks
 
-Disallow: /*/*/activity
-Disallow: /*/*/projects
+Disallow: /*/*/src/
+Disallow: /*/*/blame/
+Disallow: /*/*/commit/
 Disallow: /*/*/commits/
-Disallow: /*/*/branches
+Disallow: /*/*/raw/
+Disallow: /*/*/media/
 Disallow: /*/*/tags
+Disallow: /*/*/graph
+Disallow: /*/*/branches
 Disallow: /*/*/compare
-Disallow: /*/*/lastcommit/*
+Disallow: /*/*/lastcommit/
+Disallow: /*/*/rss/branch/
+Disallow: /*/*/atom/branch/
+
+Disallow: /*/*/activity
+Disallow: /*/*/activity_author_data
+
+Disallow: /*/*/actions
+Disallow: /*/*/projects
+Disallow: /*/*/labels
+Disallow: /*/*/milestones
+
+Disallow: /*/*/find/
+Disallow: /*/*/tree-list/
+Disallow: /*/*/search/
+Disallow: /*/-/code
 
 Disallow: /*/*/issues/new
-Disallow: /*/*/issues/?*
-Disallow: /*/*/issues?*
-Disallow: /*/*/pulls/?*
-Disallow: /*/*/pulls?*
 Disallow: /*/*/pulls/*/files
+Disallow: /*/*/pulls/*/commits
 
-Disallow: /*/tree/
-Disallow: /*/download
-Disallow: /*/revisions
-Disallow: /*/commits/*?author
-Disallow: /*/commits/*?path
-Disallow: /*/comments
-Disallow: /*/blame/
-Disallow: /*/raw/
-Disallow: /*/cache/
-Disallow: /.git/
-Disallow: */.git/
-Disallow: /*.git
-Disallow: /*.atom
-Disallow: /*.rss
+Disallow: /attachments/
+Disallow: /*/*/attachments/
+Disallow: /*/*/issues/*/attachments/
+Disallow: /*/*/pulls/*/attachments/
+Disallow: /*/*/releases/attachments
+Disallow: /*/*/releases/download
 
 Disallow: /*/*/archive/
-Disallow: *.bundle
-Disallow: */commit/*.patch
-Disallow: */commit/*.diff
+Disallow: /*.bundle$
+Disallow: /*.patch$
+Disallow: /*.diff$
+Disallow: /*.atom$
+Disallow: /*.rss$
 
 Disallow: /*lang=*
-Disallow: /*source=*
-Disallow: /*ref_cta=*
-Disallow: /*plan=*
-Disallow: /*return_to=*
-Disallow: /*ref_loc=*
-Disallow: /*setup_organization=*
-Disallow: /*source_repo=*
-Disallow: /*ref_page=*
-Disallow: /*source=*
-Disallow: /*referrer=*
-Disallow: /*report=*
-Disallow: /*author=*
-Disallow: /*since=*
-Disallow: /*until=*
-Disallow: /*commits?author=*
+Disallow: /*redirect_to=*
 Disallow: /*tab=*
 Disallow: /*q=*
+Disallow: /*sort=*
 Disallow: /*repo-search-archived=*
 
 # Codeberg-specific changes

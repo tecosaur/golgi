@@ -42,6 +42,7 @@
           <CanonicalLinks />
           <DefaultUsernameClaim>preferred_username</DefaultUsernameClaim>
           <DisableHttps>false</DisableHttps>
+          <DisablePushedAuthorization>true</DisablePushedAuthorization>
           <DoNotValidateEndpoints>false</DoNotValidateEndpoints>
           <DoNotValidateIssuerName>false</DoNotValidateIssuerName>
         </PluginConfiguration>

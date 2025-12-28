@@ -12,8 +12,8 @@ python3Packages.buildPythonApplication rec {
     owner = "sassanix";
     repo  = "Warracker";
     # rev   = version;
-    rev = "10d2817ae53423619d5ba31a3969b0252d243922";
-    hash  = "sha256-k3KfiQ4skqakyuHcbihWFFn05Xr+e2I0Yj55yHX+SBw=";
+    rev = "39888923cc9d4920df7140c5a3a5960409bd6080";
+    hash  = "sha256-azEwxi7Iq1KEIciUNJDiXVMjwSJHiaqZc8eiLyBDcdM=";
   };
 
   dependencies = with python3Packages; [

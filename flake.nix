@@ -5,10 +5,6 @@
     nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
     flake-utils-plus.url = github:gytis-ivaskevicius/flake-utils-plus;
     agenix.url = "github:ryantm/agenix";
-    crowdsec = {
-      url = "git+https://codeberg.org/kampka/nix-flake-crowdsec.git";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     declarative-jellyfin.url = "github:Sveske-Juice/declarative-jellyfin";
     declarative-jellyfin.inputs.nixpkgs.follows = "nixpkgs";
     deploy-rs = {
@@ -19,7 +15,7 @@
 
   nixConfig.sandbox = "relaxed";
 
-  outputs = inputs@{ self, nixpkgs, flake-utils-plus, agenix, crowdsec, declarative-jellyfin, ... }:
+  outputs = inputs@{ self, nixpkgs, flake-utils-plus, agenix, declarative-jellyfin, ... }:
     let
       modules = flake-utils-plus.lib.exportModules (
         nixpkgs.lib.mapAttrsToList (name: value: ./modules/${name}) (builtins.readDir ./modules)
@@ -65,9 +61,7 @@
           beszel-hub
           beszel-agent
           caddy
-          crowdsec.nixosModules.crowdsec
-          crowdsec.nixosModules.crowdsec-firewall-bouncer
-          crowdsec-setup
+          # crowdsec
           fava
           forgejo
           hardware-hetzner
@@ -100,9 +94,7 @@
         agenix.nixosModules.default
         beszel-agent
         caddy
-        crowdsec-setup
-        crowdsec.nixosModules.crowdsec
-        crowdsec.nixosModules.crowdsec-firewall-bouncer
+        # crowdsec # Error: failed to load Local API: loading online client credentials: open /var/lib/crowdsec/state/online_api_credentials.yaml: no such file or directory
         declarative-jellyfin.nixosModules.default
         hardware-nas
         home-assistant

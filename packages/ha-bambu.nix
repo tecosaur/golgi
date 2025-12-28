@@ -8,13 +8,13 @@
 buildHomeAssistantComponent rec {
   owner = "greghesp";
   domain = "bambu_lab";
-  version = "2.1.27";
+  version = "2.2.17";
 
   src = fetchFromGitHub {
     inherit owner;
     repo = "ha-bambulab";
-    rev = "ac2a8a77ef91dc45dcdbe18ebc76623808705be9";
-    hash = "sha256-PrEFGo5fyQ81Iz+pbOJt7Yp+SfOKdGQsJBk4Y6reYY0=";
+    tag = "v${version}";
+    hash = "sha256-0gAOCs/8U82eOK04mmWs6QqQR1os1eejwvF+pr7U/9c=";
   };
 
   dependencies = with home-assistant.python.pkgs; [ beautifulsoup4 paho-mqtt ];

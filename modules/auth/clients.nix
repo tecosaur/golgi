@@ -155,7 +155,13 @@ in {
           redirect_paths = [ "user/oauth2/authelia/callback" ];
         })
         (mkClient config.site.apps.headscale {
-          redirect_paths = [ "oidc/callback" "admin/oidc/callback" ];
+          name = "headplane";
+          redirect_paths = [ "admin/oidc/callback" ];
+          authorization_policy = "headscale";
+        })
+        (mkClient config.site.apps.headscale {
+          redirect_paths = [ "oidc/callback" ];
+          claims_policy = "headscale";
         })
         (mkClient config.site.apps.immich {
           redirect_paths = [ "auth/login" "user-settings" ];

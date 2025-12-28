@@ -5,6 +5,18 @@
 .layout-tv .backgroundContainer, .layout-desktop .backgroundContainer {background: url("https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/images/gradients/gray.png") no-repeat center center;}
 .sessionAppInfo img {filter: invert(0%) sepia(70%) saturate(250%) hue-rotate(320deg) brightness(130%) contrast(60%);}
 
+body.withSectionTabs div.backdropContainer .backdropImage {
+    opacity: 0.0;
+}
+
+div.backdropContainer .backdropImage {
+    opacity: 1.0;
+}
+
+.backdropImageFadeIn {
+    transition: opacity 100s;
+}
+
 /* SSO */
 
 a.raised.emby-button,

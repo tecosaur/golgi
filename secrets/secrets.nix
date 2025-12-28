@@ -17,8 +17,8 @@ in
   "cloudflare-api-env.age".publicKeys = all;
   "crowdsec-enroll-key.age".publicKeys = all;
   "fastmail.age".publicKeys = all;
+  "headplane-oidc-secret.age".publicKeys = gbase;
   "headscale-oidc-secret.age".publicKeys = gbase;
-  "headplane-env.age".publicKeys = gbase;
   "home-assistant-secrets.age".publicKeys = nbase;
   "immich-oidc-secret.age".publicKeys = nbase;
   "jellyfin-oidc-secret.age".publicKeys = nbase;

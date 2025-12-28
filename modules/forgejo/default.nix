@@ -217,13 +217,20 @@ in {
     }
     '';
 
+  services.caddy.globalConfig =
+    ''
+    filesystem tmio git {
+        repository ${config.services.forgejo.stateDir}/repositories/tec/this-month-in-org.git
+        revision html
+    }
+    '';
+
   services.caddy.virtualHosts."${blog-domain}".extraConfig =
     ''
     redir /tmio /tmio/
     handle_path /tmio/* {
-        file_server {
-            fs git ${config.services.forgejo.stateDir}/repositories/tec/this-month-in-org.git html
-        }
+        fs tmio
+        file_server
     }
     handle {
         respond 404

@@ -3,9 +3,6 @@
 let
   immich-domain = "${config.site.apps.immich.subdomain}.${config.site.domain}";
   immich-data = "/data/immich";
-  immich-oidc-secret-template = "#=OIDC_CLIENT_SECRET=#";
-  immich-smtp-password-template = "#=SMTP_PASSWORD=#";
-  immich-secret-conf-dir = "/run/immich";
 in {
   site.apps.immich.enabled = true;
 
@@ -28,6 +25,7 @@ in {
     host = "0.0.0.0";
     port = config.site.apps.immich.port;
     mediaLocation = immich-data;
+    database.enableVectors = false; # No more pgvecto-rs
     settings = {
       oauth = {
         enabled = true;
@@ -35,7 +33,7 @@ in {
         autoRegister = true;
         buttonText = "Login";
         clientId = "immich";
-        clientSecret = immich-oidc-secret-template;
+        clientSecret._secret = config.age.secrets.immich-oidc.path;
         defaultStorageQuota = 0;
         issuerUrl = "https://${config.site.apps.authelia.subdomain}.${config.site.domain}/.well-known/openid-configuration";
         scope = "openid email profile";
@@ -60,6 +58,7 @@ in {
           enabled = true;
           modelName = "ViT-B-16-SigLIP2__webli";
         };
+        ocr.modelName = "EN__PP-OCRv5_mobile";
         facialRecognition.minFaces = 8;
       };
       notifications.smtp = {
@@ -71,12 +70,9 @@ in {
           host = config.site.email.server;
           port = config.site.email.port;
           username = config.site.email.username;
-          password = immich-smtp-password-template;
+          password._secret = config.age.secrets.immich-smtp.path;
         };
       };
-    };
-    environment = {
-      IMMICH_CONFIG_FILE = lib.mkForce "${immich-secret-conf-dir}/config.json";
     };
     machine-learning = {
       enable = true;
@@ -91,17 +87,6 @@ in {
 
   systemd.services.immich-server = {
     serviceConfig.UMask = lib.mkForce "0027";
-    preStart = let
-      refConfig = (pkgs.formats.json { }).generate "config.json" config.services.immich.settings;
-      newConfig = "${immich-secret-conf-dir}/config.json";
-      replaceSecretBin = "${pkgs.replace-secret}/bin/replace-secret";
-    in ''
-    umask 077
-    cp -f '${refConfig}' '${newConfig}'
-    chmod u+w '${newConfig}'
-    ${replaceSecretBin} '${immich-oidc-secret-template}' '${config.age.secrets.immich-oidc.path}' '${newConfig}'
-    ${replaceSecretBin} '${immich-smtp-password-template}' '${config.age.secrets.immich-smtp.path}' '${newConfig}'
-    '';
   };
 
   # FIXME: Workaround for <https://github.com/NixOS/nixpkgs/issues/418799>
@@ -112,7 +97,6 @@ in {
 
   systemd.tmpfiles.rules = [
     "d ${immich-data} 0750 immich users"
-    "d ${immich-secret-conf-dir} 0700 immich immich"
   ];
 
   services.caddy.virtualHosts."${immich-domain}".extraConfig =
