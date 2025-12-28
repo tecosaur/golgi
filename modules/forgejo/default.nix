@@ -56,7 +56,7 @@ in {
       mailer.PASSWD = config.age.secrets.fastmail.path;
     };
     settings = {
-      DEFAULT.APP_NAME = "Code by TEC";
+      DEFAULT.APP_NAME = config.site.apps.forgejo.site-name;
       server = {
         DOMAIN = "${forgejo-domain}";
         ROOT_URL = "https://${forgejo-domain}";
@@ -131,7 +131,7 @@ in {
         ));
       };
       "ui.meta" = {
-        DESCRIPTION = "The personal forge of TEC";
+        DESCRIPTION = config.site.apps.forgejo.site-description;
       };
       server = {
         SSH_DOMAIN = if config.site.cloudflare-bypass-subdomain == null then
@@ -178,63 +178,96 @@ in {
     "L+ ${config.services.forgejo.stateDir}/custom/public/robots.txt - - - - ${./robots.txt}"
   ];
 
-  services.caddy.virtualHosts."git.${config.site.domain}".extraConfig =
-    "redir https://${forgejo-domain}{uri} 301";
-
-  services.caddy.virtualHosts."${forgejo-domain}".extraConfig =
-    ''
-    @not_tec {
-        not path /tec/*
-        not header Cookie *caddy_tec_redirect=true*
-    }
-    handle @not_tec {
-        rewrite /user/login /user/oauth2/authelia
-        reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
-            @404 status 404
-            handle_response @404 {
-                header +Set-Cookie "caddy_tec_redirect=true; Max-Age=5"
-                redir * /tec{uri}
+  services.caddy = let
+    processRepo = {repo, rev, subdomain, path}: let
+      repo-nogit = lib.strings.removeSuffix ".git" repo;
+      repo-parts = lib.strings.splitString "/" repo-nogit;
+      user = builtins.elemAt repo-parts 0;
+      repo-name = builtins.elemAt repo-parts 1;
+      mkSafe = str: lib.stringAsChars (c: if builtins.match "^[A-Za-z0-9_]$" c != null then c else "_") str;
+    in {
+      repo = repo-nogit + ".git";
+      rev = rev;
+      subdomain = lib.strings.removeSuffix "." subdomain;
+      path = if path != null then
+        lib.strings.removeSuffix "/" (lib.strings.removePrefix "/" path)
+             else "${user}/${repo-name}";
+      fs = "git_${user}_${mkSafe repo-name}_${mkSafe rev}";
+    };
+    processed-repos = map processRepo config.site.apps.forgejo.served-repositories;
+    subdomain-groups = lib.groupBy (entry: entry.subdomain) processed-repos;
+    mkFsConfig = e:
+      ''
+      filesystem ${e.fs} git {
+          repository ${config.services.forgejo.stateDir}/repositories/${e.repo}
+          revision ${e.rev}
+      }
+      '';
+    mkVhostEntry = e: ''
+      redir /${e.path} /${e.path}/
+      handle_path /${e.path}/* {
+          fs ${e.fs}
+          file_server
+      }
+      '';
+    mkVhosts = groups:
+      lib.mapAttrs' (sub: entries:
+        lib.nameValuePair "${sub}.${config.site.domain}" {
+          extraConfig = lib.concatStringsSep "\n" (map mkVhostEntry entries ++ [
+            ''
+            handle {
+                respond 404
             }
+            ''
+          ]);
         }
-    }
-    @tec_redirect {
-        path /tec/*
-        header Cookie *caddy_tec_redirect=true*
-    }
-    handle @tec_redirect {
-        reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
-            @404 status 404
-            handle_response @404 {
-                header +Set-Cookie "caddy_tec_redirect=true; Max-Age=0"
-                handle_path /tec/* {
-                    redir * {uri}
-                }
-            }
+      ) groups;
+  in {
+    globalConfig = lib.mkAfter (lib.concatStringsSep "\n" (map mkFsConfig processed-repos));
+    virtualHosts =
+      (mkVhosts subdomain-groups) //
+      {
+      "git.${config.site.domain}".extraConfig =
+        "redir https://${forgejo-domain}{uri} 301";
+      "${forgejo-domain}".extraConfig =
+        ''
+        handle {
+            rewrite /user/login /user/oauth2/authelia
+            reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT}
         }
-    }
-    handle {
-        rewrite /user/login /user/oauth2/authelia
-        reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT}
-    }
-    '';
-
-  services.caddy.globalConfig =
-    ''
-    filesystem tmio git {
-        repository ${config.services.forgejo.stateDir}/repositories/tec/this-month-in-org.git
-        revision html
-    }
-    '';
-
-  services.caddy.virtualHosts."${blog-domain}".extraConfig =
-    ''
-    redir /tmio /tmio/
-    handle_path /tmio/* {
-        fs tmio
-        file_server
-    }
-    handle {
-        respond 404
-    }
-    '';
+        '' + (if config.site.apps.forgejo.default-user-redirect != null then
+          let user = config.site.apps.forgejo.default-user-redirect; in
+          ''
+          @not_${user} {
+              not path /${user}/*
+              not header Cookie *caddy_${user}_redirect=true*
+          }
+          handle @not_${user} {
+              rewrite /user/login /user/oauth2/authelia
+              reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
+                  @404 status 404
+                  handle_response @404 {
+                      header +Set-Cookie "caddy_${user}_redirect=true; Max-Age=5"
+                      redir * /${user}{uri}
+                  }
+              }
+          }
+          @${user}_redirect {
+              path /${user}/*
+              header Cookie *caddy_${user}_redirect=true*
+          }
+          handle @${user}_redirect {
+              reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
+                  @404 status 404
+                  handle_response @404 {
+                      header +Set-Cookie "caddy_${user}_redirect=true; Max-Age=0"
+                      handle_path /${user}/* {
+                          redir * {uri}
+                      }
+                  }
+              }
+          }
+          '' else "");
+      };
+  };
 }

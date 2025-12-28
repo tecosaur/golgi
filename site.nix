@@ -176,6 +176,48 @@ in {
         simpleicon = "forgejo";
         subdomain = "code";
         port = 3000;
+        extraOptions = {
+          site-name = lib.mkOption {
+            type = lib.types.str;
+            default = "Forgejo";
+            description = "Name of the Forgejo instance";
+          };
+          site-description = lib.mkOption {
+            type = lib.types.str;
+            default = "Forgejo instance";
+            description = "Description of the Forgejo instance";
+          };
+          default-user-redirect = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "A private user to redirect to upon visiting the root domain";
+          };
+          served-repositories = lib.mkOption {
+            type = lib.types.listOf (lib.types.submodule {
+              options = {
+                repo = lib.mkOption {
+                  type = lib.types.str;
+                  description = "Path to the repository";
+                };
+                rev = lib.mkOption {
+                  type = lib.types.str;
+                  description = "Branch, tag, or commit to serve";
+                };
+                subdomain = lib.mkOption {
+                  type = lib.types.str;
+                  default = "pages";
+                  description = "Subdomain to serve the repository on";
+                };
+                path = lib.mkOption {
+                  type = lib.types.nullOr lib.types.str;
+                  default = null;
+                  description = "URL prefix to serve the repository on";
+                };
+              };
+            });
+            default = [ ];
+          };
+        };
       };
       jellyfin = mkAppOption {
         name = "Jellyfin";

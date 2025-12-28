@@ -43,6 +43,17 @@
           };
           forgejo = {
             user-group = "forge";
+            site-name = "Code by TEC";
+            site-description = "The personal Forgejo instance of TEC";
+            default-user-redirect = "tec";
+            served-repositories = [
+              {
+                repo = "tec/this-month-in-org";
+                rev = "html";
+                subdomain = "blog";
+                path = "tmio";
+              }
+            ];
           };
           headscale.enabled = true;
           # calibre-web.enabled = true;
