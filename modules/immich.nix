@@ -76,11 +76,18 @@ in {
     };
     machine-learning = {
       enable = true;
-      # environment = {
-      #   HSA_OVERRIDE_GFX_VERSION = "11.0.0";
-      #   HSA_USE_SVM = "0";
-      #   MACHINE_LEARNING_DEVICE_IDS = "0";
-      # };
+      environment = {
+        # HSA_OVERRIDE_GFX_VERSION = "11.0.0";
+        # HSA_USE_SVM = "0";
+        # MACHINE_LEARNING_DEVICE_IDS = "0";
+        MACHINE_LEARNING_MODEL_TTL = "0"; # Never expire
+        MACHINE_LEARNING_PRELOAD__CLIP__VISUAL =
+          let clip = config.services.immich.settings.machineLearning.clip; in
+          if clip.enabled then clip.modelName else "";
+        MACHINE_LEARNING_PRELOAD__CLIP__TEXTUAL =
+          let clip = config.services.immich.settings.machineLearning.clip; in
+          if clip.enabled then clip.modelName else "";
+      };
     };
     accelerationDevices = null;
   };
