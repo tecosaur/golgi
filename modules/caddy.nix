@@ -19,11 +19,6 @@ let
     versions ${lib.strings.concatStringsSep " " config.site.server.ipversions}
     dynamic_domains
     '';
-  authelia-uri = if builtins.hasAttr "main" config.services.authelia.instances &&
-                    config.services.authelia.instances.main.enable then
-    "localhost:${toString config.site.apps.authelia.port}"
-  else
-    "${config.site.apps.authelia.subdomain}.${config.site.domain}";
 in {
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   networking.firewall.allowedUDPPorts = [ 443 ];
@@ -64,14 +59,23 @@ in {
         '';
       # A Caddy snippet that can be imported to enable Authelia in front of a service
       # Taken from https://www.authelia.com/integration/proxies/caddy/#subdomain
-      extraConfig = ''
+      extraConfig = if builtins.hasAttr "main" config.services.authelia.instances &&
+                       config.services.authelia.instances.main.enable then ''
           (auth) {
-              forward_auth ${authelia-uri} {
+              forward_auth :${toString config.site.apps.authelia.port} {
                   uri /api/authz/forward-auth
                   copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
               }
           }
-      '';
+        '' else ''
+          (auth) {
+              forward_auth https://${config.site.apps.authelia.subdomain}.${config.site.domain} {
+                  header_up Host  {upstream_hostport}
+                  uri /api/authz/forward-auth?rd=https://${config.site.apps.authelia.subdomain}.${config.site.domain}
+                  copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+              }
+          }
+        '';
       virtualHosts."*.${config.site.domain}" = lib.mkIf config.site.server.authoritative {
         extraConfig =
           ''
