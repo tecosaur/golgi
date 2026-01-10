@@ -85,7 +85,7 @@ in {
         ENABLE_AUTO_REGISTRATION = true;
         ACCOUNT_LINKING = "auto";
         OPENID_CONNECT_SCOPES = "openid email profile groups";
-        USERNAME = "userid";
+        USERNAME = "preferred_username";
       };
       indexer = {
         REPO_INDEXER_ENABLED = true;
