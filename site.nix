@@ -384,6 +384,20 @@ in {
         subdomain = "speed";
         port = 8076;
       };
+      storyteller = mkAppOption {
+        name = "Storyteller";
+        homepage = "https://storyteller-platform.gitlab.io/storyteller/";
+        description = "synced audiobook platform";
+        subdomain = "books";
+        port = 8001;
+        extraOptions = {
+          readium-port = lib.mkOption {
+            type = lib.types.int;
+            default = 8002;
+            description = "Port that the Readium CLI server listens on";
+          };
+        };
+      };
       syncthing = mkAppOption {
         name = "Syncthing";
         homepage = "https://syncthing.net";

@@ -149,6 +149,10 @@ rm sftpgo/openid-logo.svg
 favmake site
 svg2png site/logo.svg -h 400
 svg2png site/logo-bw.svg -h 400
+# Storyteller
+favmake storyteller
+svg2png storyteller/logo.svg -h 128
+rm storyteller/favicon.svg
 # Vikunja
 favmake vikunja/public
 mkdir -p vikunja/public/images/icons

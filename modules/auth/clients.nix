@@ -166,6 +166,10 @@ in {
           claims_policy = "sftpgo";
           redirect_paths = [ "web/oidc/redirect" "web/oauth2/redirect" ];
         })
+        (mkClient config.site.apps.storyteller {
+          redirect_paths = [ "api/v2/auth/callback/authelia" ];
+          authorization_policy = "one_factor";
+        })
         (mkClient config.site.apps.vikunja {
           redirect_paths = [ "auth/openid/authelia" ];
         })

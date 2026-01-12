@@ -35,6 +35,7 @@ in
   "postgres-forgejo.age".publicKeys = gbase;
   "sftpgo-env.age".publicKeys = nbase;
   "sftpgo-oidc-secret.age".publicKeys = nbase;
+  "storyteller-oidc-secret.age".publicKeys = nbase;
   "tailscale-preauth.age".publicKeys = all;
   "vikunja-oidc.age".publicKeys = gbase;
   "warracker-oidc-secret.age".publicKeys = nbase;
