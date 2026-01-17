@@ -30,6 +30,11 @@ let
         default = false;
         description = "Whether ${name} has been enabled, set by modules enabling it";
       };
+      host = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Host that the ${name} app is running on";
+      };
       subdomain = lib.mkOption {
         type = lib.types.str;
         default = subdomain;
@@ -71,7 +76,6 @@ in {
   options.site = {
     domain = lib.mkOption {
       type = lib.types.str;
-      default = "example.com";
       description = "Global domain name for the site";
     };
     cloudflare-bypass-subdomain = lib.mkOption {

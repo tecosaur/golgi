@@ -17,10 +17,72 @@
 
   outputs = inputs@{ self, nixpkgs, flake-utils-plus, agenix, declarative-jellyfin, ... }:
     let
+      site-config = import ./site.nix;
       modules = flake-utils-plus.lib.exportModules (
         nixpkgs.lib.mapAttrsToList (name: value: ./modules/${name}) (builtins.readDir ./modules)
       );
-      site-config = import ./site.nix;
+      core-modules = with modules; [
+        agenix.nixosModules.default
+        beszel-agent
+        caddy
+        site-config
+        system
+        tailscale
+        zsh
+      ];
+      machines = {
+        golgi = {
+          server = {
+            authoritative = true;
+            ipv6 = "2a01:4ff:f0:cc83";
+          };
+          modules = with modules; [
+            auth
+            beszel-hub
+            fava
+            forgejo
+            hardware-hetzner
+            headscale
+            homepage
+            ntfy
+            mealie
+            memos
+            microbin
+            site-root
+            syncthing
+            uptime
+            vikunja
+          ];
+        };
+        nucleus.modules = with modules; [
+          declarative-jellyfin.nixosModules.default
+          hardware-nas
+          home-assistant
+          immich
+          llm
+          lyrion
+          paperless
+          scrutiny
+          sftpgo
+          speedtest
+          streaming
+          warracker
+        ];
+      };
+      global-enabled-apps = (nixpkgs.lib.concatMapAttrs (machine: setup:
+        (nixpkgs.lib.foldlAttrs
+          (acc: app: conf:
+            if conf.enabled then
+              acc // { "${app}" = {enabled = true; host = machine; }; }
+            else acc)
+          { }
+          (nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [ flake-utils-plus.nixosModules.autoGenFromInputs ] ++
+                      core-modules ++ setup.modules ++
+                      [ { site.domain = "_"; } ];
+          }).config.site.apps))
+        machines);
       site-setup = {
         domain = "tecosaur.net";
         cloudflare-bypass-subdomain = "ssh";
@@ -36,7 +98,7 @@
           primary = "#239a58";
           secondary = "#67bc85";
         };
-        apps = {
+        apps = nixpkgs.lib.recursiveUpdate global-enabled-apps {
           beszel.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6RP5omIbCzQsC/NizUg56JgpgMdl0/VXmCAE0VyJlq";
           mealie.subdomain = "food";
           memos.groups.extra = [ "family" ];
@@ -60,127 +122,39 @@
               }
             ];
           };
-          headscale.enabled = true;
-          paperless = {
-            enabled = true;
-            groups.extra = [ "family" ];
-          };
-          sftpgo = {
-            enabled = true;
-            groups.extra = [ "family" ];
-          };
-          storyteller = {
-            enabled = true;
-            groups.extra = [ "family" ];
-          };
-          immich = {
-            enabled = true;
-            groups.extra = [ "family" ];
-          };
-          jellyfin = {
-            enabled = true;
-            groups.extra = [ "family" ];
-          };
-          warracker = {
-            enabled = true;
-            groups.extra = [ "family" ];
-          };
+          home-assistant.subdomain = "doonan";
+          paperless.groups.extra = [ "family" ];
+          sftpgo.groups.extra = [ "family" ];
+          immich.groups.extra = [ "family" ];
+          jellyfin.groups.extra = [ "family" ];
+          warracker.groups.extra = [ "family" ];
         };
       };
-    in
-    flake-utils-plus.lib.mkFlake {
+    in flake-utils-plus.lib.mkFlake {
       inherit self inputs modules;
 
-      hosts.golgi.modules = with modules; [
-          agenix.nixosModules.default
-          auth
-          beszel-hub
-          beszel-agent
-          caddy
-          # crowdsec
-          fava
-          forgejo
-          hardware-hetzner
-          headscale
-          homepage
-          ntfy
-          mealie
-          memos
-          microbin
-          site-config
-          site-root
-          syncthing
-          system
-          tailscale
-          uptime
-          vikunja
-          zsh
-          {
+      hosts = (builtins.mapAttrs
+        (name: setup: {
+          modules = core-modules ++ setup.modules ++ [{
             site = nixpkgs.lib.recursiveUpdate site-setup {
-              server = {
-                host = "golgi";
-                authoritative = true;
-                ipv6 = "2a01:4ff:f0:cc83";
-              };
+              server = (setup.server or { }) // { host = name; };
             };
-          }
-        ];
+          }];
+        })
+        machines);
 
-      hosts.nucleus.modules = with modules; [
-        agenix.nixosModules.default
-        beszel-agent
-        caddy
-        # crowdsec # Error: failed to load Local API: loading online client credentials: open /var/lib/crowdsec/state/online_api_credentials.yaml: no such file or directory
-        declarative-jellyfin.nixosModules.default
-        hardware-nas
-        home-assistant
-        immich
-        lyrion
-        sftpgo
-        site-config
-        speedtest
-        streaming
-        system
-        tailscale
-        zsh
-        {
-          site = nixpkgs.lib.recursiveUpdate site-setup {
-            server.host = "nucleus";
-            apps.beszel.extra-filesystems = [ "/data__Data Volume" ];
-          };
-        }
-      ];
-
-      deploy.nodes = {
-        golgi = {
-          hostname = if self.nixosConfigurations.golgi.config.site.cloudflare-bypass-subdomain then
-            "${self.nixosConfigurations.golgi.config.site.cloudflare-bypass-subdomain}.${self.nixosConfigurations.golgi.config.site.domain}"
-                     else self.nixosConfigurations.golgi.config.site.domain;
+      deploy.nodes = (builtins.mapAttrs
+        (name: _: {
+          hostname = "_${name}.${site-setup.domain}";
           fastConnection = false;
-          profiles = {
-            system = {
-              sshUser = "admin";
-              sshOpts = ["-S" "none"];
-              path =
-                inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.golgi;
-              user = "root";
-            };
+          profiles.system = {
+            sshUser = "admin";
+            sshOpts = [ "-S" "none" ];
+            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations."${name}";
+            user = "root";
           };
-        };
-        nucleus = {
-          hostname = "nas.lan";
-          fastConnection = false;
-          profiles = {
-            system = {
-              sshUser = "admin";
-              sshOpts = ["-S" "none"];
-              path =
-                inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.nucleus;
-              user = "root";
-            };
-          };
-        };
-      };
+        })
+        machines);
 
       outputsBuilder = (channels: {
         devShells.default = channels.nixpkgs.mkShell {
