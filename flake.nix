@@ -61,7 +61,6 @@
             ];
           };
           headscale.enabled = true;
-          # calibre-web.enabled = true;
           paperless = {
             enabled = true;
             groups.extra = [ "family" ];

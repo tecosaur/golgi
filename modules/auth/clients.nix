@@ -124,11 +124,6 @@ in {
         (mkClient config.site.apps.beszel {
           redirect_paths = [ "api/oauth2-redirect" ];
         })
-        (mkClient config.site.apps.calibre-web {
-          redirect_paths = [ "login/generic/authorized" ];
-          require_pkce = false;
-          authorization_policy = "one_factor";
-        })
         (mkClient config.site.apps.forgejo {
           redirect_paths = [ "user/oauth2/authelia/callback" ];
         })
