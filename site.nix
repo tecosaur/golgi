@@ -1,7 +1,9 @@
 { config, lib, pkgs, ... }:
 
 let
-  mkAppOption = { name, description, homepage, simpleicon ? null, subdomain, port, extraOptions ? {} }:
+  mkAppOption = { name, description, homepage, simpleicon ? null,
+                  service ? name, subdomain, port, admin ? "admin", extra-groups ? [],
+                  extraOptions ? {} }:
     {
       name = lib.mkOption {
         type = lib.types.str;
@@ -43,15 +45,22 @@ let
         default = port;
         description = "Port that the ${name} app listens on";
       };
-      user-group = lib.mkOption {
-        type = lib.types.str;
-        default = lib.toLower name;
-        description = "LDAP user group that has access to the ${name} app";
-      };
-      admin-group = lib.mkOption {
-        type = lib.types.str;
-        default = "admin";
-        description = "User group that has admin access to the ${name} app";
+      groups = {
+        admin = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = admin;
+          description = "User group that has admin access to the ${name} app";
+        };
+        primary = lib.mkOption {
+          type = lib.types.str;
+          default = lib.toLower name;
+          description = "Primary user group for the ${name} app";
+        };
+        extra = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = extra-groups;
+          description = "Additional user groups that have access to the ${name} app";
+        };
       };
     } // extraOptions;
   assets-pkg = pkgs.callPackage ./packages/site-assets.nix {
@@ -149,6 +158,8 @@ in {
         description = "System monitoring";
         subdomain = "systems";
         port = 8090;
+        admin = null;
+        extra-groups = [ "admin" ];
         extraOptions = {
           publicKey = lib.mkOption {
             type = lib.types.str;
@@ -250,6 +261,7 @@ in {
         description = "mesh virtual private network";
         subdomain = "headscale";
         port = 8174;
+        admin = null;
         extraOptions = {
           magicdns-subdomain = lib.mkOption {
             type = lib.types.str;
@@ -354,6 +366,7 @@ in {
         description = "SFTP server";
         subdomain = "files";
         port = 8083;
+        admin = null;
         extraOptions = {
           webdavd-port = lib.mkOption {
             type = lib.types.int;
@@ -381,6 +394,7 @@ in {
         simpleicon = "syncthing";
         subdomain = "syncthing";
         port = 8384;
+        admin = null;
       };
       transmission = mkAppOption {
         name = "Transmission";

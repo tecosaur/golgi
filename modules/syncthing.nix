@@ -25,7 +25,7 @@ in {
         bindDN = "uid=%s,ou=people,${config.services.lldap.settings.ldap_base_dn}";
         transport = "nontls";
         searchBaseDN = "ou=people,${config.services.lldap.settings.ldap_base_dn}";
-        searchFilter = "(|(memberof=cn=${config.site.apps.syncthing.user-group},ou=groups,${config.services.lldap.settings.ldap_base_dn})(memberof=cn=${config.site.apps.syncthing.admin-group},ou=groups,${config.services.lldap.settings.ldap_base_dn}))";
+        searchFilter = "(|(memberof=cn=${config.site.apps.syncthing.groups.primary},ou=groups,${config.services.lldap.settings.ldap_base_dn})(memberof=cn=${config.site.apps.syncthing.groups.admin},ou=groups,${config.services.lldap.settings.ldap_base_dn}))";
       };
       devices = {
         "tranquillity" = { id = "VXWXMXK-MWENVPV-PV75JQH-45OP44F-QMPH645-JVWGJB2-C2GKHSV-QARV5A2"; };

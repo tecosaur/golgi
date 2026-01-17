@@ -39,14 +39,15 @@
         apps = {
           beszel.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6RP5omIbCzQsC/NizUg56JgpgMdl0/VXmCAE0VyJlq";
           mealie.subdomain = "food";
+          memos.groups.extra = [ "family" ];
           microbin = {
             title = "μPaste";
             subdomain = "pastes";
             short-subdomain = "p";
-            user-group = "paste";
+            groups.primary = "paste";
           };
           forgejo = {
-            user-group = "forge";
+            groups.primary = "forge";
             site-name = "Code by TEC";
             site-description = "The personal Forgejo instance of TEC";
             default-user-redirect = "tec";
@@ -61,10 +62,30 @@
           };
           headscale.enabled = true;
           # calibre-web.enabled = true;
-          paperless.enabled = true;
-          sftpgo.enabled = true;
-          immich.enabled = true;
-          jellyfin.enabled = true;
+          paperless = {
+            enabled = true;
+            groups.extra = [ "family" ];
+          };
+          sftpgo = {
+            enabled = true;
+            groups.extra = [ "family" ];
+          };
+          storyteller = {
+            enabled = true;
+            groups.extra = [ "family" ];
+          };
+          immich = {
+            enabled = true;
+            groups.extra = [ "family" ];
+          };
+          jellyfin = {
+            enabled = true;
+            groups.extra = [ "family" ];
+          };
+          warracker = {
+            enabled = true;
+            groups.extra = [ "family" ];
+          };
         };
       };
     in

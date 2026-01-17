@@ -46,37 +46,37 @@ let
     default_policy ? "deny",
     user_policy ? "one_factor",
     admin_policy ? "two_factor",
-    extra_groups ? [],
-    admins ? false,
     rules ? null,
     force ? false,
   }:
-    lib.optionalAttrs (force || app.enabled) {
-      "${lib.toLower (lib.replaceStrings [ " " ] [ "-" ] app.name)}" =
-        {
-          default_policy = default_policy;
-          rules = if rules != null then rules else
-            (if user_policy == admin_policy then
+    let
+      admin-subj = if app.groups.admin != null then
+        [ "group:${app.groups.admin}" ] else [];
+      users-subj = [ "group:${app.groups.primary}" ] ++
+        (lib.map (g: "group:${g}") app.groups.extra);
+      full-policy = {
+        default_policy = default_policy;
+        rules = if rules != null then rules else
+          (if user_policy == admin_policy then
+            [{
+              policy = user_policy;
+              subject = admin-subj ++ users-subj;
+            }] else
               [{
                 policy = user_policy;
-                subject = [ "group:${app.user-group}"
-                            "group:${app.admin-group}" ] ++
-                (lib.map (g: "group:${g}") extra_groups);
-              }] else
+                subject = if app.groups.extra != [] then
+                  users-subj else "group:${app.groups.primary}";
+              }] ++ (if app.groups.admin != null then
                 [{
-                  policy = user_policy;
-                  subject = if extra_groups != [] then
-                    [ "group:${app.user-group}" ] ++
-                    (lib.map (g: "group:${g}") extra_groups) else
-                      "group:${app.user-group}";
-                }] ++ (if admins then
-                  [{
-                    policy = admin_policy;
-                    subject = "group:${app.admin-group}";
-                  }] else [])
-            );
-        };
-    };
+                  policy = admin_policy;
+                  subject = "group:${app.groups.admin}";
+                }] else [])
+          );
+      };
+    in
+      lib.optionalAttrs (force || app.enabled) {
+        "${lib.toLower (lib.replaceStrings [ " " ] [ "-" ] app.name)}" = full-policy;
+      };
   mkAccessControl = app: {
     policy ? "one_factor",
     subject ? null,
@@ -89,8 +89,8 @@ let
           domain = domain;
           policy = policy;
           subject = if subject != null then subject else
-            [ "group:${app.user-group}"
-              "group:${app.admin-group}" ];
+            [ "group:${app.groups.primary}"
+              "group:${app.groups.admin}" ];
         }
         {
           domain = domain;
@@ -103,38 +103,15 @@ in {
   services.authelia.instances.main.settings = {
     identity_providers.oidc = {
       authorization_policies = lib.mkMerge [
-        (mkPolicy config.site.apps.beszel {
-          extra_groups = [ "admin" ];
-        })
-        (mkPolicy config.site.apps.forgejo {
-          user_policy = "one_factor";
-        })
-        (mkPolicy config.site.apps.headscale {
-          admins = false;
-        })
-        (mkPolicy config.site.apps.immich {
-          user_policy = "one_factor";
-          extra_groups = [ "family" ];
-        })
-        (mkPolicy config.site.apps.memos {
-          extra_groups = [ "family" ];
-        })
-        (mkPolicy config.site.apps.vikunja {
-          user_policy = "two_factor";
-        })
-        (mkPolicy config.site.apps.paperless {
-          user_policy = "two_factor";
-          extra_groups = [ "family" ];
-        })
-        (mkPolicy config.site.apps.sftpgo {
-          user_policy = "two_factor";
-          extra_groups = [ "family" ];
-          admins = false;
-        })
-        (mkPolicy config.site.apps.warracker {
-          user_policy = "one_factor";
-          extra_groups = [ "family" ];
-        })
+        (mkPolicy config.site.apps.beszel { })
+        (mkPolicy config.site.apps.forgejo { })
+        (mkPolicy config.site.apps.headscale { })
+        (mkPolicy config.site.apps.immich { })
+        (mkPolicy config.site.apps.memos { })
+        (mkPolicy config.site.apps.vikunja { user_policy = "two_factor"; })
+        (mkPolicy config.site.apps.paperless { user_policy = "two_factor"; })
+        (mkPolicy config.site.apps.sftpgo { user_policy = "two_factor"; })
+        (mkPolicy config.site.apps.warracker { })
       ];
       claims_policies = {
         sftpgo = {
@@ -204,15 +181,9 @@ in {
       ];
     };
     access_control.rules = lib.flatten [
-      (mkAccessControl config.site.apps.microbin {
-        policy = "one_factor";
-      })
-      (mkAccessControl config.site.apps.ntfy {
-        policy = "two_factor";
-      })
-      (mkAccessControl config.site.apps.uptime {
-        policy = "one_factor";
-      })
+      (mkAccessControl config.site.apps.microbin { })
+      (mkAccessControl config.site.apps.ntfy { policy = "two_factor"; })
+      (mkAccessControl config.site.apps.uptime { })
     ];
   };
 }

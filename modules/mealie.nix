@@ -52,8 +52,8 @@ in {
       OIDC_CLIENT_ID = "mealie";
       OIDC_CONFIGURATION_URL = "https://${config.site.apps.authelia.subdomain}.${config.site.domain}/.well-known/openid-configuration";
       OIDC_SIGNUP_ENABLED = "true";
-      OIDC_USER_GROUP = config.site.apps.mealie.user-group;
-      OIDC_ADMIN_GROUP = config.site.apps.mealie.admin-group;
+      OIDC_USER_GROUP = config.site.apps.mealie.groups.primary;
+      OIDC_ADMIN_GROUP = config.site.apps.mealie.groups.admin;
       DEFAULT_GROUP = "Family";
       DEFAULT_HOUSEHOLD = "Unsorted";
       THEME_LIGHT_PRIMARY = config.site.accent.primary;
