@@ -112,6 +112,23 @@
             groups.primary = "forge";
             site-name = "Code by TEC";
             site-description = "The personal Forgejo instance of TEC";
+            qa-captcha = {
+              enabled = true;
+              questions = [
+                "What is my first name?"
+                "What is the thing I use as my avatar?"
+                "What community do you know me from?"
+              ];
+              answers = [
+                "timothy"
+                "tec"
+                "tree"
+                "julia"
+                "emacs"
+                "org"
+                "doom"
+              ];
+            };
             default-user-redirect = "tec";
             served-repositories = [
               {
