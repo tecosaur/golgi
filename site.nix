@@ -217,6 +217,23 @@ in {
             default = null;
             description = "A private user to redirect to upon visiting the root domain";
           };
+          qa-captcha = {
+            enabled = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Whether to enable the question and answer captcha for the Forgejo registration page";
+            };
+            questions = lib.mkOption {
+              type = lib.types.listOf lib.types.str;
+              default = "";
+              description = "Question to use for the Forgejo registration captcha";
+            };
+            answers = lib.mkOption {
+              type = lib.types.listOf lib.types.str;
+              default = [ ];
+              description = "List of acceptable answers for the Forgejo registration captcha";
+            };
+          };
           served-repositories = lib.mkOption {
             type = lib.types.listOf (lib.types.submodule {
               options = {

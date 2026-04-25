@@ -24,6 +24,66 @@ let
         "$(cat "$f_mocha")" "$(cat "$f")" > "$out/$(basename "$f_mocha")"
     done
   '';
+  captcha-config = if config.site.apps.forgejo.qa-captcha.enabled then
+    let
+      caddy-challenge = ''
+        @challenge {
+            header !git-protocol
+            not header Cookie *authelia_session=*
+            not path *.git* /info/refs /git-upload-pack /git-receive-pack
+            not path *summary-card
+            not path / /assets/* /favicon.ico /favicon.svg /explore/repos /repo-avatars/*
+            not path /user/login /user/oauth2/authelia
+            not {
+                not header User-Agent *meta*
+                not header User-Agent *Mozilla*
+            }
+            ${lib.strings.concatMapStringsSep "\n    " (ans: "not header Cookie *caddy_qa_captcha=${ans}*") config.site.apps.forgejo.qa-captcha.answers}
+        }
+      '';
+      captcha-content = pkgs.writeText "captcha.html" (
+        builtins.replaceStrings
+          ["$ACCENT" "$QUESTIONS"]
+          [config.site.accent.primary
+           (lib.strings.concatMapStringsSep "\n                        " (q: "<li>${q}</li>") config.site.apps.forgejo.qa-captcha.questions)]
+          (builtins.readFile ./captcha.html)
+      );
+      captcha-dir = pkgs.runCommand "forgejo-captcha" {} ''
+        mkdir -p $out
+        cp ${captcha-content} $out/captcha.html
+      '';
+    in
+      ''
+        ${caddy-challenge}
+
+        log_append captcha_answer {http.request.cookie.caddy_qa_captcha}
+
+        route @challenge {
+            @captcha_submit {
+                method GET
+                path /captcha
+                query answer=*
+            }
+            handle @captcha_submit {
+                header Set-Cookie "caddy_qa_captcha={query.answer}; Path=/; Max-Age=31536000; HttpOnly; SameSite=Lax; Secure"
+                redir {query.next} 302
+            }
+            log_append captcha_redirect "true"
+            @capcha_viable {
+                header Accept *text/html*
+            }
+            route @capcha_viable {
+                rewrite * /captcha.html
+                header Cache-Control "no-store"
+                templates
+                file_server {
+                    root ${captcha-dir}
+                    status 401
+                }
+            }
+            respond 401
+        }
+      '' else "";
 in {
   site.apps.forgejo.enabled = true;
 
@@ -222,52 +282,59 @@ in {
           ]);
         }
       ) groups;
+    caddy-user-conf = if config.site.apps.forgejo.default-user-redirect != null then
+      let user = config.site.apps.forgejo.default-user-redirect; in
+      ''
+      @not_${user} {
+          not path /${user}/*
+          not header Cookie *caddy_${user}_redirect=true*
+      }
+      handle @not_${user} {
+          rewrite /user/login /user/oauth2/authelia
+          reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
+              @404 status 404
+              handle_response @404 {
+                  header +Set-Cookie "caddy_${user}_redirect=true; Max-Age=5"
+                  redir * /${user}{uri}
+              }
+          }
+      }
+      @${user}_redirect {
+          path /${user}/*
+          header Cookie *caddy_${user}_redirect=true*
+      }
+      handle @${user}_redirect {
+          reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
+              @404 status 404
+              handle_response @404 {
+                  header +Set-Cookie "caddy_${user}_redirect=true; Max-Age=0"
+                  handle_path /${user}/* {
+                      redir * {uri}
+                  }
+              }
+          }
+      }
+      '' else "";
+    caddy-config = captcha-config + ''
+      handle {
+          rewrite /user/login /user/oauth2/authelia
+          reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT}
+      }
+      '' + caddy-user-conf;
+     indent = prefix: str:
+       lib.concatStringsSep "\n"
+         (map
+           (line: if line == "" then "" else prefix + line)
+           (lib.splitString "\n" str));
   in {
     globalConfig = lib.mkAfter (lib.concatStringsSep "\n" (map mkFsConfig processed-repos));
     virtualHosts =
       (mkVhosts subdomain-groups) //
       {
-      "git.${config.site.domain}".extraConfig =
-        "redir https://${forgejo-domain}{uri} 301";
-      "${forgejo-domain}".extraConfig =
-        ''
-        handle {
-            rewrite /user/login /user/oauth2/authelia
-            reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT}
-        }
-        '' + (if config.site.apps.forgejo.default-user-redirect != null then
-          let user = config.site.apps.forgejo.default-user-redirect; in
-          ''
-          @not_${user} {
-              not path /${user}/*
-              not header Cookie *caddy_${user}_redirect=true*
-          }
-          handle @not_${user} {
-              rewrite /user/login /user/oauth2/authelia
-              reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
-                  @404 status 404
-                  handle_response @404 {
-                      header +Set-Cookie "caddy_${user}_redirect=true; Max-Age=5"
-                      redir * /${user}{uri}
-                  }
-              }
-          }
-          @${user}_redirect {
-              path /${user}/*
-              header Cookie *caddy_${user}_redirect=true*
-          }
-          handle @${user}_redirect {
-              reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
-                  @404 status 404
-                  handle_response @404 {
-                      header +Set-Cookie "caddy_${user}_redirect=true; Max-Age=0"
-                      handle_path /${user}/* {
-                          redir * {uri}
-                      }
-                  }
-              }
-          }
-          '' else "");
+        "git.${config.site.domain}".extraConfig =
+          "redir https://${forgejo-domain}{uri} 301";
+        "${forgejo-domain}".extraConfig =
+          "route {\n" + (indent "    " caddy-config) + "\n}";
       };
   };
 }

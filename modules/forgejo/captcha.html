@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Verification</title>
+        <meta name="description" content="Verification required.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <style>
+         body {
+             display: flex;
+             flex-flow: column nowrap;
+             justify-content: space-around;
+             align-items: center;
+             min-height: 100vh;
+             margin: 0;
+             padding: 0.6em;
+             box-sizing: border-box;
+             font-size: 1.1rem;
+             font-family: monospace;
+             background: oklch(from $ACCENT 0.98 0.025 h);
+         }
+
+         section {
+             margin: 0;
+             width: 100%;
+             max-width: 40em;
+         }
+
+         h1, strong, a, label {
+             color: color-mix(in oklch, $ACCENT 97.5%, #000 2.5%);
+         }
+
+         h1 {
+             text-align: center;
+             margin-top: 0;
+         }
+
+         p {
+             line-height: 1.45;
+         }
+
+         code {
+             background: #88888833;
+             padding: 0 0.2em;
+         }
+
+         form {
+             max-width: 30em;
+             margin: 2em auto 0;
+             display: flex;
+             flex-direction: column;
+             gap: 0.8em;
+         }
+
+         input, button {
+             font: inherit;
+             box-sizing: border-box;
+             border-radius: 0.4em;
+         }
+
+         input {
+             width: 100%;
+             padding: 0.55em 0.65em;
+             border: 1px solid color-mix(in oklch, $ACCENT 35%, #000 65%);
+             background: #fff;
+         }
+
+         button {
+             align-self: flex-start;
+             padding: 0.55em 0.9em;
+             border: none;
+             color: #fff;
+             background: color-mix(in oklch, $ACCENT 92%, #000 8%);
+             cursor: pointer;
+         }
+
+         button:hover {
+             background: color-mix(in oklch, $ACCENT 82%, #000 18%);
+         }
+
+         .aside {
+             font-size: 0.9em;
+             font-style: italic;
+             text-align: center;
+             max-width: 32em;
+             margin: auto;
+         }
+
+         ::selection {
+             background: ${ACCENT}55;
+         }
+
+         @media (prefers-color-scheme: dark) {
+             body {
+                 background: oklch(from $ACCENT 0.21 0.025 h);
+                 color: #fafafa;
+             }
+
+             h1 {
+                 color: color-mix(in oklch, $ACCENT 95%, #fff 5%);
+             }
+
+             strong, a, label {
+                 color: oklch(from $ACCENT 0.72 0.17 h);
+             }
+
+             input {
+                 color: #fafafa;
+                 background: #151515;
+                 border-color: color-mix(in oklch, $ACCENT 45%, #fff 20%);
+             }
+
+             button {
+                 color: #111;
+                 background: oklch(from $ACCENT 0.72 0.17 h);
+             }
+
+             button:hover {
+                 background: oklch(from $ACCENT 0.78 0.17 h);
+             }
+         }
+        </style>
+    </head>
+    <body>
+        <section>
+            <h1>Proof of familiarity required</h1>
+
+            <p class="aside">
+                AI scrapers don't respect <a href="https://developer.mozilla.org/en-US/docs/Glossary/Robots.txt">robots.txt</a>
+                and keep trying to give this site the hug of death, so please
+                answer a simple question and I'll let you in.
+            </p>
+
+            <form method="get" action="/captcha" autocomplete="off" onsubmit="this.answer.value = this.answer.value.toLowerCase().trim()">
+                <label for="answer">
+                    <p>Answer any of the following questions about <strong>me</strong> with a single word:</p>
+                    <ul>
+                        $QUESTIONS
+                    </ul>
+                </label>
+                <input id="answer" name="answer" type="text" inputmode="text" required autofocus style="text-align: center"/>
+                <input type="hidden" name="next" value="{{ placeholder "http.request.orig_uri" | html }}">
+                <button type="submit" style="margin: auto">See, I'm not a dastardly robot</button>
+            </form>
+        </section>
+        <section>
+            <p style="text-align: center; font-size: 0.8em; opacity: 0.5">
+                <code>{{placeholder "http.request.header.X-Forwarded-For"}}</code>
+                @
+                <code>{{placeholder "http.request.header.Cf-Ipcountry"}}</code>
+                →
+                <code>{{ placeholder "http.request.orig_uri.path" | html }}</code>
+            </p>
+        </section>
+    </body>
+</html>
