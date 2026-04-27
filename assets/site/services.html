@@ -1,3 +1,4 @@
+{{$groups := .Req.Header.Get "Remote-Groups"}}
 <!doctype html>
 <html lang="en">
     <head>
@@ -55,6 +56,12 @@
                 margin-left: -0.5em;
                 margin-right: -0.5em;
             }
+            details.unavailible {
+                opacity: 0.9;
+            }
+            details.unavailible > summary {
+                color: #999999;
+            }
             code {
                 background: ${ACCENT}44;
                 opacity: 0.9;
@@ -80,13 +87,20 @@
     <body>
         <div>
         <header>
-            <h1>Services <a href=".." style="float: right;">↩</a></h1>
+            <img src="logo.svg" alt="Tree" style="width: 5em; max-width: 20vw; max-height: 15vh; aspect-ratio: 1; display: block; margin: 0 auto;"/>
+            <h1>Services <a href=".." style="float: right;" title="Return to Homepage">↩</a></h1>
             <p>An overview of potentially-useful serivces I'm running,
                (in no particular order) and instructions on how to start using them.</p>
         </header>
         <section>
-            <details id="photos">
+            {{- define "greyout" }}{{ if not . }}class="unavailible"{{ end }}{{ end}}
+            {{- define "ask4access" }}{{ if not . -}}
+            <p style="background: #239a5844; text-align: center"><strong>Ask for access</strong></p>
+            {{- end}}{{ end -}}
+            {{- if $IMMICH_ENABLED }}
+            <details id="photos" {{ template "greyout" $IMMICH_ACCESS }}>
                 <summary>Photo management and storage</summary>
+                {{- template "ask4access" $IMMICH_ACCESS }}
                 <p><a href="https://immich.app/">Immich</a> is a polished photo and video management system.
                     It is designed for uploading, storing, and sharing media with as bells and whistles like
                     face recognition and geotagging.</p>
@@ -113,8 +127,11 @@
                         the appropriate binary for your system, and figure out how to use it.</p>
                 </details>
             </details>
-            <details id="document-management">
+            {{- end }}
+            {{- if $PAPERLESS_ENABLED }}
+            <details id="document-management" {{ template "greyout" $PAPERLESS_ACCESS }}>
                 <summary>Document management</summary>
+                {{- template "ask4access" $PAPERLESS_ACCESS }}
                 <p><a href="https://docs.paperless-ngx.com/">Paperless</a> is a document management system,
                    designed for scanning, storing, and tagging documents such as receipts, bills, letters, and manuals.</p>
                 <p>Because paperwork and filing is no fun, it learns from the labels and categories you assign to documents,
@@ -132,9 +149,12 @@
                         (or <a href="https://f-droid.org/packages/de.astubenbord.paperless_mobile">F-Droid</a>). It hasn't been updated in a while though.</dd>
                 </dl>
             </details>
-            <details id="storage">
+            {{- end }}
+            {{- if $SFTPGO_ENABLED }}
+            <details id="storage" {{ template "greyout" $SFTPGO_ACCESS }}>
                 <summary>Cloud storage</summary>
                 <p>⚠️ <b>Work in progress</b></p>
+                {{- template "ask4access" $SFTPGO_ACCESS }}
                 <p>In addition to apps that use storage (such as photo management), you can also make use of the
                     availible storage as general-purpose cloud storage.</p>
                 <p>This storage can be easily accessed from the web at <a href="https://$SFTPGO_URL">$SFTPGO_SUBDOMAIN.■</a>.
@@ -160,20 +180,23 @@
                     <p>TODO</p>
                 </details>
             </details>
-            <details id="backups">
+            {{- end }}
+            <details id="backups" class="unavailible">
                 <summary>Backups</summary>
                 <p>⚠️ <b>Planned but not set up yet</b></p>
                 <!-- Maybe mention https://apps.apple.com/us/app/parachute-backup-mobile/id6749824842 ? -->
             </details>
-            <details id="streaming">
+            {{- if $JELLYFIN_ENABLED }}
+            <details id="streaming" {{ template "greyout" $JELLYFIN_ACCESS }}>
                 <summary>Media streaming</summary>
+                {{- template "ask4access" $JELLYFIN_ACCESS }}
                 <p><a href="https://jellyfin.org/">Jellyfin</a> is a media server for movies, TV, and music.
                     It supports user profiles, watch history, subtitles, casting, and streaming over the internet.</p>
                 <p>You can use Jellyfin online or through a variety of apps:</p>
                 <dl>
                     <dt>Web</dt>
                     <dd>Visit <a href="https://$JELLYFIN_URL">$JELLYFIN_SUBDOMAIN.■</a> and sign in.</dd>
-                    <dt>iOS/Android 📽️</dt>
+                    <dt>iOS/Android ️🎞️</dt>
                     <dd>Download Streamyfin from the <a href="https://apps.apple.com/app/streamyfin/id6593660679">App Store</a>
                         or <a href="https://play.google.com/store/apps/details?id=com.fredrikburmester.streamyfin">Play Store</a>,
                         supply the server URL <code>https://$JELLYFIN_URL</code>, then log in <emph>using a quick-connect code</emph>
@@ -189,10 +212,13 @@
                     <dd>See the list of <a href="https://jellyfin.org/downloads/clients/">recommended clients</a>.</dd>
                 </dl>
             </details>
-            <details id="notes">
+            {{- end }}
+            {{- if $MEMOS_ENABLED }}
+            <details id="notes" {{ template "greyout" $MEMOS_ACCESS }}>
                 <summary>Quick notes</summary>
-                <p><a href="https://www.usememos.com/">Memos</a> is a lightweight notes app, with a small but well-considered set of features.
-                    It can be used in the following ways:</p>
+                {{- template "ask4access" $MEMOS_ACCESS }}
+                <p><a href="https://www.usememos.com/">Memos</a> is a lightweight notes app, with a small but well-considered set of features.</p>
+                <p>It can be used in the following ways:</p>
                 <dl>
                     <dt>Web</dt>
                     <dd>Visit <a href="https://$MEMOS_URL">$MEMOS_SUBDOMAIN.■</a> and sign in.</dd>
@@ -205,15 +231,21 @@
                         <code>https://$MEMOS_URL</code>. Log in.</dd>
                 </dl>
             </details>
-            <details id="recipes">
+            {{- end }}
+            {{- if $MEALIE_ENABLED }}
+            <details id="recipes" {{ template "greyout" $MEALIE_ACCESS }}>
                 <summary>Recipe management</summary>
+                {{- template "ask4access" $MEALIE_ACCESS }}
                 <p><a href="https://mealie.io/">Mealie</a> offers recipie management and meal planning,
                     with built-in importers from various recipe sites.</p>
                 <p>Visit <a href="https://$MEALIE_URL">$MEALIE_SUBDOMAIN.■</a> and sign in. On mobile devices,
                     you should be able to add this to your home screen as a <abbr title="Progressive Web App">PWA</abbr>.</p>
             </details>
-            <details id="warranties">
+            {{- end }}
+            {{- if $WARRACKER_ENABLED }}
+            <details id="warranties" {{ template "greyout" $WARRACKER_ACCESS }}>
                 <summary>Warranty tracking</summary>
+                {{- template "ask4access" $WARRACKER_ACCESS }}
                 <p><a href="https://github.com/sassanix/warracker">Warracker</a> keeps track of product warranties,
                     including purchase dates, expiry, serial numbers, and receipts.</p>
                 <dl>
