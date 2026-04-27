@@ -9,47 +9,50 @@ in {
     enable = true;
   };
 
-  systemd.services.slimserver.serviceConfig = {
-    NoNewPrivileges = true;
-    LockPersonality = true;
-    ProtectSystem = "strict";
-    ProtectHome = true;
-    PrivateTmp = true;
-    PrivateUsers = true;
-    PrivateDevices = true;
-    ProtectKernelTunables = true;
-    ProtectKernelModules = true;
-    ProtectKernelLogs = true;
-    ProtectControlGroups = true;
-    ProtectHostname = true;
-    ProtectClock = true;
-    ProtectProc = "invisible";
-    ProcSubset = "pid";
-    RemoveIPC = true;
-    RestrictRealtime = true;
-    RestrictNamespaces = true;
-    RestrictSUIDSGID = true;
-    MemoryDenyWriteExecute = true;
-    StateDirectory = "slimserver";
-    ReadOnlyPaths = [ music-dir "/nix" ];
-    ReadWritePaths = [ "/var/lib/slimserver" pkgs.slimserver ];
-    UMask = "0077";
-    DevicePolicy = "closed";
-    SystemCallArchitectures = "native";
-    SystemCallFilter = [
-      " " # This is needed to clear the SystemCallFilter existing definitions
-      "~@reboot"
-      "~@swap"
-      "~@obsolete"
-      "~@mount"
-      "~@module"
-      "~@debug"
-      "~@cpu-emulation"
-      "~@clock"
-      "~@raw-io"
-      "~@privileged"
-    ];
-    CapabilityBoundingSet = [ " " "CAP_NET_BROADCAST" ];
+  systemd.services.slimserver = {
+    path = [ pkgs.yt-dlp pkgs.deno ];
+    serviceConfig = {
+      NoNewPrivileges = true;
+      LockPersonality = true;
+      ProtectSystem = "strict";
+      ProtectHome = true;
+      PrivateTmp = true;
+      PrivateUsers = true;
+      PrivateDevices = true;
+      ProtectKernelTunables = true;
+      ProtectKernelModules = true;
+      ProtectKernelLogs = true;
+      ProtectControlGroups = true;
+      ProtectHostname = true;
+      ProtectClock = true;
+      ProtectProc = "invisible";
+      ProcSubset = "pid";
+      RemoveIPC = true;
+      RestrictRealtime = true;
+      RestrictNamespaces = true;
+      RestrictSUIDSGID = true;
+      MemoryDenyWriteExecute = true;
+      StateDirectory = "slimserver";
+      ReadOnlyPaths = [ music-dir "/nix" ];
+      ReadWritePaths = [ "/var/lib/slimserver" pkgs.slimserver ];
+      UMask = "0077";
+      DevicePolicy = "closed";
+      SystemCallArchitectures = "native";
+      SystemCallFilter = [
+        " " # This is needed to clear the SystemCallFilter existing definitions
+        "~@reboot"
+        "~@swap"
+        "~@obsolete"
+        "~@mount"
+        "~@module"
+        "~@debug"
+        "~@cpu-emulation"
+        "~@clock"
+        "~@raw-io"
+        "~@privileged"
+      ];
+      CapabilityBoundingSet = [ " " "CAP_NET_BROADCAST" ];
+    };
   };
 
   networking.firewall.allowedTCPPorts = [ 3483 9000 9090 ];
