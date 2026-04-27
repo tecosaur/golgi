@@ -59,16 +59,6 @@ in {
   networking.firewall.allowedUDPPorts = [ 3483 ];
 
   services.caddy.virtualHosts = lib.mkMerge (map (domain: {
-    "${domain}".extraConfig =
-      ''
-      handle /html/images/icon* {
-          uri strip_prefix /html/images/
-          root ${config.site.assets}/lyrion
-          file_server
-      }
-      reverse_proxy :${toString lyrion-web-port}
-      tls internal
-      '';
     "http://${domain}".extraConfig =
       ''
       handle /html/images/icon* {
