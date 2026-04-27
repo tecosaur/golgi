@@ -25,7 +25,6 @@ in {
     host = "0.0.0.0";
     port = config.site.apps.immich.port;
     mediaLocation = immich-data;
-    database.enableVectors = false; # No more pgvecto-rs
     settings = {
       oauth = {
         enabled = true;

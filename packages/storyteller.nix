@@ -23,15 +23,6 @@
 let
   nodeSources = srcOnly nodejs_24;
   yarn-berry = yarn-berry_4;
-  # Fonts for offline build (next/font/google requires network at build time)
-  inter-font = fetchurl {
-    url = "https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip";
-    hash = "sha256-mIP91KSdT7Zr2Bd7pmJe+aZKpFiZdn3ePTaqQldWsR4=";
-  };
-  young-serif-font = fetchurl {
-    url = "https://github.com/noirblancrouge/YoungSerif/raw/master/fonts/otf/YoungSerif-Regular.otf";
-    hash = "sha256-UGEll/kYrBjphcD/T2VkpUv3J0fyBXBVCgYGWf8uyz8=";
-  };
   readium-cli = buildGoModule rec {
     pname = "readium-cli";
     version = "0.6.3";
@@ -61,14 +52,14 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "storyteller";
-  version = "2.6.1";
+  version = "2.11.9";
 
   src = fetchFromGitLab {
     owner = "tecosaur";
     repo = "storyteller";
     # rev = "web-v${finalAttrs.version}";
-    rev = "ed212f5ced9f706a0eee6d8191f9495cae2b3d70";
-    hash = "sha256-XZUUyWMgMbVm8WSLg3hemYtl4tkX6ylXZSDQ1g/k8fw=";
+    rev = "c25a7d1e04d3460f3ad5721d22e7801c78154fbf";
+    hash = "sha256-ENoCWFx9gJ72H/WrlPLHGqgyXbbnzfZ9PiyOomWDBx8=";
   };
 
   nativeBuildInputs = [
@@ -85,7 +76,7 @@ stdenv.mkDerivation (finalAttrs: {
   missingHashes = ./storyteller-missing-yarn-hashes.json; # From `nix run 'nixpkgs#yarn-berry_4.yarn-berry-fetcher' missing-hashes yarn.lock`
   offlineCache = yarn-berry.fetchYarnBerryDeps {
     inherit (finalAttrs) src missingHashes;
-    hash = "sha256-b2rdeNVoiNGhaX57ZnGOjRweOFh54VRFWCtn6QAAzHE=";
+    hash = "sha256-dbGlcHL7cNk1eMYUXzAQ9kkkvERUhXyqTx7QgJjIo6g=";
   };
 
   buildInputs = [
@@ -105,32 +96,6 @@ stdenv.mkDerivation (finalAttrs: {
       };
       fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
     "
-    # Set up local fonts for offline build (next/font/google requires network)
-    mkdir -p web/src/app/fonts
-    unzip -j ${inter-font} "InterVariable.ttf" -d web/src/app/fonts
-    cp ${young-serif-font} web/src/app/fonts/YoungSerif-Regular.otf
-    # Patch layout.tsx to use local fonts instead of Google Fonts
-    substituteInPlace web/src/app/layout.tsx \
-          --replace-warn 'import { Inter, Young_Serif } from "next/font/google"' 'import localFont from "next/font/local"' \
-          --replace-warn 'const inter = Inter({
-      subsets: ["latin"],
-      display: "swap",
-      variable: "--font-inter",
-    })' 'const inter = localFont({
-      src: "./fonts/InterVariable.ttf",
-      display: "swap",
-      variable: "--font-inter",
-    })' \
-          --replace-warn 'const youngSerif = Young_Serif({
-      subsets: ["latin"],
-      display: "swap",
-      weight: "400",
-      variable: "--font-young-serif",
-    })' 'const youngSerif = localFont({
-      src: "./fonts/YoungSerif-Regular.otf",
-      display: "swap",
-      variable: "--font-young-serif",
-    })'
   '';
 
   # After the pnpm configure, we need to build the binaries of all instances
@@ -158,11 +123,9 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p "$npm_config_cache"
     # SQLite UUID extension
     gcc -O2 -g -fPIC -rdynamic -shared web/sqlite/uuid.c -o web/sqlite/uuid.c.so
-    # Workers
-    yarn workspace @storyteller-platform/web run build:worker
-    yarn workspace @storyteller-platform/web run build:file-write-worker
-    # Next.js
-    yarn workspace @storyteller-platform/web run build
+    # Do the build!
+    export ERROR_ALIGN_NATIVE_BINDING="$PWD/align"
+    yarn workspaces foreach -Rpt --from @storyteller-platform/web --exclude @storyteller-platform/eslint run build
     runHook postBuild
   '';
 
@@ -179,6 +142,10 @@ stdenv.mkDerivation (finalAttrs: {
     cp -r web/public/* $out/lib/storyteller/web/public/
     mkdir -p $out/lib/storyteller/web/.next/static
     cp -r web/.next/static/* $out/lib/storyteller/web/.next/static/
+    # Align
+    mkdir -p $out/lib/storyteller/web/work-dist/@storyteller-platform/align/prebuilds
+    cp -r align/prebuilds/linux-x64 $out/lib/storyteller/web/work-dist/@storyteller-platform/align/prebuilds/
+    cp -r align/prebuilds/linux-arm64 $out/lib/storyteller/web/work-dist/@storyteller-platform/align/prebuilds/
     # SQLite extension
     mkdir -p $out/lib/storyteller/web/sqlite
     cp web/sqlite/uuid.c.so $out/lib/storyteller/web/sqlite/
@@ -189,15 +156,8 @@ stdenv.mkDerivation (finalAttrs: {
     cp web/work-dist/*.cjs $out/lib/storyteller/web/work-dist/
     mkdir -p $out/lib/storyteller/web/file-write-dist
     cp web/file-write-dist/*.cjs $out/lib/storyteller/web/file-write-dist/
-    # WASM files for echogarden speech processing
-    cp node_modules/@echogarden/speex-resampler-wasm/wasm/*.wasm $out/lib/storyteller/web/work-dist/
-    cp node_modules/@echogarden/pffft-wasm/dist/simd/pffft.wasm $out/lib/storyteller/web/work-dist/
-    cp node_modules/tiktoken/lite/tiktoken_bg.wasm $out/lib/storyteller/web/work-dist/
-    cp node_modules/@echogarden/espeak-ng-emscripten/espeak-ng.data $out/lib/storyteller/web/work-dist/
-    # Echogarden data and dist (manually resolved by echogarden at runtime)
-    mkdir -p $out/lib/storyteller/{data,dist}
-    cp -r node_modules/echogarden/data/* $out/lib/storyteller/data/
-    cp -r node_modules/echogarden/dist/* $out/lib/storyteller/dist/
+    # Echogarden wasm
+    cp node_modules/@echogarden/icu-segmentation-wasm/wasm/*.wasm $out/lib/storyteller/web/work-dist/
     # Pre-built whisper.cpp (Storyteller expects whisper-builds/cpu/build/bin/whisper-cli relative to cwd)
     mkdir -p $out/lib/storyteller/web/whisper-builds/cpu/build/bin
     ln -s ${whisper}/bin/whisper-cli $out/lib/storyteller/web/whisper-builds/cpu/build/bin/whisper-cli
@@ -205,15 +165,21 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p $out/lib/storyteller/node_modules/better-sqlite3/build/Release
     cp node_modules/better-sqlite3/build/Release/better_sqlite3.node \
        $out/lib/storyteller/node_modules/better-sqlite3/build/Release/
+    # Extract whisper.cpp version from ghost-story source
+    whisperCppUpstreamVersion=$(grep -oP 'WHISPER_CPP_UPSTREAM_VERSION\s*=\s*"\K[^"]+' ghost-story/src/constants.ts)
+    whisperCppPatchLevel=$(grep -oP 'WHISPER_CPP_PATCH_LEVEL\s*=\s*\K[0-9]+' ghost-story/src/constants.ts)
+    whisperCppVersion="''${whisperCppUpstreamVersion}-st.''${whisperCppPatchLevel}"
     # Wrapper
     makeWrapper ${nodejs_24}/bin/node $out/bin/storyteller \
       --add-flags "--enable-source-maps $out/lib/storyteller/web/server.js" \
       --chdir "$out/lib/storyteller/web" \
+      --run "WHISPER_DIR=\"\$HOME/.local/share/ghost-story/whisper-cpp/$whisperCppVersion/linux-x64-cpu/bin\"; mkdir -p \"\$WHISPER_DIR\"; ln -sfn ${whisper}/bin/whisper-cli \"\$WHISPER_DIR/whisper-cli\"" \
       --prefix PATH : ${lib.makeBinPath [ ffmpeg readium-cli ]} \
       --set CI_COMMIT_TAG "web-v${finalAttrs.version}" \
       --set STORYTELLER_WORKER "worker.cjs" \
       --set STORYTELLER_FILE_WRITE_WORKER "fileWriteWorker.cjs" \
-      --set SQLITE_NATIVE_BINDING "$out/lib/storyteller/node_modules/better-sqlite3/build/Release/better_sqlite3.node"
+      --set SQLITE_NATIVE_BINDING "$out/lib/storyteller/node_modules/better-sqlite3/build/Release/better_sqlite3.node" \
+      --set ERROR_ALIGN_NATIVE_BINDING "$out/lib/storyteller/web/work-dist/@storyteller-platform/align"
     runHook postInstall
   '';
 
