@@ -4,6 +4,7 @@ let
   download-dir = "/data/media/downloads";
   incomplete-dir = "${download-dir}/.incomplete";
   extra-dirs = [ "/data/media" ];
+  peer-port = 58193;
 in {
   site.apps.transmission.enabled = true;
 
@@ -21,12 +22,15 @@ in {
       rpc-authentication-required = false;
       ratio-limit-enabled = true;
       ratio-limit = 2;
+      peer-port = peer-port;
       download-dir = download-dir;
       incomplete-dir = incomplete-dir;
       rename-partial-files = true;
       umask = "002";
     };
   };
+
+  networking.firewall.allowedTCPPorts = [ peer-port ];
 
   systemd.services.transmission.serviceConfig = {
     UMask = lib.mkForce "0007";
