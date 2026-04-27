@@ -5,6 +5,8 @@
   buildGoModule,
   makeWrapper,
   nodejs_22,
+  fetchPnpmDeps,
+  pnpmConfigHook,
   pnpm_10,
   git,
   go,
@@ -13,13 +15,13 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "headplane";
-  version = "v0.6.1";
+  version = "v0.6.2";
 
   src = fetchFromGitHub {
     owner = "tale";
     repo = finalAttrs.pname;
     rev = finalAttrs.version;
-    hash = "sha256-P92HFuCTIR0Mr86CuAnqT0x+9/136wFIcVTDfJaLGTQ=";
+    hash = "sha256-IKZimNUqzx3zNlIVSHJOtQg9LRXNOtCwOT27+9JrN0o=";
     # Needed for build process
     leaveDotGit = true;
   };
@@ -65,14 +67,15 @@ stdenv.mkDerivation (finalAttrs: {
   nativeBuildInputs = [
     makeWrapper
     nodejs_22
-    pnpm_10.configHook
+    pnpm_10
+    pnpmConfigHook
     git
   ];
 
-  pnpmDeps = pnpm_10.fetchDeps {
+  pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
     fetcherVersion = 1;
-    hash = "sha256-KyUcaR2Lvu5kT8arr4ZO8rCa5HWXTqmk8C7P8WoYK+c=";
+    hash = "sha256-Xtooqpibv4fuJczUfJDlGt2+5KuoKq/TUUhLKE+ierA=";
   };
 
   buildPhase = ''

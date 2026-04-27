@@ -33,11 +33,11 @@ in {
       STORYTELLER_DATA_DIR = storyteller.dir;
       STORYTELLER_LOG_LEVEL = "info";
       STORYTELLER_SECRET_KEY_FILE = "${storyteller.dir}/secret_key";
-      STORYTELLER_CONFIG = pkgs.writeText "storyteller-config.json" (builtins.toJSON {
+      STORYTELLER_CONFIG = (pkgs.formats.json {}).generate "storyteller-config.json" {
         libraryName = "Books @ ${config.site.domain}";
         webUrl = "https://${storyteller-domain}";
-        # importPath = storyteller-import;
-        # importMode = "copy";
+        importPath = storyteller-import;
+        importMode = "copy";
         authProviders = [{
           kind = "custom";
           name = "Authelia";
@@ -46,14 +46,14 @@ in {
           clientSecret_file = config.age.secrets.storyteller-oidc.path;
           type = "oidc";
           allowRegistration = true;
-          groupPermissions = lib.mkMerge ([{
+          groupPermissions = {
             "${config.site.apps.storyteller.groups.admin}" = [
               "bookCreate" "bookRead" "bookProcess" "bookDownload" "bookList"
               "bookDelete" "bookUpdate" "collectionCreate" "inviteList"
               "inviteDelete" "userCreate" "userList" "userRead" "userDelete"
               "userUpdate" "settingsUpdate"];
-          }] ++ (lib.map (g: { "${g}" = [ "bookRead" "bookDownload" "bookList" "bookCreate" ]; })
-            [ config.site.apps.storyteller.groups.primary ] ++ storyteller.groups.extra));
+          } // lib.mergeAttrsList (lib.map (g: { "${g}" = [ "bookRead" "bookDownload" "bookList" "bookCreate" ]; })
+            ([ config.site.apps.storyteller.groups.primary ] ++ storyteller.groups.extra));
         }];
         disablePasswordLogin = true;
         smtpHost = config.site.email.server;
@@ -63,7 +63,7 @@ in {
         smtpFrom = "Storyteller (${config.site.domain}) <services.storyteller@${config.site.domain}>";
         smtpSsl = true;
         smtpRejectUnauthorized = true;
-      });
+      };
       ENABLE_WEB_READER = "true";
       HOME = storyteller.dir;
       # OIDC (trustHost is hardcoded true in Storyteller)

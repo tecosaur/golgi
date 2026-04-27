@@ -31,7 +31,7 @@
       DeviceAllow = [ "/dev/sd* r" "/dev/nvme* r" ];
       SupplementaryGroups = [ "disk" ];
       NoNewPrivileges = lib.mkForce false;
-      PrivateDevices = false;
+      PrivateDevices = lib.mkForce false;
       PrivateUsers = lib.mkForce false;
       # Systemd service monitoring.
       # REVIEW after <https://github.com/NixOS/nixpkgs/pull/461327> is merged.
