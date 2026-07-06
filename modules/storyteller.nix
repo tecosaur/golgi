@@ -36,8 +36,14 @@ in {
       STORYTELLER_CONFIG = (pkgs.formats.json {}).generate "storyteller-config.json" {
         libraryName = "Books @ ${config.site.domain}";
         webUrl = "https://${storyteller-domain}";
-        importPath = storyteller-import;
         importMode = "copy";
+        epub2ImportStrategy = "replace";
+        importRules = [
+          {
+            kind = "watch";
+            path = storyteller-import;
+          }
+        ];
         authProviders = [{
           kind = "custom";
           name = "Authelia";
