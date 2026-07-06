@@ -59,6 +59,11 @@ in {
             app = config.site.apps.syncthing;
           })
           (mkAppStatus {
+            title = "Calendar & Contacts";
+            app = config.site.apps.rustical;
+            icon = "mdi-calendar-account";
+          })
+          (mkAppStatus {
             title = config.site.apps.microbin.title;
             app = config.site.apps.microbin;
             icon = "mdi-content-paste";

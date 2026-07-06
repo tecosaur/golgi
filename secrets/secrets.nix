@@ -33,6 +33,7 @@ in
   "paperless-admin-password.age".publicKeys = nbase;
   "postgres-authelia.age".publicKeys = gbase;
   "postgres-forgejo.age".publicKeys = gbase;
+  "rustical-oidc-secret-env.age".publicKeys = gbase;
   "sftpgo-env.age".publicKeys = nbase;
   "sftpgo-oidc-secret.age".publicKeys = nbase;
   "storyteller-oidc-secret.age".publicKeys = nbase;

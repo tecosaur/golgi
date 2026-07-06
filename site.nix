@@ -367,6 +367,13 @@ in {
         subdomain = "folio";
         port = 28981;
       };
+      rustical = mkAppOption {
+        name = "Rustical";
+        homepage = "https://rustical.app";
+        description = "calendar and contacts server";
+        subdomain = "cal";
+        port = 4811;
+      };
       scrutiny = mkAppOption {
         name = "Scrutiny";
         homepage = "https://github.com/AnalogJ/scrutiny";

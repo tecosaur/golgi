@@ -48,6 +48,7 @@
             mealie
             memos
             microbin
+            rustical
             site-root
             syncthing
             uptime
@@ -141,6 +142,7 @@
           };
           home-assistant.subdomain = "doonan";
           paperless.groups.extra = [ "family" ];
+          rustical.groups = { primary = "caldav"; extra = [ "family" ]; };
           sftpgo.groups.extra = [ "family" ];
           immich.groups.extra = [ "family" ];
           jellyfin.groups.extra = [ "family" ];
