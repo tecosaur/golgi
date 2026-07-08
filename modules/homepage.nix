@@ -78,6 +78,11 @@ in {
             icon = "mdi-silverware-fork-knife";
           })
           (mkAppStatus {
+            title = "Timeline";
+            app = config.site.apps.dawarich;
+            icon = "mdi-map-clock";
+          })
+          (mkAppStatus {
             title = "Todos";
             app = config.site.apps.vikunja;
             icon = "mdi-format-list-checks";
@@ -161,6 +166,8 @@ in {
             }];
           }
         ] ++ builtins.map mkAppLink [
+          { app = config.site.apps.dawarich;
+            icon = "mdi-map-clock"; }
           { app = config.site.apps.forgejo; }
           { app = config.site.apps.headscale;
             icon = "mdi-dots-hexagon"; }

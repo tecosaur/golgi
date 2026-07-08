@@ -104,6 +104,7 @@ in {
     identity_providers.oidc = {
       authorization_policies = lib.mkMerge [
         (mkPolicy config.site.apps.beszel { })
+        (mkPolicy config.site.apps.dawarich { })
         (mkPolicy config.site.apps.forgejo { })
         (mkPolicy config.site.apps.headscale { })
         (mkPolicy config.site.apps.immich { })
@@ -124,6 +125,9 @@ in {
       clients = lib.flatten [
         (mkClient config.site.apps.beszel {
           redirect_paths = [ "api/oauth2-redirect" ];
+        })
+        (mkClient config.site.apps.dawarich {
+          redirect_paths = [ "users/auth/openid_connect/callback" ];
         })
         (mkClient config.site.apps.forgejo {
           redirect_paths = [ "user/oauth2/authelia/callback" ];

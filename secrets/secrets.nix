@@ -16,6 +16,7 @@ in
   "beszel-token.age".publicKeys = all;
   "cloudflare-api-env.age".publicKeys = all;
   "crowdsec-enroll-key.age".publicKeys = all;
+  "dawarich-oidc-secret.age".publicKeys = nbase;
   "fastmail.age".publicKeys = all;
   "headplane-oidc-secret.age".publicKeys = gbase;
   "headscale-oidc-secret.age".publicKeys = gbase;

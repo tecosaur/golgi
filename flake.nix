@@ -59,6 +59,7 @@
           declarative-jellyfin.nixosModules.default
           hardware-nas
           home-assistant
+          dawarich
           immich
           llm
           lyrion
@@ -101,6 +102,7 @@
         };
         apps = nixpkgs.lib.recursiveUpdate global-enabled-apps {
           beszel.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6RP5omIbCzQsC/NizUg56JgpgMdl0/VXmCAE0VyJlq";
+          dawarich.groups = { primary = "timeline"; extra = [ "family" ]; };
           mealie.subdomain = "food";
           memos.groups.extra = [ "family" ];
           microbin = {

@@ -187,6 +187,14 @@ in {
           };
         };
       };
+      dawarich = mkAppOption {
+        name = "Dawarich";
+        homepage = "https://dawarich.com";
+        description = "location timeline";
+        service = "dawarich-web";
+        subdomain = "timeline";
+        port = 6805;
+      };
       fava = mkAppOption {
         name = "Fava";
         homepage = "https://beancount.github.io/fava/";
