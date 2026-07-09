@@ -113,6 +113,7 @@ in {
         (mkPolicy config.site.apps.paperless { user_policy = "two_factor"; })
         (mkPolicy config.site.apps.rustical { })
         (mkPolicy config.site.apps.sftpgo { user_policy = "two_factor"; })
+        (mkPolicy config.site.apps.tandoor { admin_policy = "one_factor"; })
         (mkPolicy config.site.apps.warracker { })
       ];
       claims_policies = {
@@ -174,6 +175,9 @@ in {
         (mkClient config.site.apps.storyteller {
           redirect_paths = [ "api/v2/auth/callback/authelia" ];
           authorization_policy = "one_factor";
+        })
+        (mkClient config.site.apps.tandoor {
+          redirect_paths = [ "accounts/oidc/authelia/login/callback/" ];
         })
         (mkClient config.site.apps.rustical {
           redirect_paths = [ "frontend/login/oidc/callback" ];

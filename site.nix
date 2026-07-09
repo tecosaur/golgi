@@ -439,6 +439,14 @@ in {
         port = 8384;
         admin = null;
       };
+      tandoor = mkAppOption {
+        name = "Tandoor";
+        homepage = "https://tandoor.dev";
+        description = "recipe manager";
+        service = "tandoor-recipes";
+        subdomain = "recipes";
+        port = 7203;
+      };
       transmission = mkAppOption {
         name = "Transmission";
         homepage = "https://transmissionbt.com";

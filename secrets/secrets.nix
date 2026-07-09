@@ -39,6 +39,8 @@ in
   "sftpgo-oidc-secret.age".publicKeys = nbase;
   "storyteller-oidc-secret.age".publicKeys = nbase;
   "tailscale-preauth.age".publicKeys = all;
+  "tandoor-oidc-secret.age".publicKeys = nbase;
+  "tandoor-fdc-api-key.age".publicKeys = nbase;
   "vikunja-oidc.age".publicKeys = gbase;
   "warracker-oidc-secret.age".publicKeys = nbase;
 }
