@@ -295,6 +295,11 @@ in {
             default = 8175;
             description = "Port that the headplane service listens on";
           };
+          relay-port = lib.mkOption {
+            type = lib.types.nullOr lib.types.int;
+            default = 40108;
+            description = "Port that the relay service listens on";
+          };
         };
       };
       home-assistant = mkAppOption {
