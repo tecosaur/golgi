@@ -52,13 +52,11 @@ in {
 
   age.secrets.paperless-oidc = {
     owner = "paperless";
-    group = "users";
     file = ../secrets/paperless-oidc-secret.age;
   };
 
   age.secrets.paperless-admin-password = {
     owner = "paperless";
-    group = "users";
     file = ../secrets/paperless-admin-password.age;
   };
 
@@ -95,7 +93,7 @@ in {
     deps = [ "agenix" ];
     text = ''
       mkdir -p /run/paperless-secrets
-      chown -R ${config.services.paperless.user}:users /run/paperless-secrets
+      chown -R ${config.services.paperless.user}:${config.services.paperless.user} /run/paperless-secrets
       chmod -R 700 /run/paperless-secrets
       cp ${django-allauth-env} /run/paperless-secrets/oidc-env
       ${lib.getExe pkgs.replace-secret} '##oidc_secret##' '${config.age.secrets.paperless-oidc.path}' /run/paperless-secrets/oidc-env
@@ -114,8 +112,6 @@ in {
   systemd.services.paperless-consumer.serviceConfig.UMask = lib.mkForce "0027";
   systemd.services.paperless-web.serviceConfig.UMask = lib.mkForce "0027";
   systemd.services.paperless-exporter.serviceConfig.UMask = lib.mkForce "0027";
-
-  users.users.${config.services.paperless.user}.group = lib.mkForce "users";
 
   services.caddy.virtualHosts."${config.site.apps.paperless.subdomain}.${config.site.domain}".extraConfig =
     ''

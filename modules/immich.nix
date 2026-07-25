@@ -9,7 +9,6 @@ in {
   age.secrets = {
     immich-oidc = {
       owner = "immich";
-      group = "users";
       file = ../secrets/immich-oidc-secret.age;
     };
     immich-smtp = {
@@ -20,7 +19,6 @@ in {
 
   services.immich = {
     enable = true;
-    group = "users";
     openFirewall = false;
     host = "0.0.0.0";
     port = config.site.apps.immich.port;
@@ -102,7 +100,7 @@ in {
   };
 
   systemd.tmpfiles.rules = [
-    "d ${immich-data} 0750 immich users"
+    "d ${immich-data} 0750 immich immich"
   ];
 
   services.caddy.virtualHosts."${immich-domain}".extraConfig =
