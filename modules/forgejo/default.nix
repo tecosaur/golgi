@@ -125,7 +125,7 @@ in {
       };
       mailer = {
         ENABLED = true;
-        PROTOCOL = "smtp+startls";
+        PROTOCOL = "smtp+starttls";
         FROM = "noreply@${forgejo-domain}";
         USER = config.site.email.username;
         SMTP_ADDR = "${config.site.email.server}:${toString config.site.email.port}";
