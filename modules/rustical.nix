@@ -2,13 +2,22 @@
 
 let
   rustical-domain = "${config.site.apps.rustical.subdomain}.${config.site.domain}";
+  rustical-start = pkgs.writeShellScript "rustical-start" ''
+    export RUSTICAL_OIDC__CLIENT_SECRET="$(< "$CREDENTIALS_DIRECTORY/oidc-secret")"
+    exec ${lib.getExe config.services.rustical.package}
+  '';
 in {
   site.apps.rustical.enabled = true;
 
   age.secrets.rustical-oidc = {
-    file = ../secrets/rustical-oidc-secret-env.age;
+    file = ../secrets/rustical-oidc-secret.age;
   };
-  
+
+  systemd.services.rustical.serviceConfig = {
+    LoadCredential = [ "oidc-secret:${config.age.secrets.rustical-oidc.path}" ];
+    ExecStart = lib.mkForce rustical-start;
+  };
+
   services.rustical = {
     enable = true;
     settings = {
@@ -32,7 +41,6 @@ in {
         allow_sign_up = true;
       };
     };
-    environmentFiles = [ config.age.secrets.rustical-oidc.path ];
   };
 
   services.caddy.virtualHosts."${rustical-domain}".extraConfig =
