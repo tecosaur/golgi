@@ -4,7 +4,8 @@
 
 let
   crowdsec-port = 8057;
-  configPath = "/var/lib/crowdsec/config";
+  data-dir = config.services.crowdsec.settings.general.config_paths.data_dir;
+  lapi-credentials = "${data-dir}/local_api_credentials.yaml";
   mkAcquisition =
     enable: unit:
     if enable then
@@ -53,12 +54,12 @@ in {
     };
     settings = {
       simulation = { simulation = false; };
-      lapi = {
-        credentialsFile = "${config.services.crowdsec.settings.general.config_paths.data_dir}/local_api_credentials.yaml";
-      };
-      capi = {
-        credentialsFile = "${config.services.crowdsec.settings.general.config_paths.data_dir}/online_api_credentials.yaml";
-      };
+      lapi.credentialsFile = lapi-credentials;
+      # `capi.credentialsFile` is deliberately unset: the setup script runs
+      # `cscli machines add` (which loads the LAPI, and so reads the CAPI
+      # credentials) before the `cscli capi register` that would create them,
+      # so setting it aborts startup on a fresh install. Central API enrolment
+      # happens through `console.tokenFile` below instead.
       console = {
         tokenFile = config.age.secrets.crowdsec-enroll-key.path;
       };
@@ -70,6 +71,13 @@ in {
       };
     };
   };
+
+  # The nftables bouncer is what turns detections into bans, and still needs
+  # enabling. `services.crowdsec-firewall-bouncer` with `registerBouncer.enable`
+  # replaces the hand-rolled registration below, but its register service fails
+  # with "open /etc/crowdsec/config.yaml: no such file": upstream passes the
+  # generated config to the agent via `-c <store path>` and never populates
+  # /etc/crowdsec, so a bare `cscli` finds nothing.
 
   # systemd.services.crowdsec = {
   #   postStart = ''
