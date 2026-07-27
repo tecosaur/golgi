@@ -10,6 +10,8 @@ MaxFileSec=1day
 MaxRetentionSec=2months
 ''; # Limit journal accumulation
 
+  boot.loader.systemd-boot.configurationLimit = 5; # Limit bootloader entries
+
   nix = {
     # Currently needed for flake support, might not be needed in the future
     package = pkgs.nixVersions.latest;
