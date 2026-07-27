@@ -2,27 +2,13 @@
 
 let
   llm-domain = "${config.site.apps.llm.subdomain}.${config.site.domain}";
-  hf-model = "unsloth/Qwen3-VL-30B-A3B-Instruct-GGUF:UD-Q3_K_XL";
-  llama-model-args = "--jinja --top-p 0.8 --min-p 0.0 --top-k 20 --temp 0.7 --presence-penalty 1.5";
-  llama-perf-args = "--n-gpu-layers 99 --flash-attn on --cache-type-k q8_0 --cache-type-v q8_0 --ctx-size 12288";
-  llama-cpp = (pkgs.llama-cpp.override {
-    vulkanSupport = true;
-  }).overrideAttrs( old: rec {
-    version = "7079";
-    src = pkgs.fetchFromGitHub {
-      owner = "ggml-org";
-      repo = "llama.cpp";
-      tag = "b7079";
-      hash = "sha256-qZn5ABpFp1RhJ34bZU+EAyiuuv5XjVZivdkjFXCVXCU=";
-      leaveDotGit = true;
-      postFetch = ''
-      git -C "$out" rev-parse --short HEAD > $out/COMMIT
-      find "$out" -name .git -print0 | xargs -0 rm -rf
-    '';
-    };
-  });
 in {
   site.apps.llm.enabled = true;
+
+  boot = {
+    kernelParams = [ "iommu=pt" ];
+    extraModprobeConfig = "options ttm pages_limit=5767168 page_pool_size=5767168";
+  };
 
   age.secrets.llm-api-key = {
     owner = "caddy";
@@ -41,8 +27,29 @@ in {
 
   services.llama-cpp = {
     enable = true;
-    package = llama-cpp;
-    model = "/"; # We override the ExecStart below
+    package = pkgs.llama-cpp-vulkan;
+    settings = {
+      host = "127.0.0.1";
+      port = config.site.apps.llm.port;
+      hf-repo = "unsloth/gemma-4-E4B-it-qat-GGUF:UD-Q4_K_XL";
+      alias = "'Gemma 4:E4B'";
+      reasoning = "off";
+      spec-type = "draft-mtp";
+      spec-draft-n-max = 2;
+      jinja = true;
+      temp = 1.0;
+      top-p = 0.95;
+      min-p = 0.0;
+      top-k = 64;
+      n-gpu-layers = 99;
+      flash-attn = "on";
+      swa-full = true;
+      cache-ram = 1024;
+      no-mmap = true;
+      parallel = 1;
+      ctx-size = 32768;
+      ctx-checkpoints = 2;
+    };
   };
 
   systemd.services.llama-cpp = {
@@ -54,8 +61,9 @@ in {
       User = "llm";
       Group = "llm";
       DynamicUser = lib.mkForce false;
-      ExecStart = lib.mkForce "${llama-cpp}/bin/llama-server --host 127.0.0.1 --port ${toString config.site.apps.llm.port} -hf ${hf-model} ${llama-perf-args} ${llama-model-args}";
       StateDirectory = "llama-cpp";
+      MemoryAccounting = true;
+      MemoryMax = "20G";
     };
   };
 
