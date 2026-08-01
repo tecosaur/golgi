@@ -34,6 +34,11 @@ in {
     file = ../secrets/mealie-credentials-env.age;
   };
 
+  age.secrets.mealie-llm-api-key = {
+    owner = mealie-user;
+    file = ../secrets/llm-api-key.age;
+  };
+
   services.mealie = {
     enable = true;
     port = config.site.apps.mealie.port;
@@ -61,7 +66,12 @@ in {
       THEME_DARK_PRIMARY = config.site.accent.primary;
       THEME_DARK_SECONDARY = darkenHex config.site.accent.primary;
       LOG_LEVEL = "DEBUG";
-    };
+    } // (if config.site.apps.llm.enabled then {
+      OPENAI_BASE_URL = "https://${config.site.apps.llm.subdomain}.${config.site.domain}/v1";
+      OPENAI_MODEL = "llm";
+      OPENAI_API_KEY_FILE = config.age.secrets.mealie-llm-api-key.path;
+      OPENAI_WORKERS = "1";
+    } else {});
     credentialsFile = config.age.secrets.mealie-credentials.path;
   };
 
