@@ -45,8 +45,12 @@ let
     ];
     SCOPE = [ "openid" "email" "profile" "groups" ];
   };
-  django-allauth-env = pkgs.writeText "paperless-allauth.json"
-    "PAPERLESS_SOCIALACCOUNT_PROVIDERS='${builtins.toJSON { openid_connect = django-allauth-oidc-config; }}'\n";
+  secret-env = pkgs.writeText "paperless-secret-env" (lib.toShellVars ({
+    PAPERLESS_SOCIALACCOUNT_PROVIDERS =
+      builtins.toJSON { openid_connect = django-allauth-oidc-config; };
+  } // lib.optionalAttrs config.site.apps.llm.enabled {
+    PAPERLESS_AI_LLM_API_KEY = "##llm_api_key##";
+  }) + "\n");
 in {
   site.apps.paperless.enabled = true;
 
@@ -58,6 +62,11 @@ in {
   age.secrets.paperless-admin-password = {
     owner = "paperless";
     file = ../secrets/paperless-admin-password.age;
+  };
+
+  age.secrets.paperless-llm-api-key = lib.mkIf config.site.apps.llm.enabled {
+    owner = "paperless";
+    file = ../secrets/llm-api-key.age;
   };
 
   services.paperless = {
@@ -85,19 +94,29 @@ in {
       PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = true;
       # Storage
       PAPERLESS_FILENAME_FORMAT = "{{ owner_username }}/{{ created_year }}/{{ correspondent }}/{{ created_month }}-{{ created_month_name_short }}_{{ title }}";
-    };
-    environmentFile = "/run/paperless-secrets/oidc-env";
+    } // (lib.optionalAttrs config.site.apps.llm.enabled {
+      PAPERLESS_AI_ENABLED = true;
+      PAPERLESS_AI_LLM_BACKEND = "openai-like";
+      PAPERLESS_AI_LLM_MODEL = "llm";
+      PAPERLESS_AI_LLM_ENDPOINT = "https://${config.site.apps.llm.subdomain}.${config.site.domain}/v1";
+    } // lib.optionalAttrs config.site.apps.llm.embedding.enable {
+      PAPERLESS_AI_LLM_EMBEDDING_BACKEND = "openai-like";
+      PAPERLESS_AI_LLM_EMBEDDING_MODEL = "embedding";
+    });
+    environmentFile = "/run/paperless-secrets/env-file";
   };
 
-  system.activationScripts.paperless-oidc-env = {
+  system.activationScripts.paperless-env-file = {
     deps = [ "agenix" ];
     text = ''
       mkdir -p /run/paperless-secrets
       chown -R ${config.services.paperless.user}:${config.services.paperless.user} /run/paperless-secrets
       chmod -R 700 /run/paperless-secrets
-      cp ${django-allauth-env} /run/paperless-secrets/oidc-env
-      ${lib.getExe pkgs.replace-secret} '##oidc_secret##' '${config.age.secrets.paperless-oidc.path}' /run/paperless-secrets/oidc-env
-      chmod 400 /run/paperless-secrets/oidc-env
+      cp ${secret-env} /run/paperless-secrets/env-file
+      ${lib.getExe pkgs.replace-secret} '##oidc_secret##' '${config.age.secrets.paperless-oidc.path}' /run/paperless-secrets/env-file
+      ${lib.optionalString config.site.apps.llm.enabled
+        "${lib.getExe pkgs.replace-secret} '##llm_api_key##' '${config.age.secrets.paperless-llm-api-key.path}' /run/paperless-secrets/env-file"}
+      chmod 400 /run/paperless-secrets/env-file
     '';
   };
 
