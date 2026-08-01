@@ -69,7 +69,9 @@
             scrutiny
             sftpgo
             speedtest
+            storyteller
             streaming
+            tandoor
             warracker
           ];
         };
@@ -149,6 +151,8 @@
           paperless.groups.extra = [ "family" ];
           rustical.groups = { primary = "caldav"; extra = [ "family" ]; };
           sftpgo.groups.extra = [ "family" ];
+          storyteller.groups.extra = [ "family" ];
+          tandoor.groups.extra = [ "family" ];
           immich.groups.extra = [ "family" ];
           jellyfin.groups.extra = [ "family" ];
           warracker.groups.extra = [ "family" ];
