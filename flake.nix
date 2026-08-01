@@ -55,21 +55,24 @@
             vikunja
           ];
         };
-        nucleus.modules = with modules; [
-          declarative-jellyfin.nixosModules.default
-          hardware-nas
-          home-assistant
-          dawarich
-          immich
-          llm
-          lyrion
-          paperless
-          scrutiny
-          sftpgo
-          speedtest
-          streaming
-          warracker
-        ];
+        nucleus = {
+          apps.llm.proxy = [ "tranquillity.lan:5521" ];
+          modules = with modules; [
+            declarative-jellyfin.nixosModules.default
+            hardware-nas
+            home-assistant
+            dawarich
+            immich
+            llm
+            lyrion
+            paperless
+            scrutiny
+            sftpgo
+            speedtest
+            streaming
+            warracker
+          ];
+        };
       };
       global-enabled-apps = (nixpkgs.lib.concatMapAttrs (machine: setup:
         (nixpkgs.lib.foldlAttrs
@@ -159,6 +162,7 @@
           modules = core-modules ++ setup.modules ++ [{
             site = nixpkgs.lib.recursiveUpdate site-setup {
               server = (setup.server or { }) // { host = name; };
+              apps = nixpkgs.lib.recursiveUpdate site-setup.apps (setup.apps or { });
             };
           }];
         })

@@ -329,8 +329,49 @@ in {
         name = "llama-cpp";
         homepage = "https://github.com/ggml-org/llama.cpp";
         description = "LLM inference endpoint";
+        service = null;
         subdomain = "llm";
         port = 8089;
+        extraOptions = {
+          local = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Whether to run a local llama-server, and serve it as an endpoint";
+          };
+          local-fallback = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = ''
+              Whether the local endpoint should only be used when every remote
+              endpoint is unhealthy, instead of participating in load balancing.
+            '';
+          };
+          proxy = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            example = [ "workstation.lan:8089" "192.168.1.20:8089" ];
+            description = ''
+              Remote llama-server endpoints (as host:port) to serve alongside
+              any local endpoint, subject to active health checking.
+            '';
+          };
+          embedding = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = config.site.apps.llm.enabled;
+              defaultText = lib.literalExpression "config.site.apps.llm.enabled";
+              description = ''
+                Whether to run a second, local llama-server dedicated to
+                embeddings, serving /v1/embeddings on the same domain.
+              '';
+            };
+            port = lib.mkOption {
+              type = lib.types.int;
+              default = 8088;
+              description = "Port that the embedding llama-server listens on";
+            };
+          };
+        };
       };
       ntfy = mkAppOption {
         name = "Ntfy";
