@@ -125,13 +125,16 @@
               questions = [
                 "What is my first name?"
                 "What is the thing I use as my avatar?"
+                "What is the mononym I often go by online?"
                 "What community do you know me from?"
               ];
               answers = [
                 "timothy"
                 "tec"
                 "tree"
+                "tecosaur"
                 "julia"
+                "julialang"
                 "emacs"
                 "org"
                 "doom"
