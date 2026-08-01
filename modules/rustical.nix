@@ -10,7 +10,7 @@ in {
   site.apps.rustical.enabled = true;
 
   age.secrets.rustical-oidc = {
-    file = ../secrets/rustical-oidc-secret.age;
+    file = ../secrets/oidc/rustical-secret.age;
   };
 
   systemd.services.rustical.serviceConfig = {

@@ -9,7 +9,7 @@ in {
   age.secrets.webpush-keys-env = {
     owner = ntfy-user;
     group = "users";
-    file = ../secrets/ntfy-webpush-keys-env.age;
+    file = ../secrets/credentials/ntfy-webpush-keys-env.age;
   };
 
   services.ntfy-sh = {

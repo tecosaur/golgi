@@ -11,7 +11,7 @@ in {
   age.secrets.home-assistant-secrets = {
     owner = "hass";
     group = "users";
-    file = ../secrets/home-assistant-secrets.age;
+    file = ../secrets/credentials/home-assistant-secrets.age;
     path = "/var/lib/hass/secrets.yaml";
   };
 
@@ -25,6 +25,7 @@ in {
       "camera"
       "esphome"
       "immich"
+      "linkplay"
       "mealie"
       "met"
       "mikrotik"
@@ -33,6 +34,7 @@ in {
       "ntfy"
       "radio_browser"
       "stream"
+      "squeezebox"
       "thread"
       "zeroconf"
     ];

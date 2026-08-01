@@ -15,37 +15,37 @@ in {
     authelia-session = {
       owner = authelia-user;
       group = "users";
-      file = ../../secrets/authelia-session.age;
+      file = ../../secrets/keys/authelia-session.age;
     };
     authelia-storage = {
       owner = authelia-user;
       group = "users";
-      file = ../../secrets/authelia-storage.age;
+      file = ../../secrets/keys/authelia-storage.age;
     };
     authelia-jwt = {
       owner = authelia-user;
       group = "users";
-      file = ../../secrets/authelia-jwt.age;
+      file = ../../secrets/keys/authelia-jwt.age;
     };
     authelia-smtp = {
       owner = authelia-user;
       group = "users";
-      file = ../../secrets/fastmail.age;
+      file = ../../secrets/credentials/fastmail.age;
     };
     authelia-oidc-hmac = {
       owner = authelia-user;
       group = "users";
-      file = ../../secrets/authelia-oidc-hmac.age;
+      file = ../../secrets/keys/authelia-oidc-hmac.age;
     };
     authelia-oidc-issuer-key = {
       owner = authelia-user;
       group = "users";
-      file = ../../secrets/authelia-oidc-issuer.pem.age;
+      file = ../../secrets/keys/authelia-oidc-issuer.pem.age;
     };
     authelia-lldap-admin-password = {
       owner = authelia-user;
       group = "users";
-      file = ../../secrets/lldap-admin-password.age;
+      file = ../../secrets/passwords/lldap-admin-password.age;
     };
   };
 

@@ -343,14 +343,14 @@ function interactive_set_encryption() {
     gum style --bold --foreground="72" "== Clevis JWE token =="
 
     gum style --border=rounded --border-foreground="45" \
-        "Paste the Clevis JWE content into secrets/clevis-$sysname.jwe and then push it"
+        "Paste the Clevis JWE content into secrets/keys/clevis-$sysname.jwe and then push it"
     gum confirm --affirmative="Done" --negative="Abort" "Is the Clevis JWE file committed and pushed?"
     gum spin --title="Pulling..." --show-stdout -- git -C "$scriptdir" pull --rebase
-    while [ ! -f "$scriptdir/secrets/clevis-$sysname.jwe" ]; do
+    while [ ! -f "$scriptdir/secrets/keys/clevis-$sysname.jwe" ]; do
         gum confirm --affirmative="Retry" --negative="Abort" --selected.background=209 --prompt.foreground=181 "File does not exist!" || exit 1
         gum spin --title="Pulling..." --show-stdout -- git -C "$scriptdir" pull --rebase
     done
-    while [ "$(cat "$scriptdir/secrets/clevis-$sysname.jwe")" != "$clevis_jwe" ]; do
+    while [ "$(cat "$scriptdir/secrets/keys/clevis-$sysname.jwe")" != "$clevis_jwe" ]; do
         gum confirm --affirmative="Retry" --negative="Abort" --selected.background=209 --prompt.foreground=181 "File content does not match!" || exit 1
         gum spin --title="Pulling..." --show-stdout -- git -C "$scriptdir" pull --rebase
     done

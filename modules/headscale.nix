@@ -12,11 +12,11 @@ in {
   age.secrets = {
     headscale-oidc = {
       owner = "headscale";
-      file = ../secrets/headscale-oidc-secret.age;
+      file = ../secrets/oidc/headscale-secret.age;
     };
     headplane-oidc = {
       owner = "headscale";
-      file = ../secrets/headplane-oidc-secret.age;
+      file = ../secrets/oidc/headplane-secret.age;
     };
   };
 

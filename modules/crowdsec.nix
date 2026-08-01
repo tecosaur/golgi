@@ -20,7 +20,7 @@ in {
   age.secrets.crowdsec-enroll-key = {
     owner = "crowdsec";
     group = "users";
-    file = ../secrets/crowdsec-enroll-key.age;
+    file = ../secrets/credentials/crowdsec-enroll-key.age;
   };
 
   services.crowdsec = {

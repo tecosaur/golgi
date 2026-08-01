@@ -5,7 +5,7 @@
 
   age.secrets.dawarich-oidc = {
     owner = "dawarich";
-    file = ../secrets/dawarich-oidc-secret.age;
+    file = ../secrets/oidc/dawarich-secret.age;
   };
 
   services.dawarich = {

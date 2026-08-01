@@ -22,11 +22,11 @@ in {
   age.secrets = {
     warracker-oidc = {
       owner = warracker-user;
-      file = ../secrets/warracker-oidc-secret.age;
+      file = ../secrets/oidc/warracker-secret.age;
     };
     warracker-smtp = {
       owner = warracker-user;
-      file = ../secrets/fastmail.age;
+      file = ../secrets/credentials/fastmail.age;
     };
   };
 

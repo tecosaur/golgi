@@ -90,7 +90,7 @@ in {
   age.secrets.fastmail = {
     owner = forgejo-user;
     group = "users";
-    file = ../../secrets/fastmail.age;
+    file = ../../secrets/credentials/fastmail.age;
   };
 
   services.forgejo = {

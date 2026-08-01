@@ -26,7 +26,7 @@ in {
   age.secrets.cloudflare-api-env = {
     owner = "caddy";
     group = "users";
-    file = ../secrets/cloudflare-api-env.age;
+    file = ../secrets/credentials/cloudflare-api-env.age;
   };
 
   services.caddy = {

@@ -3,7 +3,7 @@
 {
   age.secrets.beszel-token = {
     owner = "beszel-agent";
-    file = ../secrets/beszel-token.age;
+    file = ../secrets/credentials/beszel-token.age;
   };
 
   services.beszel.agent = {

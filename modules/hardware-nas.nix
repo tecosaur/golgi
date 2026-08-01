@@ -12,7 +12,7 @@
         enable = true;
         useTang = true;
         devices."${config.fileSystems."/data".device}".secretFile =
-          ../secrets + "/clevis-${config.site.server.host}.jwe";
+          ../secrets/keys + "/clevis-${config.site.server.host}.jwe";
       };
       network.enable = true;
       systemd.network.wait-online.extraArgs = [ "-4" "--interface=enp101s0:routable" ];

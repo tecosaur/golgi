@@ -7,7 +7,7 @@ in {
   age.secrets.tailscale-preauth = {
     owner = "root";
     group = "root";
-    file = ../secrets/tailscale-preauth.age;
+    file = ../secrets/credentials/tailscale-preauth.age;
   };
 
   services.tailscale = {

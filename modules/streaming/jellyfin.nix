@@ -21,7 +21,7 @@ in {
   age.secrets.jellyfin-oidc = {
     owner = "jellyfin";
     group = "users";
-    file = ../../secrets/jellyfin-oidc-secret.age;
+    file = ../../secrets/oidc/jellyfin-secret.age;
   };
 
   services.declarative-jellyfin = {

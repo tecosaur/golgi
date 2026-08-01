@@ -56,17 +56,17 @@ in {
 
   age.secrets.paperless-oidc = {
     owner = "paperless";
-    file = ../secrets/paperless-oidc-secret.age;
+    file = ../secrets/oidc/paperless-secret.age;
   };
 
   age.secrets.paperless-admin-password = {
     owner = "paperless";
-    file = ../secrets/paperless-admin-password.age;
+    file = ../secrets/passwords/paperless-admin-password.age;
   };
 
   age.secrets.paperless-llm-api-key = lib.mkIf config.site.apps.llm.enabled {
     owner = "paperless";
-    file = ../secrets/llm-api-key.age;
+    file = ../secrets/passwords/llm-api-key.age;
   };
 
   services.paperless = {

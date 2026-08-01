@@ -12,7 +12,7 @@ let
   }:
     let
       readSecret = name:
-        lib.removeSuffix "\n" (builtins.readFile (../../secrets + "/${name}-oidc-secret.txt"));
+        lib.removeSuffix "\n" (builtins.readFile (../../secrets/oidc + "/${name}-hash.txt"));
       pathsToUris = ps:
         map (p: "https://${app.subdomain}.${config.site.domain}/${p}") ps;
       oidcRedirects = (if redirect_paths != null then

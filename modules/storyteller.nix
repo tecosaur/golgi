@@ -10,12 +10,12 @@ in {
 
   age.secrets.storyteller-oidc = {
     owner = "storyteller";
-    file = ../secrets/storyteller-oidc-secret.age;
+    file = ../secrets/oidc/storyteller-secret.age;
   };
 
   age.secrets.storyteller-smtp = {
     owner = "storyteller";
-    file = ../secrets/fastmail.age;
+    file = ../secrets/credentials/fastmail.age;
   };
 
   systemd.services.storyteller = {
