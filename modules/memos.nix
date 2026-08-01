@@ -13,7 +13,7 @@ in {
     after = [ "network.target" ];
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${memos-pkg}/bin/memos --mode prod --data /var/lib/memos --port ${memos-port}";
+      ExecStart = "${memos-pkg}/bin/memos --data /var/lib/memos --port ${memos-port} --instance-url https://${memos-domain}";
       Restart = "always";
       RestartSec = 5;
       User = "memos";

@@ -17,7 +17,7 @@ buildHomeAssistantComponent rec {
     hash = "sha256-TJ0SLwYVYVdcWGhEUHwpdtk6RRnIwvXQRedW8GubYRM=";
   };
 
-  dependencies = with home-assistant.python.pkgs; [ iso8601 ];
+  dependencies = with home-assistant.python3Packages; [ iso8601 ];
 
   meta = with lib; {
     changelog = "https://github.com/bremor/bureau_of_meteorology/releases/tag/v${version}";

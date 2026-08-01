@@ -1,25 +1,28 @@
+# Largely copied from <https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/by-name/vi/vikunja/package.nix>
+
 {
   lib,
-  pkgs,
   fetchFromGitHub,
-  stdenvNoCC,
   stdenv,
-  nodejs,
-  pnpm_9,
+  nodejs_24,
+  pnpm_10,
+  fetchPnpmDeps,
+  pnpmConfigHook,
   buildGoModule,
   mage,
+  dart-sass,
   writeShellScriptBin,
   nixosTests,
   vikunja-assets
 }:
 
 let
-  version = "0.25.0-pre.1";
+  version = "2.4.0";
   src = fetchFromGitHub {
     owner = "go-vikunja";
     repo = "vikunja";
-    rev = "4bb483a2d1e27dbd5deea26f77cf8263f5aeb10e";
-    hash = "sha256-uR6u3wd+/YXR/xANXLdrvRHIRDoHOK+/1OUcDfq8EhY=";
+    rev = "v${version}";
+    hash = "sha256-0yAFrq+qzLZLXPblWY2lkoJ2idzENR3YqdFNiDqep6U=";
   };
 
   frontend = stdenv.mkDerivation (finalAttrs: {
@@ -28,38 +31,49 @@ let
 
     sourceRoot = "${finalAttrs.src.name}/frontend";
 
-    pnpmDeps = pnpm_9.fetchDeps {
-      inherit (finalAttrs) pname version src sourceRoot;
-      fetcherVersion = 1;
-      hash = "sha256-SypmK4A1JhZgueuobdscDCcowHx8aX/LlRqRAO8J+RI=";
+    pnpmDeps = fetchPnpmDeps {
+      inherit (finalAttrs)
+        pname
+        version
+        src
+        sourceRoot
+        ;
+      pnpm = pnpm_10;
+      fetcherVersion = 3;
+      hash = "sha256-MnkwuEaBEY81LXInDao2Fi+FvKFyvsVS/QeXdS4FhPQ=";
     };
 
     nativeBuildInputs = [
-      pkgs.nodejs
-      pnpm_9.configHook
+      nodejs_24
+      dart-sass
+      pnpmConfigHook
+      pnpm_10
     ];
 
-    doCheck = true;
-
-    # Bonus theming
-    prePatch = ''
-      cp -f ${vikunja-assets}/frontend/* src/assets
+    postPatch = ''
+      substituteInPlace src/version.json \
+        --replace-fail '"dev"' '"${finalAttrs.version}"'
       # Webpage theming
-      substituteInPlace src/styles/custom-properties/colors.scss --replace-warn \
+      cp -f ${vikunja-assets}/frontend/* frontend/src/assets
+      substituteInPlace frontend/src/styles/custom-properties/colors.scss --replace-warn \
         "--primary-h: 217deg" "--primary-h: 146deg"
-      substituteInPlace src/styles/custom-properties/colors.scss --replace-warn \
+      substituteInPlace frontend/src/styles/custom-properties/colors.scss --replace-warn \
         "--primary-s: 98%" "--primary-s: 56%"
-      substituteInPlace src/styles/custom-properties/colors.scss --replace-warn \
+      substituteInPlace frontend/src/styles/custom-properties/colors.scss --replace-warn \
         "--primary-l: 53%" "--primary-l: 37%"
-      substituteInPlace src/styles/custom-properties/colors.scss --replace-warn \
+      substituteInPlace frontend/src/styles/custom-properties/colors.scss --replace-warn \
         "--primary-l: 58%" "--primary-l: 42%"
       # PWA theming
-      substituteInPlace vite.config.ts --replace-warn \
+      substituteInPlace frontend/vite.config.ts --replace-warn \
         "1973ff" "239a58"
     '';
 
+    doCheck = true;
+
     postBuild = ''
-      find node_modules/.pnpm/sass-embedded-linux-*/node_modules/sass-embedded-linux-*/dart-sass/src -name dart -print0 | xargs -I {} -0 patchelf --set-interpreter "$(<$NIX_CC/nix-support/dynamic-linker)" {}
+      # Force sass-embedded to use our dart-sass instead of bundled binaries.
+      substituteInPlace node_modules/sass-embedded/dist/lib/src/compiler-path.js \
+        --replace-fail 'compilerCommand = (() => {' 'compilerCommand = (() => { return ["${lib.getExe dart-sass}"];'
       pnpm run build
     '';
 
@@ -104,7 +118,7 @@ buildGoModule {
       mage
     ];
 
-  vendorHash = "sha256-Fj45v51nXvSOqbxkcWHJE+kgUQ8w7UGm8YeWqTu1HYM=";
+  vendorHash = "sha256-4JOwr6QCWglxXbRkcko2nsAxEhVbHDO1S2vI91NFM/8=";
 
   inherit frontend;
 
@@ -116,6 +130,9 @@ buildGoModule {
     # These tests need internet, so we skip them.
     ${skipTest 1 "TestConvertTrelloToVikunja" "pkg/modules/migration/trello/trello_test.go"}
     ${skipTest 1 "TestConvertTodoistToVikunja" "pkg/modules/migration/todoist/todoist_test.go"}
+    # These tests require a full config with public URL and CORS enabled.
+    ${skipTest 1 "TestCreateOrganizationMap" "pkg/modules/migration/trello/trello_test.go"}
+    ${skipTest 1 "TestTaskAttachmentUploadSize" "pkg/webtests/task_attachment_upload_test.go"}
   '';
 
   buildPhase = ''
@@ -129,8 +146,8 @@ buildGoModule {
   '';
 
   checkPhase = ''
-    mage test:unit
-    mage test:integration
+    mage test:feature
+    mage test:web
   '';
 
   installPhase = ''
@@ -139,5 +156,22 @@ buildGoModule {
     runHook postInstall
   '';
 
-  passthru.tests.vikunja = nixosTests.vikunja;
+  passthru = {
+    tests.vikunja = nixosTests.vikunja;
+    frontend = frontend;
+    updateScript = ./update.sh;
+  };
+
+  meta = {
+    changelog = "https://github.com/go-vikunja/vikunja/blob/v${version}/CHANGELOG.md";
+    description = "Todo-app to organize your life";
+    homepage = "https://vikunja.io/";
+    license = lib.licenses.agpl3Plus;
+    maintainers = with lib.maintainers; [
+      leona
+      adamcstephens
+    ];
+    mainProgram = "vikunja";
+    platforms = lib.platforms.linux;
+  };
 }

@@ -38,7 +38,7 @@ in {
           "github.com/tecosaur/caddy-fs-git@v0.0.0-20240109175104-ef9d0ab232f4"
           "github.com/caddyserver/replace-response@v0.0.0-20250618171559-80962887e4c6"
         ];
-        hash = "sha256-/+j704hNqotwGuWdepMgDPEmbPkOSInEW7JAJQKRcTA=";
+        hash = "sha256-a6UDHGUMRKEpPynfZpad9hnTSCw0DwKnS/8z1Gmg7FY=";
       };
       globalConfig =
         ''

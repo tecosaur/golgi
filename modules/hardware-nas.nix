@@ -15,6 +15,7 @@
           ../secrets + "/clevis-${config.site.server.host}.jwe";
       };
       network.enable = true;
+      systemd.network.wait-online.extraArgs = [ "-4" "--interface=enp101s0:routable" ];
     };
     kernelPackages = pkgs.linuxPackages_latest;
     kernel.sysctl = {
@@ -34,7 +35,7 @@
     {
       device = "/dev/disk/by-partlabel/nixos";
       fsType = "bcachefs";
-      options = [ "x-systemd.mount-timeout=0" ];
+      options = [ "x-systemd.mount-timeout=0" "x-systemd.wants=network-online.target" ];
       # options = [ "X-mount.subdir=root" ];
     };
 

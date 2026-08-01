@@ -28,6 +28,7 @@ in {
     enable = true;
     package = pkgs.jellyfin;
     serverId = "f2d18e8c67994ce1baa11016df427c9f";
+    backups = false;
     network = {
       enableIPv6 = true;
       enableHttps = false; # Handled by Caddy
@@ -232,8 +233,14 @@ in {
     ''
     handle_path /web/assets/img/* {
         root ${config.site.assets}/jellyfin
-        try_files {path} {http.request.uri}
-        file_server
+        route {
+            try_files {path} {http.request.uri}
+            file_server {
+                pass_thru
+            }
+            rewrite * {orig_uri}
+            reverse_proxy :${toString config.site.apps.jellyfin.port}
+        }
     }
     handle /web/*.ico {
         rewrite * /jellyfin.ico

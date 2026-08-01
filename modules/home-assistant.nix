@@ -2,9 +2,9 @@
 
 let
   ha-domain = "${config.site.apps.home-assistant.subdomain}.${config.site.domain}";
-  hax-bambu = pkgs.home-assistant.python.pkgs.callPackage ../packages/ha-bambu.nix { };
-  hax-bom = pkgs.home-assistant.python.pkgs.callPackage ../packages/ha-bom.nix { };
-  hax-vzug = pkgs.home-assistant.python.pkgs.callPackage ../packages/ha-vzug.nix { };
+  hax-bambu = pkgs.home-assistant.python3Packages.callPackage ../packages/ha-bambu.nix { };
+  hax-bom = pkgs.home-assistant.python3Packages.callPackage ../packages/ha-bom.nix { };
+  hax-vzug = pkgs.home-assistant.python3Packages.callPackage ../packages/ha-vzug.nix { };
 in {
   site.apps.home-assistant.enabled = true;
 

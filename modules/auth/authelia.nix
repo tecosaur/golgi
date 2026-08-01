@@ -107,6 +107,7 @@ in {
         filtering.prohibit_backup_eligibility = false;
         metadata = {
           enabled = true;
+          cache_policy = "relaxed";
           validate_trust_anchor = true;
           validate_entry = false;
           validate_status = true;
