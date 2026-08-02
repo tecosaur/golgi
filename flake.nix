@@ -28,6 +28,7 @@
         site-config
         system
         tailscale
+        wireguard-mesh
         zsh
       ];
       machines = {
@@ -168,6 +169,7 @@
         (name: setup: {
           modules = core-modules ++ setup.modules ++ [{
             site = nixpkgs.lib.recursiveUpdate site-setup {
+              hosts = builtins.attrNames machines;
               server = (setup.server or { }) // { host = name; };
               apps = nixpkgs.lib.recursiveUpdate site-setup.apps (setup.apps or { });
             };

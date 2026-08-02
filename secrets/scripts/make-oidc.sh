@@ -8,132 +8,29 @@
 
 set -euo pipefail
 
-secrets_dir="$(dirname "$(realpath "$0")")"
+secrets_dir="$(dirname "$(dirname "$(realpath "$0")")")"
 rules="$secrets_dir/secrets.nix"
+tool_name="make-oidc"
+# shellcheck source=lib.sh
+. "$secrets_dir/scripts/lib.sh"
 
 readonly glyph_on='⬤' glyph_off='🞆'
 
-# Recipients from the `let` block of secrets.nix, filled in by read_rules.
-declare -a keys=()          # bindings holding a public key
-declare -A alias_members=() # alias -> sorted, space-separated members
-
 function usage() {
-    cat <<'EOF'
-Usage: make-oidc.sh [--refresh] [--host HOST]... (NAME... | --all)
+    printf '\e[1mUsage:\e[0m make-oidc.sh [\e[36m--refresh\e[0m] [\e[36m--host\e[0m HOST]... (\e[36mNAME\e[0m... | \e[36m--all\e[0m)
 
-  NAME          app name as it appears in site.nix, lowercased with dashes
-                (e.g. `home-assistant`); the OIDC client id in clients.nix
-  --all         refresh every app that already has an oidc/*-hash.txt
-  -r, --refresh regenerate existing credentials without asking, leaving
+  \e[36mNAME\e[0m          app name as it appears in site.nix, lowercased with dashes
+                (e.g. \e[36mhome-assistant\e[0m); the OIDC client id in clients.nix
+  \e[36m--all\e[0m         refresh every app that already has an oidc/*-hash.txt
+  \e[36m-r, --refresh\e[0m regenerate existing credentials without asking, leaving
                 secrets.nix untouched
-  -h, --host    machine needing to read the secret. Repeat or comma-separate to
-                name several (`-h golgi -h nucleus`, `--host golgi,nucleus`).
+  \e[36m-h, --host\e[0m    machine needing to read the secret. Repeat or comma-separate to
+                name several (\e[36m-h golgi -h nucleus\e[0m, \e[36m--host golgi,nucleus\e[0m).
                 Only consulted when adding a new secrets.nix entry; omit it to
                 choose interactively, which requires a terminal.
-  --help        show this help
+  \e[36m--help\e[0m        show this help
 
-Overwriting existing credentials is confirmed first, unless --refresh is given.
-EOF
-}
-
-function die() {
-    echo "make-oidc: $*" >&2
-    exit 1
-}
-
-# ---------------------------------------------------------------- secrets.nix
-
-# Populate `keys` and `alias_members`, where `name = "ssh-..."` is a key and
-# `name = [ a b c ]` an alias for a set of them.
-function read_rules() {
-    local line name value
-    while IFS= read -r line; do
-        [[ "$line" =~ ^[[:space:]]*([a-zA-Z_][a-zA-Z0-9_-]*)[[:space:]]*=[[:space:]]*(.*)$ ]] || continue
-        name="${BASH_REMATCH[1]}" value="${BASH_REMATCH[2]}"
-        case "$value" in
-            '"ssh-'*) keys+=("$name") ;;
-            '['*)
-                value="${value#[}"; value="${value%%]*}"
-                alias_members["$name"]="$(printf '%s\n' $value | sort -u | tr '\n' ' ')" ;;
-        esac
-    done < <(sed -n '/^let$/,/^in$/p' "$rules")
-    [ ${#keys[@]} -gt 0 ] || die "no recipient keys found in $rules"
-}
-
-# Binding whose key this machine holds, if any. Matched on the key body alone,
-# since the trailing comment is free text.
-function local_binding() {
-    local pub body binding
-    for pub in "$HOME"/.ssh/id_*.pub; do
-        [ -e "$pub" ] || continue
-        body="$(cut -d' ' -f1,2 <"$pub")"
-        binding="$(grep -F "$body" "$rules" | sed -n 's/^\s*\([a-z][a-zA-Z0-9_-]*\)\s*=.*/\1/p')"
-        [ -n "$binding" ] || continue
-        printf '%s' "$binding"
-        return
-    done
-}
-
-# Keys belonging to every alias, and so never a meaningful choice alone.
-function ubiquitous_keys() {
-    local key name
-    for key in "${keys[@]}"; do
-        for name in "${!alias_members[@]}"; do
-            [[ " ${alias_members[$name]} " == *" $key "* ]] || continue 2
-        done
-        printf '%s\n' "$key"
-    done
-}
-
-# Alias names, most members first, ties broken by name so the order is stable.
-function alias_names_by_size() {
-    local name
-    for name in "${!alias_members[@]}"; do
-        printf '%s %s\n' "$(wc -w <<<"${alias_members[$name]}")" "$name"
-    done | sort -k1,1nr -k2,2 | cut -d' ' -f2
-}
-
-# Name the given recipients as secrets.nix would: an alias when one covers them
-# exactly, otherwise the bindings themselves.
-function recipients_to_group() {
-    local -a wanted
-    mapfile -t wanted < <(printf '%s\n' "$@" | sort -u)
-    local exact implied name
-    exact="$(printf '%s ' "${wanted[@]}")"
-    implied="$(printf '%s\n' "${wanted[@]}" $(ubiquitous_keys) | sort -u | tr '\n' ' ')"
-    for name in $(alias_names_by_size); do
-        if [ "${alias_members[$name]}" = "$exact" ] ||
-           [ "${alias_members[$name]}" = "$implied" ]; then
-            printf '%s' "$name"
-            return
-        fi
-    done
-    if [ "${#wanted[@]}" -eq 1 ]; then
-        printf '%s' "${wanted[0]}"
-    else
-        printf '[ %s]' "$exact"
-    fi
-}
-
-# Insert `"<file>".publicKeys = <group>;`, keeping the attribute list sorted.
-# An existing entry is left alone: it may name a different group deliberately.
-function register_secret() {
-    local file="$1" group="$2"
-    if grep -qF "\"$file\"" "$rules"; then
-        echo "  secrets.nix: entry already present, leaving recipients unchanged"
-        return
-    fi
-    local entry="  \"$file\".publicKeys = $group;"
-    local before
-    before="$(grep -n '^\s*"[^"]*\.age"\.publicKeys' "$rules" |
-              awk -v new="$file" -F'"' '$2 < new {line = $0} END {if (line) print line}' |
-              cut -d: -f1)"
-    if [ -n "$before" ]; then
-        sed -i "${before}a\\${entry}" "$rules" || die "could not update $rules"
-    else
-        sed -i "0,/^{$/s//{\n${entry}/" "$rules" || die "could not update $rules"
-    fi
-    echo "  secrets.nix: added \`$file\` for $group"
+Overwriting existing credentials is confirmed first, unless \e[36m--refresh\e[0m is given.\n'
 }
 
 # -------------------------------------------------------------------- prompts
@@ -228,11 +125,29 @@ function confirm() {
 
 # ---------------------------------------------------------------- credentials
 
+# Credentials are only half the wiring: Authelia needs a client, and the app
+# needs to read the secret. Report whichever is missing, rather than assuming
+# either -- forgejo and mealie hold their secret elsewhere by design, and so
+# have no module reading the .age at all.
+function report_wiring() {
+    local name="$1" repo="$secrets_dir/.." missing=()
+    grep -rqF "oidc/$name-secret.age" "$repo/modules" 2>/dev/null ||
+        missing+=("no module reads oidc/$name-secret.age")
+    grep -qE "mkClient config\.site\.apps\.$name\b|name = \"$name\"" \
+         "$repo/modules/auth/clients.nix" 2>/dev/null ||
+        missing+=("no client in clients.nix")
+    [ ${#missing[@]} -gt 0 ] || return 0
+    local note
+    for note in "${missing[@]}"; do
+        printf '  %s %s\n' "$mark_partial" "$note"
+    done
+}
+
 # Emit the secret and its digest as two NUL-terminated fields. Authelia is
 # invoked once per app: it generates the pair together.
 function generate_credentials() {
     local output secret digest
-    output="$(nix run 'nixpkgs#authelia' -- crypto hash generate pbkdf2 \
+    output="$(nix_run 'nixpkgs#authelia' -- crypto hash generate pbkdf2 \
                   --random --random.length 72 --random.charset rfc3986)" ||
         die "authelia failed to generate credentials"
     secret="$(sed -n 's/^Random Password: //p' <<<"$output")"
@@ -252,13 +167,14 @@ function make_oidc() {
     [ "$refresh" = true ] || register_secret "$age_file" "$group"
     printf '%s\n' "$digest" > "$secrets_dir/$txt_file" ||
         die "could not write $secrets_dir/$txt_file"
-    echo "  wrote $txt_file"
+    printf '  %s %s\n' "$mark_wrote" "$txt_file"
     # A non-interactive stdin makes agenix use `cp /dev/stdin` as its editor.
     printf '%s' "$secret" |
-        (cd "$secrets_dir" && nix run github:ryantm/agenix -- -e "$age_file") ||
+        (cd "$secrets_dir" && nix_run github:ryantm/agenix -- -e "$age_file") ||
         die "agenix failed to encrypt $age_file;" \
             "secrets.nix now names $age_file, which does not exist yet"
-    echo "  wrote $age_file"
+    printf '  %s %s\n' "$mark_wrote" "$age_file"
+    report_wiring "$name"
 }
 
 # ----------------------------------------------------------------------- main
@@ -358,11 +274,5 @@ for name in "${names[@]}"; do
     make_oidc "$name" "$refresh" "$group"
 done
 
-printf '\n\e[32m✓\e[0m %d credential%s generated: %s\n' \
+printf '\n%s %d credential%s generated: %s\n' "$mark_present" \
        "${#names[@]}" "$([ ${#names[@]} -eq 1 ] || echo s)" "${names[*]}"
-cat <<EOF
-
-Add matching clients to modules/auth/clients.nix, and read the secret in the
-app's module. Deploy Authelia and the app together: the digest and secret are
-a matched pair, so refreshing one without the other breaks login.
-EOF

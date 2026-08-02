@@ -78,6 +78,26 @@ in {
       type = lib.types.str;
       description = "Global domain name for the site";
     };
+    hosts = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Every machine in the site, this one included";
+    };
+    mesh = {
+      subnet = lib.mkOption {
+        type = lib.types.str;
+        default = "fd00:c1de::";
+        description = ''
+          IPv6 ULA prefix for the inter-node mesh. Hosts are numbered from 1
+          in the order they sort, so this must not collide with the tailnet.
+        '';
+      };
+      port = lib.mkOption {
+        type = lib.types.int;
+        default = 51820;
+        description = "Port the mesh listens on, opened to UDP on every host";
+      };
+    };
     cloudflare-bypass-subdomain = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;

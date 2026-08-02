@@ -25,20 +25,20 @@ in
   "oidc/windmill-secret.age".publicKeys = nbase;
 
   # Set by hand: from a third party, or from a service that alone can mint it.
-  "credentials/beszel-token.age".publicKeys = all;
-  "credentials/cloudflare-api-env.age".publicKeys = all;
-  "credentials/crowdsec-enroll-key.age".publicKeys = all;
-  "credentials/fastmail.age".publicKeys = all;
-  "credentials/home-assistant-secrets.age".publicKeys = nbase;
-  "credentials/mealie-credentials-env.age".publicKeys = gbase;
-  "credentials/ntfy-webpush-keys-env.age".publicKeys = gbase;
-  "credentials/tailscale-preauth.age".publicKeys = all;
-  "credentials/tandoor-fdc-api-key.age".publicKeys = nbase;
+  "credentials/beszel-token.age" = { publicKeys = all; description = "Beszel hub token"; };
+  "credentials/cloudflare-api-env.age" = { publicKeys = all; description = "Cloudflare API token, as CLOUDFLARE_API_TOKEN=..."; };
+  "credentials/crowdsec-enroll-key.age" = { publicKeys = all; description = "CrowdSec console enrolment key"; };
+  "credentials/fastmail.age" = { publicKeys = all; description = "Fastmail app password, for SMTP"; };
+  "credentials/home-assistant-secrets.age" = { publicKeys = nbase; description = "Home Assistant secrets.yaml"; };
+  "credentials/mealie-credentials-env.age" = { publicKeys = gbase; description = "Mealie OIDC/SMTP environment"; };
+  "credentials/ntfy-webpush-keys-env.age" = { publicKeys = gbase; description = "ntfy web push keys"; };
+  "credentials/tailscale-preauth.age" = { publicKeys = all; description = "Tailscale pre-auth key"; };
+  "credentials/tandoor-fdc-api-key.age" = { publicKeys = nbase; description = "USDA FoodData Central API key"; };
 
-  "passwords/llm-api-key.age".publicKeys = all;
-  "passwords/lldap-admin-password.age".publicKeys = all;
-  "passwords/paperless-admin-password.age".publicKeys = nbase;
-  "passwords/sftpgo-admin-password.age".publicKeys = nbase;
+  "passwords/llm-api-key.age" = { publicKeys = all; description = "Shared secret between the llama-server and its clients"; };
+  "passwords/lldap-admin-password.age" = { publicKeys = all; description = "LLDAP admin login, used at its web UI"; };
+  "passwords/paperless-admin-password.age" = { publicKeys = nbase; description = "Paperless admin login"; };
+  "passwords/sftpgo-admin-password.age" = { publicKeys = nbase; description = "SFTPGo admin login"; };
 
   # `all`, not `gbase`: every node running the auth stack must hold the same
   # key material to accept the others' tokens.
@@ -49,4 +49,6 @@ in
   "keys/authelia-storage.age".publicKeys = all;
   "keys/lldap-jwt.age".publicKeys = all;
   "keys/lldap-key-seed.age".publicKeys = all;
+  "keys/wg-golgi.age".publicKeys = gbase;
+  "keys/wg-nucleus.age".publicKeys = nbase;
 }
