@@ -87,12 +87,6 @@ let
 in {
   site.apps.forgejo.enabled = true;
 
-  age.secrets.postgres-forgejo = {
-    owner = forgejo-user;
-    group = "users";
-    file = ../../secrets/postgres-forgejo.age;
-  };
-
   age.secrets.fastmail = {
     owner = forgejo-user;
     group = "users";
@@ -109,7 +103,6 @@ in {
       type = "postgres";
       name = forgejo-user;
       user = forgejo-user;
-      passwordFile = config.age.secrets.postgres-forgejo.path;
     };
     lfs.enable = true;
     secrets = {

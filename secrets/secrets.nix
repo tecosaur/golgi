@@ -32,8 +32,6 @@ in
   "ntfy-webpush-keys-env.age".publicKeys = gbase;
   "paperless-oidc-secret.age".publicKeys = nbase;
   "paperless-admin-password.age".publicKeys = nbase;
-  "postgres-authelia.age".publicKeys = gbase;
-  "postgres-forgejo.age".publicKeys = gbase;
   "rustical-oidc-secret.age".publicKeys = gbase;
   "sftpgo-oidc-secret.age".publicKeys = nbase;
   "sftpgo-admin-password.age".publicKeys = nbase;
