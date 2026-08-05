@@ -552,4 +552,46 @@ in {
       };
     };
   };
+
+  config.assertions =
+    let
+      # Auxiliary listeners are found by the `*-port` suffix rather than
+      # enumerated, so one added to `extraOptions` is covered without touching
+      # this.
+      listeners = name: app:
+        lib.mapAttrsToList
+          (option: port: { name = if option == "port" then name
+                                  else "${name} ${lib.removeSuffix "-port" option}";
+                           inherit port; })
+          (lib.filterAttrs
+            (option: port: (option == "port" || lib.hasSuffix "-port" option) && port != null)
+            app);
+      claims-here = lib.concatLists (lib.mapAttrsToList listeners
+        (lib.filterAttrs (_: app: app.enabled && app.host == config.site.server.host)
+          config.site.apps))
+        # beszel-agent is a core module, so it listens on hosts without the hub too.
+        ++ lib.optional (config.site.apps.beszel.host != config.site.server.host)
+             { name = "beszel agent"; port = config.site.apps.beszel.agent-port; };
+      subdomain-claims = lib.mapAttrsToList (name: app: { inherit name; inherit (app) subdomain; })
+        (lib.filterAttrs (_: app: app.enabled) config.site.apps);
+      clashes = field: claims:
+        lib.filterAttrs (_: claimants: builtins.length claimants > 1)
+          (lib.groupBy (claim: toString claim.${field}) claims);
+      describe = field: contested:
+        lib.concatStringsSep "; " (lib.mapAttrsToList
+          (value: claimants: "${field} ${value} claimed by "
+                             + lib.concatStringsSep ", " (map (c: c.name) claimants))
+          contested);
+      contested-ports = clashes "port" claims-here;
+      contested-subdomains = clashes "subdomain" subdomain-claims;
+    in [
+      { assertion = contested-ports == { };
+        message = "site.apps: ${describe "port" contested-ports} on ${config.site.server.host}; "
+                  + "give one of them a free port in site.nix";
+      }
+      { assertion = contested-subdomains == { };
+        message = "site.apps: ${describe "subdomain" contested-subdomains}; "
+                  + "subdomains share one domain, so give one of them a distinct name in site.nix";
+      }
+    ];
 }
