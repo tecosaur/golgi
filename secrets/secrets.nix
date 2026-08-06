@@ -34,6 +34,10 @@ in
   "credentials/ntfy-webpush-keys-env.age" = { publicKeys = gbase; description = "ntfy web push keys"; };
   "credentials/tailscale-preauth.age" = { publicKeys = all; description = "Tailscale pre-auth key"; };
   "credentials/tandoor-fdc-api-key.age" = { publicKeys = nbase; description = "USDA FoodData Central API key"; };
+  "credentials/trek-aerodatabox-key.age" = { publicKeys = nbase; description = "AeroDataBox RapidAPI key, for TREK flight tracking"; };
+  "credentials/trek-maps-key.age" = { publicKeys = nbase; description = "Google Maps API key, for TREK place search"; };
+  "credentials/trek-mapbox-token.age" = { publicKeys = nbase; description = "Mapbox access token (pk....), for TREK maps"; };
+  "credentials/trek-unsplash-key.age" = { publicKeys = nbase; description = "Unsplash access key, for TREK trip covers"; };
 
   "passwords/llm-api-key.age" = { publicKeys = all; description = "Shared secret between the llama-server and its clients"; };
   "passwords/lldap-admin-password.age" = { publicKeys = all; description = "LLDAP admin login, used at its web UI"; };

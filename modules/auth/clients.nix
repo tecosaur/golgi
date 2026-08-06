@@ -114,6 +114,7 @@ in {
         (mkPolicy config.site.apps.rustical { })
         (mkPolicy config.site.apps.sftpgo { user_policy = "two_factor"; })
         (mkPolicy config.site.apps.tandoor { admin_policy = "one_factor"; })
+        (mkPolicy config.site.apps.trek { })
         (mkPolicy config.site.apps.warracker { })
       ];
       claims_policies = {
@@ -122,7 +123,17 @@ in {
           # minimum of an OIDC client 🙃.
           id_token = [ "preferred_username" "email" "name" ];
         };
+        # legacy.id_token = ["groups" "email" "email_verified" "alt_emails" "preferred_username" "name"];
       };
+      # scopes = {
+      #   sftpgo.claims = [ "user_email", "display_name" ];
+      # };
+      # lifespans.custom = {
+      #   ocis = {
+      #     access_token = "7 days";
+      #     refresh_token = "6 days";
+      #   };
+      # };
       clients = lib.flatten [
         (mkClient config.site.apps.beszel {
           redirect_paths = [ "api/oauth2-redirect" ];
@@ -140,7 +151,6 @@ in {
         })
         (mkClient config.site.apps.headscale {
           redirect_paths = [ "oidc/callback" ];
-          claims_policy = "headscale";
         })
         (mkClient config.site.apps.immich {
           redirect_paths = [ "auth/login" "user-settings" ];
@@ -167,10 +177,23 @@ in {
         (mkClient config.site.apps.paperless {
           redirect_paths = [ "accounts/oidc/authelia/login/callback/" ];
         })
+        # (mkClient config.site.apps.ocis {
+        #   redirect_paths = [ "" "oidc-callback.html" "oidc-silent-redirect.html" "apps/openidconnect/redirect" ];
+        #   response_types = [ "code" ];
+        #   lifespan = "ocis";
+        #   public = true;
+        #   grant_types = [ "authorization_code" "refresh_token" ];
+        #   scopes = [ "openid" "offline_access" "email" "profile" "groups" ];
+        #   access_token_signed_response_alg = "none";
+        #   require_pkce = true;
+        #   pkce_challenge_method = "S256";
+        # })
         (mkClient config.site.apps.sftpgo {
           authorization_policy = "one_factor";
           claims_policy = "sftpgo";
           redirect_paths = [ "web/oidc/redirect" "web/oauth2/redirect" ];
+          require_pkce = false;
+          token_endpoint_auth_method = "client_secret_post";
         })
         (mkClient config.site.apps.storyteller {
           redirect_paths = [ "api/v2/auth/callback/authelia" ];
@@ -178,6 +201,10 @@ in {
         })
         (mkClient config.site.apps.tandoor {
           redirect_paths = [ "accounts/oidc/authelia/login/callback/" ];
+        })
+        (mkClient config.site.apps.trek {
+          redirect_paths = [ "api/auth/oidc/callback" ];
+          token_endpoint_auth_method = "client_secret_post";
         })
         (mkClient config.site.apps.rustical {
           redirect_paths = [ "frontend/login/oidc/callback" ];
@@ -192,6 +219,10 @@ in {
       ];
     };
     access_control.rules = lib.flatten [
+      [{
+        domain = config.site.domain;
+        policy = "one_factor";
+      }]
       (mkAccessControl config.site.apps.microbin { })
       (mkAccessControl config.site.apps.ntfy { policy = "two_factor"; })
       (mkAccessControl config.site.apps.uptime { })

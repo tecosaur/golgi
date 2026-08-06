@@ -513,6 +513,13 @@ in {
         subdomain = "recipes";
         port = 7203;
       };
+      trek = mkAppOption {
+        name = "Trek";
+        homepage = "https://github.com/liketrek/TREK";
+        description = "collaborative travel planner";
+        subdomain = "travel";
+        port = 8054;
+      };
       transmission = mkAppOption {
         name = "Transmission";
         homepage = "https://transmissionbt.com";

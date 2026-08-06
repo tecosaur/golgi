@@ -161,6 +161,14 @@ svg2png tandoor/favicon.svg tandoor/logo_color_192.png -h 192
 svg2png tandoor/favicon.svg tandoor/logo_color_180.png -h 180
 mv tandoor/favicon.svg tandoor/logo_color_svg.svg
 svg2png tandoor/brand_logo.svg
+# TREK
+mkdir -p trek/icons
+svgfmt trek/logo.svg
+cp trek/logo.svg trek/icons/icon.svg
+svg2png trek/logo.svg trek/icons/icon-192x192.png -h 192
+svg2png trek/logo.svg trek/icons/icon-512x512.png -h 512
+svg2png trek/logo.svg trek/icons/apple-touch-icon-180x180.png -h 180
+
 # Vikunja
 favmake vikunja/public
 mkdir -p vikunja/public/images/icons

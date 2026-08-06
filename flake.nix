@@ -73,6 +73,7 @@
             storyteller
             streaming
             tandoor
+            trek
             warracker
           ];
         };
