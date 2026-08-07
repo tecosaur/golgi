@@ -1,0 +1,132 @@
+{ config, lib, ... }:
+
+# Put service state on the bulk volume, by binding each app's state directory
+# under /data/services. Which apps, and how much of each, comes from site.apps:
+# an app naming `stateSubdirs` binds only those, leaving anything it derives on
+# the system disk. Similarly, `cacheDirs` names subdirectories that should be
+# bound to a cache directory.
+
+let
+  rootDir = service: setting: fallback:
+    let
+      value = service.${setting} or fallback;
+    in if value == null then null else
+    let
+      dirs = lib.filter (d: d != "")
+        (if builtins.isList value then value else lib.splitString " " value);
+      root = lib.foldl'
+        (a: b: if lib.hasPrefix (b + "/") a || a == b then b else a)
+        (builtins.head dirs) dirs;
+      strays = lib.filter (d: d != root && !lib.hasPrefix (root + "/") d) dirs;
+    in
+      if dirs == [ ] then null
+      else if strays == [ ] then root
+      else throw ''${setting} names ${
+        lib.concatStringsSep " and " (map (d: "\"${d}\"") ([ root ] ++ strays))
+      }, which share no parent to bind as one directory'';
+  dataMountApps =
+    lib.filter
+      (service: !service.fullySandboxed && service.stateDir != null)
+      (lib.mapAttrsToList
+        (name: app:
+          let
+            cfg = app.serviceConfig;
+            dynamic = cfg.DynamicUser or false;
+          in
+            {
+              fullySandboxed = dynamic && (cfg.ProtectSystem or "") == "strict";
+              service = app.service;
+              safeName = lib.toLower (lib.replaceStrings [ " " ] [ "-" ] app.name);
+              user = if dynamic then "root" else (cfg.User or "root");
+              group = if dynamic && (cfg.Group or "") == (cfg.User or "") then "root" else (cfg.Group or "root");
+              stateDir = rootDir cfg "StateDirectory"
+                (if cfg ? WorkingDirectory
+                 then lib.removePrefix "/var/lib/" cfg.WorkingDirectory
+                 else null);
+              cacheDir = rootDir cfg "CacheDirectory" app.service;
+              cacheSubdirs = app.cacheSubdirs;
+              stateSubdirs = app.stateSubdirs;
+            })
+        (lib.filterAttrs
+          (_: app:
+            app.service != null &&
+            app.serviceConfig != { } &&
+            app.usesStateDir == true &&
+            app.enabled == true &&
+            app.host == config.site.server.host)
+          config.site.apps));
+  backingServices = lib.filterAttrs (name: _: config.services.${name}.enable or false) {
+    postgresql = "postgres";
+    influxdb2 = "influxdb2";
+  };
+  dataMounted = dataMountApps ++ lib.mapAttrsToList (name: owner: {
+    service = name; safeName = name; stateDir = name;
+    user = owner; group = owner;
+    cacheDir = null; cacheSubdirs = [ ]; stateSubdirs = null;
+  }) backingServices;
+in
+{
+  assertions = [
+    { assertion = config.fileSystems ? "/data";
+      message = "data-mounts binds service state onto /data, which this host does not mount";
+    }
+  ];
+
+  systemd.tmpfiles.rules =
+    [ "d /data/services 0755 root root -" ] ++
+    lib.flatten (map (service:
+      [
+        "d /data/services/${service.safeName} 0750 ${service.user} ${service.group} -"
+        "d /var/lib/${service.stateDir}       0755 ${service.user} ${service.group} -"
+      ] ++ lib.concatMap
+        (d: [
+          "d /data/services/${service.safeName}/${d} 0750 ${service.user} ${service.group} -"
+          "d /var/lib/${service.stateDir}/${d}       0750 ${service.user} ${service.group} -"
+        ])
+        (if service.stateSubdirs == null then [ ] else service.stateSubdirs)
+      ++ lib.concatMap
+        (d: [
+          "d /var/cache/${service.cacheDir}/${d}        0750 ${service.user} ${service.group} -"
+          "d /data/services/${service.safeName}/${d}    0750 ${service.user} ${service.group} -"
+        ])
+        service.cacheSubdirs)
+      dataMounted);
+
+  systemd.mounts = lib.flatten (map
+    (service: (map (d: {
+      what = "/data/services/${service.safeName}${lib.optionalString (d != "") "/${d}"}";
+      where = "/var/lib/${service.stateDir}${lib.optionalString (d != "") "/${d}"}";
+      type = "none";
+      options = "bind";
+      unitConfig.DefaultDependencies = false;
+      requires = [ "systemd-tmpfiles-setup.service" "data.mount" ];
+      after    = [ "systemd-tmpfiles-setup.service" "data.mount" ];
+      wantedBy = [ "multi-user.target" ];
+      before   = [ "umount.target" ];
+      conflicts = [ "umount.target" ];
+    }) (if service.stateSubdirs == null then [ "" ] else service.stateSubdirs))
+    ++ (map (d: {
+      what = "/var/cache/${service.cacheDir}/${d}";
+      where = "/var/lib/${service.stateDir}/${d}";
+      type = "none";
+      options = "bind";
+      unitConfig.DefaultDependencies = false;
+      requires = [ "systemd-tmpfiles-setup.service" "data.mount" ];
+      after    = [ "systemd-tmpfiles-setup.service" "data.mount" ];
+      wantedBy = [ "multi-user.target" ];
+      before   = [ "umount.target" ];
+      conflicts = [ "umount.target" ];
+    }) service.cacheSubdirs))
+    dataMounted);
+
+  systemd.services = lib.listToAttrs (map
+    (service: {
+      name = service.service;
+      value.unitConfig.RequiresMountsFor =
+        (if service.stateSubdirs == null
+         then [ "/var/lib/${service.stateDir}" ]
+         else map (d: "/var/lib/${service.stateDir}/${d}") service.stateSubdirs)
+        ++ map (d: "/var/lib/${service.stateDir}/${d}") service.cacheSubdirs;
+    })
+    dataMounted);
+}
