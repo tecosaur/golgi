@@ -2,8 +2,10 @@
 
 let
   mkAppOption = { name, description, homepage, simpleicon ? null,
-                  service ? name, subdomain, port, admin ? "admin", extra-groups ? [],
-                  extraOptions ? {} }:
+                  service ? (lib.toLower (lib.replaceStrings [ " " ] [ "-" ] name)),
+                  usesStateDir ? (service != null),
+                  subdomain, port, admin ? "admin", extra-groups ? [],
+                  auth ? {}, cacheSubdirs ? [], stateSubdirs ? null, extraOptions ? {} }:
     {
       name = lib.mkOption {
         type = lib.types.str;
@@ -30,6 +32,16 @@ let
         default = false;
         description = "Whether ${name} has been enabled, set by modules enabling it";
       };
+      service = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = service;
+        description = "The systemd service for the ${name} app. Set to null if stateless";
+      };
+      usesStateDir = lib.mkOption {
+        type = lib.types.bool;
+        default = usesStateDir;
+        description = "Whether the ${name} app uses a state directory";
+      };
       host = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
@@ -42,8 +54,23 @@ let
       };
       dir = lib.mkOption {
         type = lib.types.str;
-        default = "/var/lib/${lib.toLower name}";
+        default = "/var/lib/${lib.toLower (if service != null then service else name)}";
         description = "Directory where the ${name} app stores its data";
+      };
+      cacheSubdirs = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = cacheSubdirs;
+        description = "List of subdirectories in the ${name} app data directory to be treated as cache";
+      };
+      stateSubdirs = lib.mkOption {
+        type = lib.types.nullOr (lib.types.listOf lib.types.str);
+        default = stateSubdirs;
+        example = [ "data" "uploads" ];
+        description = ''
+          Subdirectories of the ${name} app state directory holding data worth
+          keeping, when only some of it is. Null puts the whole state directory
+          on bulk storage, which is right until part of it is derived.
+        '';
       };
       port = lib.mkOption {
         type = lib.types.int;
@@ -173,6 +200,7 @@ in {
         homepage = "https://www.authelia.com";
         description = "authentication and SSO portal";
         simpleicon = "authelia";
+        service = null; # "authelia-main";
         subdomain = "auth";
         port = 9091;
       };
@@ -180,6 +208,7 @@ in {
         name = "Beszel";
         homepage = "https://beszel.dev";
         description = "System monitoring";
+        service = "beszel-hub";
         subdomain = "systems";
         port = 8090;
         admin = null;
@@ -219,6 +248,7 @@ in {
         name = "Fava";
         homepage = "https://beancount.github.io/fava/";
         description = "Beancount web interface";
+        service = null;
         subdomain = "fava";
         port = 5025;
       };
@@ -329,11 +359,13 @@ in {
         simpleicon = "homeassistant";
         subdomain = "homeassistant";
         port = 8123;
+        stateSubdirs = [ "state" ".storage" "blueprints" ];
       };
       homepage = mkAppOption {
         name = "Homepage";
         homepage = "https://gethomepage.dev";
         description = "personal homepage";
+        service = "homepage-dashboard";
         subdomain = "home";
         port = 8082;
       };
@@ -342,6 +374,8 @@ in {
         homepage = "https://immich.app";
         description = "photo and video management";
         simpleicon = "immich";
+        service = "immich-server";
+        usesStateDir = false;
         subdomain = "photos";
         port = 2283;
       };
@@ -349,7 +383,7 @@ in {
         name = "llama-cpp";
         homepage = "https://github.com/ggml-org/llama.cpp";
         description = "LLM inference endpoint";
-        service = null;
+        usesStateDir = false;
         subdomain = "llm";
         port = 8089;
         extraOptions = {
@@ -398,6 +432,7 @@ in {
         homepage = "https://ntfy.sh";
         description = "push notifications";
         simpleicon = "ntfy";
+        service = "ntfy-sh";
         subdomain = "ntfy";
         port = 2586;
       };
@@ -438,6 +473,8 @@ in {
         name = "Paperless";
         homepage = "https://paperless-ngx.readthedocs.io";
         description = "document management";
+        simpleicon = "paperlessngx";
+        service = "paperless-web";
         subdomain = "folio";
         port = 28981;
       };
@@ -479,6 +516,8 @@ in {
         name = "Speedtest";
         homepage = "https://openspeedtest.com";
         description = "connection speed testing";
+        service = "librespeed";
+        usesStateDir = false;
         subdomain = "speed";
         port = 8076;
       };
@@ -488,6 +527,7 @@ in {
         description = "synced audiobook platform";
         subdomain = "books";
         port = 8001;
+        cacheSubdirs = [ ".cache" ".local" "image-cache" ];
         extraOptions = {
           readium-port = lib.mkOption {
             type = lib.types.int;
@@ -519,6 +559,7 @@ in {
         description = "collaborative travel planner";
         subdomain = "travel";
         port = 8054;
+        stateSubdirs = [ "data" "uploads" ];
       };
       transmission = mkAppOption {
         name = "Transmission";
@@ -527,6 +568,7 @@ in {
         simpleicon = "transmission";
         subdomain = "torrent";
         port = 9092;
+        stateSubdirs = [ ".config/transmission-daemon" ];
       };
       lldap = mkAppOption {
         name = "LLDAP";
