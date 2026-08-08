@@ -15,10 +15,11 @@
   python3,
   git,
   unzip,
-  jre_headless,
   buildGoModule,
   whisper-cpp,
   whisper ? whisper-cpp,
+  fraunces,
+  ibm-plex
 }:
 
 let
@@ -57,6 +58,13 @@ let
   epubcheckZip = fetchurl {
     url = "https://github.com/w3c/epubcheck/releases/download/v${epubcheckVersion}/epubcheck-${epubcheckVersion}.zip";
     hash = "sha256-bAfmhYSy4s4vif4G4SRt/q0+s2tGs0Dn2TUk8p3P9sU=";
+  };
+
+  ibmPlex = ibm-plex.override {
+    families = [
+      "sans-variable"
+      "serif-variable"
+    ];
   };
 
   yarnPatch = ''
@@ -114,14 +122,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "storyteller";
-  version = "2.14.10";
+  version = "3.0.0-beta.19";
 
   src = fetchFromGitLab {
     owner = "storyteller-platform";
     repo = "storyteller";
-    # rev = "web-v${finalAttrs.version}";
-    rev = "8e14b0c5e95e04288c9f5fec4d0d5dd017353a3b";
-    hash = "sha256-V1ppXL3Y+4XUvZBenoryCZAy9vUAWkXg0QoHZJ5ODnw=";
+    rev = "web-v${finalAttrs.version}";
+    hash = "sha256-7sl4G7NGm0tOl6hSxrolM0irWE/mJCBIpya52fjJHeM=";
   };
 
   nativeBuildInputs = [
@@ -139,7 +146,7 @@ stdenv.mkDerivation (finalAttrs: {
   offlineCache = yarn-berry.fetchYarnBerryDeps {
     inherit (finalAttrs) src missingHashes;
     postPatch = yarnPatch;
-    hash = "sha256-9Qp218XCKWOlzpyEXtIGkqq2C+KYPovKkG3S7sCFh88=";
+    hash = "sha256-GpTa341CxDwP4zfd15l3rvbLZuf5ur8OnCvA2wRe+Og=";
   };
 
   passthru = {
@@ -268,7 +275,7 @@ stdenv.mkDerivation (finalAttrs: {
       --add-flags "--enable-source-maps $out/lib/storyteller/applications/web/server.js" \
       --chdir "$out/lib/storyteller/applications/web" \
       --run "WHISPER_DIR=\"\$HOME/.local/share/ghost-story/whisper-cpp/$whisperCppVersion/linux-x64-cpu/bin\"; mkdir -p \"\$WHISPER_DIR\"; ln -sfn ${lib.getExe whisper} \"\$WHISPER_DIR/whisper-cli\"" \
-      --prefix PATH : ${lib.makeBinPath [ ffmpeg readium-cli jre_headless ]} \
+      --prefix PATH : ${lib.makeBinPath [ ffmpeg readium-cli ]} \
       --set NODE_ENV "production" \
       --set NEXT_TELEMETRY_DISABLED "1" \
       --set CI_COMMIT_TAG "web-v${finalAttrs.version}" \

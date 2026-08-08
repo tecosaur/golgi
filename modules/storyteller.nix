@@ -36,6 +36,7 @@ in {
       STORYTELLER_CONFIG = (pkgs.formats.json {}).generate "storyteller-config.json" {
         libraryName = "Books @ ${config.site.domain}";
         webUrl = "https://${storyteller-domain}";
+        preferenceDefaults.accentColor = config.site.accent.primary;
         importMode = "copy";
         epub2ImportStrategy = "replace";
         importRules = [
@@ -105,20 +106,17 @@ in {
   users.users.storyteller = {
     isSystemUser = true;
     group = "storyteller";
+    extraGroups = [ "users" "video" "render" ];
   };
 
   users.groups.storyteller = { };
 
   services.caddy.virtualHosts.${storyteller-domain}.extraConfig = ''
     root ${config.site.assets}/storyteller
-    @logoimg {
-        path /_next/image
-        query url=/Storyteller_Logo.png
-    }
     route /favicon.ico {
         file_server
     }
-    route @logoimg {
+    route /Storyteller_Logo.png {
         rewrite * /logo.png
         file_server
     }
