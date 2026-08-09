@@ -35,7 +35,7 @@
     {
       device = "/dev/disk/by-partlabel/nixos";
       fsType = "bcachefs";
-      options = [ "x-systemd.mount-timeout=0" "x-systemd.wants=network-online.target" ];
+      options = [ "x-systemd.mount-timeout=0" ];
       # options = [ "X-mount.subdir=root" ];
     };
 
@@ -66,7 +66,7 @@
     device = "/dev/disk/by-label/Data";
     fsType = "bcachefs";
     neededForBoot = true; # See <https://github.com/NixOS/nixpkgs/issues/357755>
-    options = [ "x-systemd.mount-timeout=0" ];
+    options = [ "x-systemd.mount-timeout=0" "x-systemd.wants=network-online.target" ];
   };
 
   swapDevices = [{
