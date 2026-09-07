@@ -1,7 +1,9 @@
 { config, lib, ... }:
 
-# Put service state on the bulk volume, by binding each app's state directory
-# under /data/services. Which apps, and how much of each, comes from site.apps:
+# Keep everything a reinstall must recover on the bulk volume: service state
+# bound under /data/services, and a few host files copied to /data/host.
+#
+# Which apps are bound, and how much of each, comes from site.apps:
 # an app naming `stateSubdirs` binds only those, leaving anything it derives on
 # the system disk. Similarly, `cacheDirs` names subdirectories that should be
 # bound to a cache directory.
@@ -24,6 +26,11 @@ let
       else throw ''${setting} names ${
         lib.concatStringsSep " and " (map (d: "\"${d}\"") ([ root ] ++ strays))
       }, which share no parent to bind as one directory'';
+  # install.sh restores from a mirror of this table.
+  hostFiles = {
+    id-maps = [ "/var/lib/nixos/uid-map" "/var/lib/nixos/gid-map" ];
+    ssh-host-key = [ "/etc/ssh/ssh_host_ed25519_key" "/etc/ssh/ssh_host_ed25519_key.pub" ];
+  };
   dataMountApps =
     lib.filter
       (service: !service.fullySandboxed && service.stateDir != null)
@@ -129,4 +136,24 @@ in
         ++ map (d: "/var/lib/${service.stateDir}/${d}") service.cacheSubdirs;
     })
     dataMounted);
+
+  # After `users` so fresh ids are captured.
+  system.activationScripts.persist-host-state = {
+    deps = [ "users" ];
+    text = ''
+      host_dir=/data/host
+      persist_host_file() { # group path
+        local dest="$host_dir/$1/$(basename "$2")"
+        [ -e "$2" ] || return 0
+        mkdir -p "$host_dir/$1" && cp -p "$2" "$dest.tmp" && mv -f "$dest.tmp" "$dest" ||
+          echo "persist-host-state: could not persist $2" >&2
+      }
+      if mountpoint -q /data; then
+        mkdir -p -m 0700 "$host_dir"
+        ${lib.concatMapAttrsStringSep "\n  " (group: lib.concatMapStringsSep "\n  " (path: "persist_host_file ${group} ${path}")) hostFiles}
+      else
+        echo "persist-host-state: /data is not mounted, host files not persisted" >&2
+      fi
+    '';
+  };
 }

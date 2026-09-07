@@ -35,6 +35,16 @@ to the server and running:
 ./conf/install.sh
 #+end_src
 
+The boot drive of nucleus is disposable. Service state lives under
+=/data/services=, and the handful of host files a reinstall would otherwise
+lose (the uid/gid maps that keep file ownership stable, and the SSH host
+key) are copied to =/data/host= each time the deployed configuration
+activates. Should the boot drive die, replace it and run the installer
+again: it mounts the existing =Data= filesystem, offers to restore whatever it
+finds under =/data/host=, and the rebuilt system comes up as the same host.
+Deselect the SSH key there to rotate it, in which case the secrets need
+re-encrypting to the new key.
+
 * Deploying
 
 Deploying is simply a matter of entering the deploy nix shell =nix develop= and

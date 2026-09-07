@@ -76,12 +76,16 @@ function drive_partition_count() {
 
 function generate_ssh_key() {
     gum style --border="thick" "SSH Keys"
+    if [ -f "${MNT}/etc/ssh/ssh_host_ed25519_key" ]; then
+        gum join "$(gum style --foreground=72 "Public key (restored):")" "$(cat "${MNT}/etc/ssh/ssh_host_ed25519_key.pub")"
+        return 0
+    fi
     mkdir -p "${MNT}/etc/ssh"
     ssh-keygen -q -t ed25519 -N '' -C "root@${sysname}" -f "${MNT}/etc/ssh/ssh_host_ed25519_key"
     chmod 600 "${MNT}/etc/ssh/ssh_host_ed25519_key"
     gum join "$(gum style --foreground=72 "Public key:")" "$(cat "${MNT}/etc/ssh/ssh_host_ed25519_key.pub")"
     gum confirm --affirmative="Pull" --negative="Skip" "Pull git repository to fetch updated secrets?" &&
-        gum spin --title="Pulling..." --show-stdout -- git pull --rebase -C "$scriptdir" || true
+        gum spin --title="Pulling..." --show-stdout -- git -C "$scriptdir" pull --rebase || true
 }
 
 function nix_disable_nonessential_modules() {
@@ -173,6 +177,10 @@ bcachefs_data_opts=(
 )
 
 bcachefs_drive_args=()
+
+function data_members() {
+    lsblk -nd -o PATH --filter='FSTYPE == "bcachefs" && LABEL == "Data"'
+}
 
 function format_boot_bcachefs() {
     mkdir -p "${MNT}"
@@ -357,7 +365,9 @@ function interactive_set_encryption() {
 }
 
 function interactive_format_data_bcachefs() {
-    if lsblk -n -o LABEL | grep -q Data && \
+    local old_members
+    old_members="$(data_members)"
+    if [ -n "$old_members" ] && \
         ! gum confirm --affirmative="Overwrite" --negative="Keep" --default=false "Data filesystem already exists, overwrite?"; then
         gum style "Reusing existing Data filesystem"
         return 0
@@ -369,12 +379,59 @@ function interactive_format_data_bcachefs() {
         "$(gum style --foreground=37 "bcachefs format command")" \
         "$(echo "bcachefs format ${bcachefs_data_opts[@]} ${bcachefs_drive_args[@]}" |
            gum style --border=rounded --border-foreground=37 --width="$(($COLUMNS - 4))")"
+    # Stale superblocks would leave LABEL=Data ambiguous.
+    [ -z "$old_members" ] || wipefs -a -f $old_members >/dev/null
     if [ -z "$data_password" ]; then
         gum spin --title="Formatting data drives" -- bcachefs format "${bcachefs_data_opts[@]}" "${bcachefs_drive_args[@]}"
     else
         echo "$data_password" |
             gum spin --title="Formatting data drives" -- bcachefs format "${bcachefs_data_opts[@]}" "${bcachefs_drive_args[@]}"
     fi
+}
+
+# 
+# Host state
+
+# Mirrors hostFiles in modules/data-mounts.nix.
+declare -A host_files=(
+    [id-maps]="/var/lib/nixos/uid-map /var/lib/nixos/gid-map"
+    [ssh-host-key]="/etc/ssh/ssh_host_ed25519_key /etc/ssh/ssh_host_ed25519_key.pub"
+)
+
+function mount_data() {
+    gum style --border="thick" "Data filesystem"
+    udevadm settle
+    mkdir -p "${MNT}/data"
+    # Not under gum spin: bcachefs prompts for the passphrase when encrypted.
+    until bcachefs mount "LABEL=Data" "${MNT}/data"; do
+        case "$(gum choose --header=" Mounting the Data filesystem failed" "Retry" "Repair (offline fsck)" "Abort")" in
+            Retry) ;;
+            # Offline until bcachefs can fsck a mounted filesystem (roadmap item).
+            Repair*) bcachefs fsck -y $(data_members) || true ;;
+            *) exit 1 ;;
+        esac
+    done
+    gum join "$(gum style --foreground=72 "Mounted at:")" "${MNT}/data"
+}
+
+function interactive_restore_host_state() {
+    local present=() chosen group path
+    for group in "${!host_files[@]}"; do
+        [ -d "${MNT}/data/host/${group}" ] && present+=("$group")
+    done
+    [ "${#present[@]}" -gt 0 ] || return 0
+    gum style --border="thick" "Host state"
+    chosen="$(printf '%s\n' "${present[@]}" | sort |
+        gum choose --no-limit --header=" Reuse from the previous install" --selected="$(IFS=','; echo "${present[*]}")")" ||
+        { gum log --level=error "Aborted while choosing host state to reuse"; exit 1; }
+    for group in $chosen; do
+        for path in ${host_files[$group]}; do
+            mkdir -p "$(dirname "${MNT}${path}")"
+            cp -p "${MNT}/data/host/${group}/$(basename "$path")" "${MNT}${path}" ||
+                { gum log --level=error "Missing $(basename "$path") in /data/host/${group}"; exit 1; }
+        done
+    done
+    gum join "$(gum style --foreground=72 "Restored:")" "$(printf ' %s' ${chosen:-nothing})"
 }
 
 # 
@@ -388,8 +445,10 @@ if [ "$sysname" = "golgi" ]; then
     generate_ssh_key
 elif [ "$sysname" = "nucleus" ]; then
     interactive_format_boot_bcachefs
-    generate_ssh_key
     interactive_format_data_bcachefs
+    mount_data
+    interactive_restore_host_state
+    generate_ssh_key
 fi
 
 gum style --border=thick "Installing NixOS"
