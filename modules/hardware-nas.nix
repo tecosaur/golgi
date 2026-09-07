@@ -66,7 +66,8 @@
     device = "/dev/disk/by-label/Data";
     fsType = "bcachefs";
     neededForBoot = true; # See <https://github.com/NixOS/nixpkgs/issues/357755>
-    options = [ "x-systemd.mount-timeout=0" "x-systemd.wants=network-online.target" ];
+    # A missing member whose data is still replicated must not stall boot.
+    options = [ "x-systemd.mount-timeout=0" "x-systemd.wants=network-online.target" "degraded=yes" ];
   };
 
   swapDevices = [{
