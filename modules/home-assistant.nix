@@ -26,6 +26,16 @@ in {
       fi
       ln -sfn ${ha-state}/${f} /var/lib/hass/${f}
     '') ha-state-files}
+    # Make sure that the automations/scripts/scenes files are present
+    ensure_file() {
+      if [ ! -s "$1" ]; then
+        printf '%s\n' "$2" > "$1"
+      fi
+    }
+    config_dir="${config.services.home-assistant.configDir}"
+    ensure_file "$config_dir/automations.yaml" '[]'
+    ensure_file "$config_dir/scripts.yaml" '{}'
+    ensure_file "$config_dir/scenes.yaml" '[]'
   '';
 
   age.secrets.home-assistant-secrets = {
@@ -83,6 +93,8 @@ in {
       };
       default_config = {};
       automation = "!include automations.yaml";
+      script = "!include scripts.yaml";
+      scene = "!include scenes.yaml";
       homeassistant = {
         time_zone = "!secret time_zone";
       };
