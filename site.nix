@@ -42,6 +42,11 @@ let
         default = usesStateDir;
         description = "Whether the ${name} app uses a state directory";
       };
+      serviceConfig = lib.mkOption {
+        type = lib.types.attrs;
+        default = { };
+        description = "The systemd service configuration for the ${name} app";
+      };
       host = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
