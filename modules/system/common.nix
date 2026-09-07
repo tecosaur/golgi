@@ -9,6 +9,7 @@ SystemMaxFileSize=100M
 MaxFileSec=1day
 MaxRetentionSec=2months
 ''; # Limit journal accumulation
+  systemd.coredump.settings.Coredump.MaxUse = "256M";
 
   boot.loader.systemd-boot.configurationLimit = 5; # Limit bootloader entries
 

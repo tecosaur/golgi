@@ -70,6 +70,8 @@
     options = [ "x-systemd.mount-timeout=0" "x-systemd.wants=network-online.target" "degraded=yes" ];
   };
 
+  # Swap churn wore out the first boot drive; zram takes it, the partition is overflow.
+  zramSwap.enable = true;
   swapDevices = [{
     device = "/dev/disk/by-partlabel/swap";
   }];
