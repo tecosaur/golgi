@@ -4,7 +4,7 @@ let
   rustical-domain = "${config.site.apps.rustical.subdomain}.${config.site.domain}";
   rustical-start = pkgs.writeShellScript "rustical-start" ''
     export RUSTICAL_OIDC__CLIENT_SECRET="$(< "$CREDENTIALS_DIRECTORY/oidc-secret")"
-    exec ${lib.getExe config.services.rustical.package}
+    exec ${lib.getExe config.services.rustical.package} serve
   '';
 in {
   site.apps.rustical.enabled = true;
