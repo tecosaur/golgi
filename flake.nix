@@ -79,20 +79,28 @@
           ];
         };
       };
-      global-enabled-apps = (nixpkgs.lib.concatMapAttrs (machine: setup:
+      global-enabled-apps = (nixpkgs.lib.concatMapAttrs (machine: sys:
         (nixpkgs.lib.foldlAttrs
           (acc: app: conf:
             if conf.enabled then
-              acc // { "${app}" = {enabled = true; host = machine; }; }
+              acc // { "${app}" = {
+                         enabled = true;
+                         host = machine;
+                         serviceConfig = if conf.service == null then { } else
+                           sys.config.systemd.services."${conf.service}".serviceConfig;
+                       }; }
             else acc)
           { }
-          (nixpkgs.lib.nixosSystem {
+          sys.config.site.apps))
+        (nixpkgs.lib.mapAttrs
+          (_: setup: (nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
+            specialArgs = { inherit inputs; };
             modules = [ flake-utils-plus.nixosModules.autoGenFromInputs ] ++
                       core-modules ++ setup.modules ++
                       [ { site.domain = "_"; } ];
-          }).config.site.apps))
-        machines);
+          }))
+          machines));
       site-setup = {
         domain = "tecosaur.net";
         cloudflare-bypass-subdomain = "ssh";

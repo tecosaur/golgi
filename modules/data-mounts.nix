@@ -31,9 +31,13 @@ let
     id-maps = [ "/var/lib/nixos/uid-map" "/var/lib/nixos/gid-map" ];
     ssh-host-key = [ "/etc/ssh/ssh_host_ed25519_key" "/etc/ssh/ssh_host_ed25519_key.pub" ];
   };
+  # A DynamicUser service keeps its directories under /var/lib/private and
+  # /var/cache/private, behind symlinks systemd manages, and systemd chowns
+  # them to the uid it allocates at each start. So its mounts go under
+  # private/, owned by root until the service takes them.
   dataMountApps =
     lib.filter
-      (service: !service.fullySandboxed && service.stateDir != null)
+      (service: service.stateDir != null)
       (lib.mapAttrsToList
         (name: app:
           let
@@ -41,11 +45,11 @@ let
             dynamic = cfg.DynamicUser or false;
           in
             {
-              fullySandboxed = dynamic && (cfg.ProtectSystem or "") == "strict";
               service = app.service;
               safeName = lib.toLower (lib.replaceStrings [ " " ] [ "-" ] app.name);
+              private = dynamic;
               user = if dynamic then "root" else (cfg.User or "root");
-              group = if dynamic && (cfg.Group or "") == (cfg.User or "") then "root" else (cfg.Group or "root");
+              group = if dynamic then "root" else (cfg.Group or "root");
               stateDir = rootDir cfg "StateDirectory"
                 (if cfg ? WorkingDirectory
                  then lib.removePrefix "/var/lib/" cfg.WorkingDirectory
@@ -67,10 +71,13 @@ let
     influxdb2 = "influxdb2";
   };
   dataMounted = dataMountApps ++ lib.mapAttrsToList (name: owner: {
-    service = name; safeName = name; stateDir = name;
+    service = name; safeName = name; stateDir = name; private = false;
     user = owner; group = owner;
     cacheDir = null; cacheSubdirs = [ ]; stateSubdirs = null;
   }) backingServices;
+  stateRoot = service: "/var/lib/${lib.optionalString service.private "private/"}${service.stateDir}";
+  cacheRoot = service: "/var/cache/${lib.optionalString service.private "private/"}${service.cacheDir}";
+  hasPrivate = lib.any (service: service.private) dataMounted;
 in
 {
   assertions = [
@@ -81,19 +88,23 @@ in
 
   systemd.tmpfiles.rules =
     [ "d /data/services 0755 root root -" ] ++
+    lib.optionals hasPrivate [
+      "d /var/lib/private   0700 root root -"
+      "d /var/cache/private 0700 root root -"
+    ] ++
     lib.flatten (map (service:
       [
         "d /data/services/${service.safeName} 0750 ${service.user} ${service.group} -"
-        "d /var/lib/${service.stateDir}       0755 ${service.user} ${service.group} -"
+        "d ${stateRoot service}       0755 ${service.user} ${service.group} -"
       ] ++ lib.concatMap
         (d: [
           "d /data/services/${service.safeName}/${d} 0750 ${service.user} ${service.group} -"
-          "d /var/lib/${service.stateDir}/${d}       0750 ${service.user} ${service.group} -"
+          "d ${stateRoot service}/${d}       0750 ${service.user} ${service.group} -"
         ])
         (if service.stateSubdirs == null then [ ] else service.stateSubdirs)
       ++ lib.concatMap
         (d: [
-          "d /var/cache/${service.cacheDir}/${d}        0750 ${service.user} ${service.group} -"
+          "d ${cacheRoot service}/${d}        0750 ${service.user} ${service.group} -"
           "d /data/services/${service.safeName}/${d}    0750 ${service.user} ${service.group} -"
         ])
         service.cacheSubdirs)
@@ -102,7 +113,7 @@ in
   systemd.mounts = lib.flatten (map
     (service: (map (d: {
       what = "/data/services/${service.safeName}${lib.optionalString (d != "") "/${d}"}";
-      where = "/var/lib/${service.stateDir}${lib.optionalString (d != "") "/${d}"}";
+      where = "${stateRoot service}${lib.optionalString (d != "") "/${d}"}";
       type = "none";
       options = "bind";
       unitConfig.DefaultDependencies = false;
@@ -113,8 +124,8 @@ in
       conflicts = [ "umount.target" ];
     }) (if service.stateSubdirs == null then [ "" ] else service.stateSubdirs))
     ++ (map (d: {
-      what = "/var/cache/${service.cacheDir}/${d}";
-      where = "/var/lib/${service.stateDir}/${d}";
+      what = "${cacheRoot service}/${d}";
+      where = "${stateRoot service}/${d}";
       type = "none";
       options = "bind";
       unitConfig.DefaultDependencies = false;
@@ -131,9 +142,9 @@ in
       name = service.service;
       value.unitConfig.RequiresMountsFor =
         (if service.stateSubdirs == null
-         then [ "/var/lib/${service.stateDir}" ]
-         else map (d: "/var/lib/${service.stateDir}/${d}") service.stateSubdirs)
-        ++ map (d: "/var/lib/${service.stateDir}/${d}") service.cacheSubdirs;
+         then [ (stateRoot service) ]
+         else map (d: "${stateRoot service}/${d}") service.stateSubdirs)
+        ++ map (d: "${stateRoot service}/${d}") service.cacheSubdirs;
     })
     dataMounted);
 
