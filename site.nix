@@ -548,7 +548,6 @@ in {
         simpleicon = "syncthing";
         subdomain = "syncthing";
         port = 8384;
-        admin = null;
       };
       tandoor = mkAppOption {
         name = "Tandoor";
