@@ -115,6 +115,8 @@ in {
         ROOT_URL = "https://${forgejo-domain}";
         HTTP_ADDRESS = "0.0.0.0";
         HTTP_PORT = config.site.apps.forgejo.port;
+        SSH_DOMAIN = if config.site.server.cloudflare-bypass-subdomain == null then
+          forgejo-domain else "${config.site.server.cloudflare-bypass-subdomain}.${config.site.domain}";
       };
       mailer = {
         ENABLED = true;
@@ -185,10 +187,6 @@ in {
       };
       "ui.meta" = {
         DESCRIPTION = config.site.apps.forgejo.site-description;
-      };
-      server = {
-        SSH_DOMAIN = if config.site.cloudflare-bypass-subdomain == null then
-          forgejo-domain else "${config.site.cloudflare-bypass-subdomain}.${config.site.domain}";
       };
       federation = {
         ENABLED = true;

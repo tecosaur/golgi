@@ -130,11 +130,6 @@ in {
         description = "Port the mesh listens on, opened to UDP on every host";
       };
     };
-    cloudflare-bypass-subdomain = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      description = "Domain to use for bypassing Cloudflare (e.g. for SSH).";
-    };
     accent = {
       primary = lib.mkOption {
         type = lib.types.str;
@@ -165,6 +160,16 @@ in {
         type = lib.types.bool;
         default = false;
         description = "Whether this server is authoritative for the domain";
+      };
+      cloudflare-bypass-subdomain = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        example = "ssh";
+        description = ''
+          DNS-only name for this server, for traffic Cloudflare's proxy will not
+          carry (e.g. SSH). Set it only on a server whose records are proxied;
+          null means its records already resolve to the server itself.
+        '';
       };
       host = lib.mkOption {
         type = lib.types.str;
