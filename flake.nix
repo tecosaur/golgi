@@ -42,7 +42,6 @@
             auth
             beszel-hub
             fava
-            forgejo
             hardware-hetzner
             headscale
             homepage
@@ -65,6 +64,7 @@
             hardware-nas
             home-assistant
             dawarich
+            forgejo
             immich
             llm
             lyrion

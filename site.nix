@@ -268,7 +268,7 @@ in {
         description = "personal software forge";
         simpleicon = "forgejo";
         subdomain = "code";
-        port = 3000;
+        port = 3002;
         extraOptions = {
           site-name = lib.mkOption {
             type = lib.types.str;

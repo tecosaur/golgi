@@ -30,7 +30,7 @@ let
         @challenge {
             header !git-protocol
             not header Cookie *authelia_session=*
-            not path *.git* /info/refs /git-upload-pack /git-receive-pack
+            not path *.git* *.bundle *.zip *.tar.gz /info/refs /git-upload-pack /git-receive-pack
             not path *summary-card
             not path / /assets/* /favicon.ico /favicon.svg /explore/repos /repo-avatars/*
             not path /user/login /user/oauth2/authelia
@@ -113,7 +113,7 @@ in {
       server = {
         DOMAIN = "${forgejo-domain}";
         ROOT_URL = "https://${forgejo-domain}";
-        HTTP_ADDRESS = "0.0.0.0";
+        HTTP_ADDR = "127.0.0.1";
         HTTP_PORT = config.site.apps.forgejo.port;
         SSH_DOMAIN = if config.site.server.cloudflare-bypass-subdomain == null then
           forgejo-domain else "${config.site.server.cloudflare-bypass-subdomain}.${config.site.domain}";
@@ -123,7 +123,8 @@ in {
         PROTOCOL = "smtp+starttls";
         FROM = "noreply@${forgejo-domain}";
         USER = config.site.email.username;
-        SMTP_ADDR = "${config.site.email.server}:${toString config.site.email.port}";
+        SMTP_ADDR = config.site.email.server;
+        SMTP_PORT = config.site.email.port;
       };
       service = {
         REGISTER_EMAIL_CONFIRM = false;
@@ -282,7 +283,7 @@ in {
       }
       handle @not_${user} {
           rewrite /user/login /user/oauth2/authelia
-          reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
+          reverse_proxy 127.0.0.1:${toString config.services.forgejo.settings.server.HTTP_PORT} {
               @404 status 404
               handle_response @404 {
                   header +Set-Cookie "caddy_${user}_redirect=true; Max-Age=5"
@@ -295,7 +296,7 @@ in {
           header Cookie *caddy_${user}_redirect=true*
       }
       handle @${user}_redirect {
-          reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT} {
+          reverse_proxy 127.0.0.1:${toString config.services.forgejo.settings.server.HTTP_PORT} {
               @404 status 404
               handle_response @404 {
                   header +Set-Cookie "caddy_${user}_redirect=true; Max-Age=0"
@@ -309,7 +310,7 @@ in {
     caddy-config = captcha-config + ''
       handle {
           rewrite /user/login /user/oauth2/authelia
-          reverse_proxy localhost:${toString config.services.forgejo.settings.server.HTTP_PORT}
+          reverse_proxy 127.0.0.1:${toString config.services.forgejo.settings.server.HTTP_PORT}
       }
       '' + caddy-user-conf;
      indent = prefix: str:
