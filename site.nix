@@ -565,6 +565,39 @@ in {
         port = 8054;
         stateSubdirs = [ "data" "uploads" ];
       };
+      koito = mkAppOption {
+        name = "Koito";
+        homepage = "https://koito.io";
+        description = "listening history";
+        subdomain = "listens";
+        port = 4110;
+        extraOptions = {
+          title = lib.mkOption {
+            type = lib.types.str;
+            default = "Koito";
+            description = "Title of the Koito app";
+          };
+        };
+      };
+      multi-scrobbler = mkAppOption {
+        name = "Multi-Scrobbler";
+        homepage = "https://foxxmd.github.io/multi-scrobbler";
+        description = "scrobble collector";
+        subdomain = "scrobbler";
+        port = 9078;
+        extraOptions = {
+          jellyfin-user = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "The Jellyfin account whose plays are scrobbled";
+          };
+          listenbrainz-user = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "The ListenBrainz account listens are relayed to";
+          };
+        };
+      };
       transmission = mkAppOption {
         name = "Transmission";
         homepage = "https://transmissionbt.com";

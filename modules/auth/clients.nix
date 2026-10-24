@@ -224,6 +224,9 @@ in {
         policy = "one_factor";
       }]
       (mkAccessControl config.site.apps.microbin { })
+      (mkAccessControl config.site.apps.multi-scrobbler {
+        subject = [ "group:${config.site.apps.multi-scrobbler.groups.admin}" ];
+      })
       (mkAccessControl config.site.apps.ntfy { policy = "two_factor"; })
       (mkAccessControl config.site.apps.uptime { })
     ];

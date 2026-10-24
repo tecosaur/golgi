@@ -104,6 +104,12 @@ svg2png jellyfin/banner-light.svg -h 256
 svg2png jellyfin/banner-dark.svg -h 256
 svg2png jellyfin/jellyfin.svg jellyfin/icon-transparent.png -h 512
 rm jellyfin/*.svg
+# Koito
+favmake koito
+svg2png koito/favicon.svg koito/favicon-96x96.png -h 96
+svg2png koito/favicon.svg koito/apple-touch-icon.png -h 180
+svg2png koito/favicon.svg koito/web-app-manifest-192x192.png -h 192
+svg2png koito/favicon.svg koito/web-app-manifest-512x512.png -h 512
 # Lyrion
 svg2png lyrion/icon.svg lyrion/icon-80.png -h 80
 svg2png lyrion/icon.svg lyrion/icon-192.png -h 192

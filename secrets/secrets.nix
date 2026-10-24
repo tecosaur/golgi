@@ -27,6 +27,8 @@ in
   # Set by hand: from a third party, or from a service that alone can mint it.
   "credentials/beszel-token.age" = { publicKeys = all; description = "Beszel hub token"; };
   "credentials/cloudflare-api-env.age" = { publicKeys = all; description = "Cloudflare API token, as CLOUDFLARE_API_TOKEN=..."; };
+  "credentials/deezer-arl.age" = { publicKeys = all; description = "Deezer arl login cookie, for multi-scrobbler"; };
+  "credentials/listenbrainz-token.age" = { publicKeys = all; description = "ListenBrainz user token, for multi-scrobbler"; };
   "credentials/crowdsec-enroll-key.age" = { publicKeys = all; description = "CrowdSec console enrolment key"; };
   "credentials/fastmail.age" = { publicKeys = all; description = "Fastmail app password, for SMTP"; };
   "credentials/home-assistant-secrets.age" = { publicKeys = nbase; description = "Home Assistant secrets.yaml"; };
@@ -40,6 +42,8 @@ in
   "credentials/trek-unsplash-key.age" = { publicKeys = nbase; description = "Unsplash access key, for TREK trip covers"; };
 
   "passwords/llm-api-key.age" = { publicKeys = all; description = "Shared secret between the llama-server and its clients"; };
+  "passwords/koito-admin-password.age" = { publicKeys = all; description = "Koito admin login"; };
+  "passwords/multi-scrobbler-endpoint-token.age" = { publicKeys = all; description = "Token Lyrion's AudioScrobbler plugin presents to multi-scrobbler's ListenBrainz endpoint"; };
   "passwords/lldap-admin-password.age" = { publicKeys = all; description = "LLDAP admin login, used at its web UI"; };
   "passwords/paperless-admin-password.age" = { publicKeys = nbase; description = "Paperless admin login"; };
   "passwords/sftpgo-admin-password.age" = { publicKeys = nbase; description = "SFTPGo admin login"; };
@@ -53,6 +57,8 @@ in
   "keys/authelia-storage.age".publicKeys = all;
   "keys/lldap-jwt.age".publicKeys = all;
   "keys/lldap-key-seed.age".publicKeys = all;
+  "keys/multi-scrobbler-jellyfin.age".publicKeys = all;
+  "keys/multi-scrobbler-koito.age".publicKeys = all;
   "keys/wg-golgi.age".publicKeys = gbase;
   "keys/wg-nucleus.age".publicKeys = nbase;
 }

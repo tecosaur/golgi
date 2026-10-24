@@ -68,6 +68,7 @@
             llm
             lyrion
             paperless
+            scrobbler
             scrutiny
             sftpgo
             speedtest
@@ -169,6 +170,14 @@
           tandoor.groups.extra = [ "family" ];
           immich.groups.extra = [ "family" ];
           jellyfin.groups.extra = [ "family" ];
+          koito = {
+            title = "Listens";
+            groups.primary = "listens";
+          };
+          multi-scrobbler = {
+            jellyfin-user = "tec";
+            listenbrainz-user = "tecosaur";
+          };
           warracker.groups.extra = [ "family" ];
         };
       };

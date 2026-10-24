@@ -104,7 +104,11 @@ in {
             title = "Streaming";
             app = config.site.apps.jellyfin;
           })
-        ];
+        ] ++ lib.optional config.site.apps.koito.enabled (mkAppStatus {
+          title = "Listening history";
+          app = config.site.apps.koito;
+          icon = "mdi-music-circle";
+        });
       }
       {
         "Server" = [
@@ -189,6 +193,11 @@ in {
           { app = config.site.apps.uptime; }
           { app = config.site.apps.vikunja;
             icon = "mdi-format-list-checks";}
+        ] ++ lib.optionals config.site.apps.koito.enabled [
+          { app = config.site.apps.koito;
+            icon = "mdi-music-circle"; }
+          { app = config.site.apps.multi-scrobbler;
+            icon = "mdi-music-note-plus"; }
         ]);
       }
       {

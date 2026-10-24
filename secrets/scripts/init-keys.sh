@@ -26,6 +26,8 @@ readonly service_keys=(
     "lldap-jwt:rand"
     "lldap-key-seed:rand"
     "trek-encryption:rand"
+    "multi-scrobbler-jellyfin:rand"
+    "multi-scrobbler-koito:rand"
 )
 
 function usage() {

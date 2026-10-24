@@ -171,6 +171,14 @@ in {
     # };
   };
 
+  age.secrets.jellyfin-multi-scrobbler = lib.mkIf config.site.apps.multi-scrobbler.enabled {
+    owner = "jellyfin";
+    file = ../../secrets/keys/multi-scrobbler-jellyfin.age;
+  };
+  services.declarative-jellyfin.apikeys = lib.mkIf config.site.apps.multi-scrobbler.enabled {
+    multi-scrobbler.keyPath = config.age.secrets.jellyfin-multi-scrobbler.path;
+  };
+
   # Declarative Jellyfin replaces the `ExecStart` of the `jellyfin`
   # service with a wrapper script, which means we can safely claim
   # `preStart` ourselves.
