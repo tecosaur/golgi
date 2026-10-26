@@ -293,6 +293,7 @@ in {
     };
     apps = {
       authelia = mkAppOption {
+        health.path = "/api/health";
         name = "Authelia";
         homepage = "https://www.authelia.com";
         description = "authentication and SSO portal";
@@ -302,6 +303,7 @@ in {
         port = 9091;
       };
       beszel = mkAppOption {
+        health.path = "/api/health";
         name = "Beszel";
         homepage = "https://beszel.dev";
         description = "System monitoring";
@@ -334,6 +336,7 @@ in {
         };
       };
       dawarich = mkAppOption {
+        health.path = "/api/v1/health";
         name = "Dawarich";
         homepage = "https://dawarich.com";
         description = "location timeline";
@@ -342,6 +345,7 @@ in {
         port = 6805;
       };
       fava = mkAppOption {
+        health = { path = "/"; status = 302; };
         name = "Fava";
         homepage = "https://beancount.github.io/fava/";
         description = "Beancount web interface";
@@ -350,6 +354,7 @@ in {
         port = 5025;
       };
       forgejo = mkAppOption {
+        health.path = "/api/healthz";
         name = "Forgejo";
         homepage = "https://forgejo.org";
         description = "personal software forge";
@@ -417,6 +422,7 @@ in {
         };
       };
       jellyfin = mkAppOption {
+        health.path = "/health";
         name = "Jellyfin";
         homepage = "https://jellyfin.org";
         description = "media server";
@@ -425,6 +431,7 @@ in {
         port = 8096;
       };
       headscale = mkAppOption {
+        health.path = "/health";
         name = "Headscale";
         homepage = "https://headscale.net";
         description = "mesh virtual private network";
@@ -450,6 +457,7 @@ in {
         };
       };
       home-assistant = mkAppOption {
+        health.path = "/manifest.json";
         name = "Home Assistant";
         homepage = "https://www.home-assistant.io";
         description = "home automation";
@@ -459,6 +467,7 @@ in {
         stateSubdirs = [ "state" ".storage" "blueprints" ];
       };
       homepage = mkAppOption {
+        health.path = "/api/healthcheck";
         name = "Homepage";
         homepage = "https://gethomepage.dev";
         description = "personal homepage";
@@ -467,6 +476,7 @@ in {
         port = 8082;
       };
       immich = mkAppOption {
+        health.path = "/api/server/ping";
         name = "Immich";
         homepage = "https://immich.app";
         description = "photo and video management";
@@ -477,6 +487,7 @@ in {
         port = 2283;
       };
       llm = mkAppOption {
+        health.path = "/health";
         name = "llama-cpp";
         homepage = "https://github.com/ggml-org/llama.cpp";
         description = "LLM inference endpoint";
@@ -525,6 +536,7 @@ in {
         };
       };
       ntfy = mkAppOption {
+        health = { path = "/v1/health"; body = ''"healthy":true''; };
         name = "Ntfy";
         homepage = "https://ntfy.sh";
         description = "push notifications";
@@ -534,6 +546,7 @@ in {
         port = 2586;
       };
       mealie = mkAppOption {
+        health.path = "/api/app/about";
         name = "Mealie";
         homepage = "https://docs.mealie.io";
         description = "recipe manager";
@@ -541,6 +554,7 @@ in {
         port = 9000;
       };
       memos = mkAppOption {
+        health.path = "/healthz";
         name = "Memos";
         homepage = "https://usememos.com";
         description = "quick notes";
@@ -548,6 +562,7 @@ in {
         port = 5230;
       };
       microbin = mkAppOption {
+        health.path = "/";
         name = "Microbin";
         homepage = "https://github.com/szabodanika/microbin";
         description = "pastebin and url shortener";
@@ -567,6 +582,7 @@ in {
         };
       };
       paperless = mkAppOption {
+        health.path = "/accounts/login/";
         name = "Paperless";
         homepage = "https://paperless-ngx.readthedocs.io";
         description = "document management";
@@ -576,6 +592,7 @@ in {
         port = 28981;
       };
       rustical = mkAppOption {
+        health.path = "/ping";
         name = "Rustical";
         homepage = "https://rustical.app";
         description = "calendar and contacts server";
@@ -583,6 +600,7 @@ in {
         port = 4811;
       };
       scrutiny = mkAppOption {
+        health.path = "/api/health";
         name = "Scrutiny";
         homepage = "https://github.com/AnalogJ/scrutiny";
         description = "disk health monitoring";
@@ -590,6 +608,7 @@ in {
         port = 8606;
       };
       sftpgo = mkAppOption {
+        health.path = "/healthz";
         name = "SFTPGo";
         homepage = "https://sftpgo.com";
         description = "SFTP server";
@@ -610,6 +629,7 @@ in {
         };
       };
       speedtest = mkAppOption {
+        health.path = "/backend/empty";
         name = "Speedtest";
         homepage = "https://openspeedtest.com";
         description = "connection speed testing";
@@ -619,6 +639,7 @@ in {
         port = 8076;
       };
       storyteller = mkAppOption {
+        health.path = "/api/health";
         name = "Storyteller";
         homepage = "https://storyteller-platform.gitlab.io/storyteller/";
         description = "synced audiobook platform";
@@ -634,6 +655,7 @@ in {
         };
       };
       syncthing = mkAppOption {
+        health.path = "/rest/noauth/health";
         name = "Syncthing";
         homepage = "https://syncthing.net";
         description = "folder synchronisation";
@@ -650,6 +672,7 @@ in {
         port = 7203;
       };
       trek = mkAppOption {
+        health.path = "/api/health";
         name = "Trek";
         homepage = "https://github.com/liketrek/TREK";
         description = "collaborative travel planner";
@@ -658,6 +681,7 @@ in {
         stateSubdirs = [ "data" "uploads" ];
       };
       koito = mkAppOption {
+        health.path = "/apis/web/v1/health";
         name = "Koito";
         homepage = "https://koito.io";
         description = "listening history";
@@ -700,6 +724,7 @@ in {
         stateSubdirs = [ ".config/transmission-daemon" ];
       };
       lldap = mkAppOption {
+        health.path = "/health";
         name = "LLDAP";
         homepage = "https://github.com/lldap/lldap";
         description = "user account management";
@@ -707,6 +732,7 @@ in {
         port = 17170;
       };
       uptime = mkAppOption {
+        health.path = "/api/entry-page";
         name = "Uptime Kuma";
         homepage = "https://uptime.kuma.pet";
         description = "endpoint monitoring";
@@ -722,6 +748,7 @@ in {
         port = 3456;
       };
       warracker = mkAppOption {
+        health.path = "/api/health";
         name = "Warracker";
         homepage = "https://warracker.com";
         description = "warranty tracking";
