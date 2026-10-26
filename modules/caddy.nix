@@ -1,51 +1,27 @@
 { config, lib, pkgs, ... }:
 
-let
-  cloudflare-bypass-stub = if config.site.server.cloudflare-bypass-subdomain != null then
-    " ${config.site.server.cloudflare-bypass-subdomain}" else "";
-  dynamicdns-config = if config.site.server.authoritative then
-    ''
-    domains {
-            ${config.site.domain} @ * _${config.site.server.host}${cloudflare-bypass-stub}
-    }
-    ip_source simple_http https://icanhazip.com
-    ''
-    else
-    ''
-    domains {
-            ${config.site.domain} _${config.site.server.host}${cloudflare-bypass-stub}
-    }
-    ip_source simple_http https://icanhazip.com
-    versions ${lib.strings.concatStringsSep " " config.site.server.ipversions}
-    dynamic_domains
-    '';
-in {
+{
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   networking.firewall.allowedUDPPorts = [ 443 ];
-
-  age.secrets.cloudflare-api-env = {
-    owner = "caddy";
-    group = "users";
-    file = ../secrets/credentials/cloudflare-api-env.age;
-  };
 
   services.caddy = {
       enable = true;
       package = pkgs.caddy.withPlugins {
         plugins = [
-          "github.com/caddy-dns/cloudflare@v0.2.4"
-          "github.com/mholt/caddy-dynamicdns@v0.0.0-20251231002810-1af4f8876598"
+          "github.com/caddy-dns/bunny@v1.2.0"
           "github.com/tecosaur/caddy-fs-git@v0.0.0-20240109175104-ef9d0ab232f4"
           "github.com/caddyserver/replace-response@v0.0.0-20250618171559-80962887e4c6"
         ];
-        hash = "sha256-a6UDHGUMRKEpPynfZpad9hnTSCw0DwKnS/8z1Gmg7FY=";
+        hash = "sha256-+W4e8tGbjwN3G+fI4crsCyoGPEITxpTzbPdQL0wA+xQ=";
       };
       globalConfig =
         ''
-        acme_dns cloudflare {env.CLOUDFLARE_AUTH_TOKEN}
-        dynamic_dns {
-                provider cloudflare {env.CLOUDFLARE_AUTH_TOKEN}
-                ${dynamicdns-config}
+        # The challenge check finds the zone's nameservers through these, not
+        # the system resolver, whose cache can trail a nameserver change by
+        # a day and wait on a provider no longer authoritative.
+        cert_issuer acme {
+            dns bunny {file./run/credentials/caddy.service/bunny}
+            resolvers 1.1.1.1 8.8.8.8
         }
         '';
       # A Caddy snippet that can be imported to enable Authelia in front of a service
@@ -75,7 +51,8 @@ in {
       };
   };
 
-  systemd.services.caddy.serviceConfig = {
-    EnvironmentFile = config.age.secrets.cloudflare-api-env.path;
-  };
+  # The Bunny key dns-pooler writes the zone with, for ACME DNS challenges;
+  # dns-pooler keeps the records, so Caddy no longer updates any itself.
+  systemd.services.caddy.serviceConfig.LoadCredential =
+    [ "bunny:${config.age.secrets.bunny-dns-key.path}" ];
 }

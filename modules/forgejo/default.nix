@@ -115,8 +115,7 @@ in {
         ROOT_URL = "https://${forgejo-domain}";
         HTTP_ADDR = "127.0.0.1";
         HTTP_PORT = config.site.apps.forgejo.port;
-        SSH_DOMAIN = if config.site.server.cloudflare-bypass-subdomain == null then
-          forgejo-domain else "${config.site.server.cloudflare-bypass-subdomain}.${config.site.domain}";
+        SSH_DOMAIN = forgejo-domain;
       };
       mailer = {
         ENABLED = true;

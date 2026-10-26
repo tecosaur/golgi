@@ -26,6 +26,7 @@ in
 
   # Set by hand: from a third party, or from a service that alone can mint it.
   "credentials/beszel-token.age" = { publicKeys = all; description = "Beszel hub token"; };
+  "credentials/bunny-dns-key.age" = { publicKeys = all; description = "Bunny API key, for dns-pooler; it also keys the peer channel, so every node needs the same one"; };
   "credentials/cloudflare-api-env.age" = { publicKeys = all; description = "Cloudflare API token, as CLOUDFLARE_API_TOKEN=..."; };
   "credentials/deezer-arl.age" = { publicKeys = all; description = "Deezer arl login cookie, for multi-scrobbler"; };
   "credentials/listenbrainz-token.age" = { publicKeys = all; description = "ListenBrainz user token, for multi-scrobbler"; };

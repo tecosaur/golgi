@@ -5,7 +5,8 @@ let
                   service ? (lib.toLower (lib.replaceStrings [ " " ] [ "-" ] name)),
                   usesStateDir ? (service != null),
                   subdomain, port, admin ? "admin", extra-groups ? [],
-                  auth ? {}, cacheSubdirs ? [], stateSubdirs ? null, extraOptions ? {} }:
+                  auth ? {}, cacheSubdirs ? [], stateSubdirs ? null, health ? null,
+                  extraOptions ? {} }:
     {
       name = lib.mkOption {
         type = lib.types.str;
@@ -82,6 +83,33 @@ let
         default = port;
         description = "Port that the ${name} app listens on";
       };
+      health = lib.mkOption {
+        type = lib.types.nullOr (lib.types.submodule {
+          options = {
+            path = lib.mkOption {
+              type = lib.types.str;
+              example = "/api/health";
+              description = "Path requested on the app's port, over plain HTTP to localhost";
+            };
+            status = lib.mkOption {
+              type = lib.types.nullOr lib.types.int;
+              default = null;
+              description = "Expected status; null accepts any 2xx";
+            };
+            body = lib.mkOption {
+              type = lib.types.nullOr lib.types.str;
+              default = null;
+              description = "Regular expression the response body must match";
+            };
+          };
+        });
+        default = health;
+        description = ''
+          How dns-pooler checks the ${name} app is serving, beside its systemd
+          unit. Null relies on the unit alone, which misses a process that runs
+          without serving.
+        '';
+      };
       groups = {
         admin = lib.mkOption {
           type = lib.types.nullOr lib.types.str;
@@ -137,6 +165,72 @@ in {
         default = 51820;
         description = "Port the mesh listens on, opened to UDP on every host";
       };
+      addresses = lib.mkOption {
+        type = lib.types.attrsOf lib.types.str;
+        readOnly = true;
+        default = lib.genAttrs config.site.hosts (name:
+          "${config.site.mesh.subnet}${builtins.substring 0 4 (builtins.hashString "sha256" name)}");
+        defaultText = lib.literalMD "derived from `site.hosts` and `site.mesh.subnet`";
+        description = "Every host's mesh address, by host name";
+      };
+    };
+    dns = {
+      host-domain = lib.mkOption {
+        type = lib.types.str;
+        default = "hosts";
+        description = ''
+          Label under which each host's own record lives, kept current by
+          dns-pooler: golgi.hosts.example.com. Deploys and the mesh reach hosts
+          by these names.
+        '';
+      };
+      records = lib.mkOption {
+        type = lib.types.listOf (lib.types.submodule {
+          options = {
+            name = lib.mkOption {
+              type = lib.types.str;
+              example = "@";
+              description = "Name relative to the site domain; @ is the apex";
+            };
+            type = lib.mkOption {
+              type = lib.types.str;
+              example = "MX";
+              description = "Record type";
+            };
+            value = lib.mkOption {
+              type = lib.types.str;
+              example = "10 mail.example.com.";
+              description = "Record data in presentation form";
+            };
+          };
+        });
+        default = [ ];
+        description = ''
+          Records the site declares outright rather than any host serving: mail,
+          verification, DKIM and the like. dns-pooler asserts them, and deletes
+          any record in the zone that is neither declared nor derived nor
+          ignored.
+        '';
+      };
+      ignore = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ "_acme-challenge" "_acme-challenge.*" ];
+        description = ''
+          Globs of names dns-pooler never touches, for records something else
+          maintains. The default leaves Caddy's ACME challenges alone; `*`
+          matches dots too.
+        '';
+      };
+      served = lib.mkOption {
+        type = lib.types.attrsOf (lib.types.listOf lib.types.str);
+        default = { };
+        internal = true;
+        description = ''
+          The names each host's Caddy serves, relative to the site domain, set
+          from every machine's configuration by the flake. dns-pooler points
+          each at its host.
+        '';
+      };
     };
     accent = {
       primary = lib.mkOption {
@@ -169,16 +263,6 @@ in {
         default = false;
         description = "Whether this server is authoritative for the domain";
       };
-      cloudflare-bypass-subdomain = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        example = "ssh";
-        description = ''
-          DNS-only name for this server, for traffic Cloudflare's proxy will not
-          carry (e.g. SSH). Set it only on a server whose records are proxied;
-          null means its records already resolve to the server itself.
-        '';
-      };
       host = lib.mkOption {
         type = lib.types.str;
         default = "";
@@ -188,11 +272,6 @@ in {
         type = lib.types.str;
         default = "";
         description = "IPv6 address for the server";
-      };
-      ipversions = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = ["ipv4" "ipv6"];
-        description = "what versions of ip to use: ipv4 and/or ipv6";
       };
     };
     email = {

@@ -15,7 +15,7 @@ let
   mkPeer = name: {
     PublicKey = public-key name;
     AllowedIPs = [ "${address name}/128" ];
-    Endpoint = "_${name}.${config.site.domain}:${toString port}";
+    Endpoint = "${name}.${config.site.dns.host-domain}.${config.site.domain}:${toString port}";
     # 15s rather than the conventional 25s: dns-pooler reads liveness from the
     # per-peer receive counter, which only advances as fast as keepalives arrive.
     PersistentKeepalive = 15;
