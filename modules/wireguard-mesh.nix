@@ -4,14 +4,11 @@
 # service the cluster hosts.
 
 let
+  inherit (config.site) hosts;
   inherit (config.site.mesh) subnet port;
   this-host = config.site.server.host;
-  hosts = lib.sort (a: b: a < b) config.site.hosts;
-  address = name:
-    let index = lib.lists.findFirstIndex (n: n == name) null hosts;
-    in if index == null
-       then throw "wireguard-mesh: ${name} is not in site.hosts"
-       else "${subnet}${toString (1 + index)}";
+  # The low 16 bits of the name's digest, as the hex group they already are.
+  address = name: "${subnet}${builtins.substring 0 4 (builtins.hashString "sha256" name)}";
   key-file = name: ../secrets/keys + "/wg-${name}.pub";
   public-key = name: lib.removeSuffix "\n" (builtins.readFile (key-file name));
   unkeyed = lib.filter (name: !builtins.pathExists (key-file name)) hosts;
@@ -19,7 +16,9 @@ let
     PublicKey = public-key name;
     AllowedIPs = [ "${address name}/128" ];
     Endpoint = "_${name}.${config.site.domain}:${toString port}";
-    PersistentKeepalive = 25;
+    # 15s rather than the conventional 25s: dns-pooler reads liveness from the
+    # per-peer receive counter, which only advances as fast as keepalives arrive.
+    PersistentKeepalive = 15;
   };
 in
 {
@@ -27,6 +26,16 @@ in
     { assertion = unkeyed == [ ];
       message = "wireguard-mesh: no key for ${lib.concatStringsSep ", " unkeyed}; "
                 + "run `./secrets/make.sh wireguard`, then `git add secrets/keys`";
+    }
+    (let collided = lib.filter
+           (name: lib.any (other: other != name && address other == address name) hosts)
+           hosts;
+     in { assertion = collided == [ ];
+          message = "wireguard-mesh: ${lib.concatStringsSep ", " collided} share a mesh "
+                    + "address; rename one, or widen the host bits in site.mesh.subnet";
+        })
+    { assertion = lib.elem this-host hosts;
+      message = "wireguard-mesh: ${this-host} is not in site.hosts, so it has no mesh address";
     }
   ];
 
@@ -39,6 +48,9 @@ in
   };
 
   networking.firewall.allowedUDPPorts = [ port ];
+
+  networking.hosts = lib.listToAttrs
+    (map (name: lib.nameValuePair (address name) [ "${name}.internal" ]) hosts);
 
   environment.systemPackages = [ pkgs.wireguard-tools ];
 

@@ -113,15 +113,23 @@ in {
     hosts = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
-      description = "Every machine in the site, this one included";
+      example = [ "golgi" "nucleus" ];
+      description = ''
+        Every machine in the site, this one included. A host's mesh address is
+        derived from its name alone (see site.mesh.subnet), so naming a machine
+        here is all it takes to place it on the mesh.
+      '';
     };
     mesh = {
       subnet = lib.mkOption {
         type = lib.types.str;
         default = "fd00:c1de::";
         description = ''
-          IPv6 ULA prefix for the inter-node mesh. Hosts are numbered from 1
-          in the order they sort, so this must not collide with the tailnet.
+          IPv6 ULA prefix for the inter-node mesh, which must not collide with
+          the tailnet. A host takes the address formed by appending the first
+          16 bits of the SHA-256 of its name, so an address depends on that one
+          name and nothing else: adding, removing or renaming a machine leaves
+          every other host's address untouched.
         '';
       };
       port = lib.mkOption {
